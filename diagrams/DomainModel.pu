@@ -1,0 +1,46 @@
+@startuml BookApi_DomainModel
+
+hide method
+skinparam DefaultFontName Helvetica
+
+package "Book Domain" as Domain {
+    entity Author {
+        * ID: AuthorID <<Slug>>
+        --
+        * Name: Name
+        * <<N/A>>: RelatedPublishers
+    }
+
+    entity Publisher {
+        * ID: PublisherID <<Slug>>
+        --
+        * Name: Name
+        * <<N/A>>: RelatedAuthors
+    }
+
+    entity Book {
+        * ISBN: ISBN <<Slug>>
+        --
+        * ID: <<N/A>>
+        * Name: Name
+        * PublishedAt : PublishedAt
+        * Publisher: Publisher
+        * Authors: Authors
+    }
+
+    Book "0..*" o--* "1..*" Author
+    Book "0..*" --* "1" Publisher
+
+    note right of Book
+        * ISBNにはバリデーションをかける
+        * ID (DB上のPK) はResponseから秘匿する
+        * 著者欄の入力はIDのリストにより行う
+          - 入力順を保持すること
+        * 出版日は未来の日時の入力も可とする
+    endnote
+
+    note bottom of Author
+        * 日本語の人名には正規化を行わない (運用でカバーを想定)
+    endnote
+}
+@enduml
