@@ -1,0 +1,34 @@
+@startuml BookApi_ERModel
+
+hide method
+hide circle
+skinparam DefaultFontName Helvetica
+skinparam linetype ortho
+left to right direction
+
+package "Book Domain" {
+    entity Author {
+        * ID : int <<generated>>
+        --
+        * Name : string
+    }
+
+    entity Publisher {
+        * ID : int <<generated>>
+        --
+        * Name : string
+    }
+
+    entity Book {
+        * ID : int <<generated>>
+        --
+        * ISBN : string
+        * Name : string
+        * PublishedAt : DateTime
+        * FKPublisher : int <<FK>>
+    }
+
+    Book }|..o{  Author
+    Book ||..o{ Publisher
+}
+@enduml
