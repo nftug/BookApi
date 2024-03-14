@@ -22,7 +22,7 @@ package "Book Domain" as Domain {
         * ISBN: ISBN <<Slug>>
         --
         * ID: <<N/A>>
-        * Name: Name
+        * Title: Title
         * PublishedAt : PublishedAt
         * Publisher: Publisher
         * Authors: Authors
