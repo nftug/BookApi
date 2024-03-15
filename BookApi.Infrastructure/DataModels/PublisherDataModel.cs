@@ -7,7 +7,8 @@ namespace BookApi.Infrastructure.DataModels;
 public class PublisherDataModel : AggregateDataModelBase<Publisher, PublisherDataModel>
 {
     public string Name { get; set; } = string.Empty;
-    public ICollection<BookDataModel> Books { get; set; } = null!;
+
+    public virtual ICollection<BookDataModel> Books { get; set; } = [];
 
     public override Publisher ToEntity()
         => new(

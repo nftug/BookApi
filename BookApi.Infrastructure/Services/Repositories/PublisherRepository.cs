@@ -15,10 +15,6 @@ public class PublisherRepository(BookDbContext context)
             .Where(PublisherDataModel.QueryPredicate(actor))
             .Include(x => x.Books);
 
-    protected override IQueryable<PublisherDataModel> QueryForSave(IActor actor)
-        => DbContext.Publishers
-            .Where(PublisherDataModel.QueryPredicate(actor));
-
     public async Task<bool> AnyByNameAsync(string name)
         => await DbContext.Publishers.AnyAsync(x => x.Name == name);
 }

@@ -16,13 +16,8 @@ public class BookRepository(BookDbContext context)
             .Where(BookDataModel.QueryPredicate(actor))
             .Include(x => x.Authors);
 
-    protected override IQueryable<BookDataModel> QueryForSave(IActor actor)
-        => DbContext.Books
-            .Where(BookDataModel.QueryPredicate(actor))
-            .Include(x => x.BookAuthors);
-
     public async Task<Book?> FindByISBNAsync(IActor actor, ISBNCode isbn)
-        => (await QueryForRead(actor).Where(x => x.ISBN == isbn.Value).SingleOrDefaultAsync())
+        => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.ISBN == isbn.Value))
             ?.ToEntity();
 
     public async Task<bool> AnyByISBNAsync(ISBNCode isbn)

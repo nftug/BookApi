@@ -1,5 +1,6 @@
 using BookApi.Domain.Entities;
 using BookApi.Infrastructure.Abstractions.DataModels;
+using BookApi.Infrastructure.Attributes;
 using BookApi.Infrastructure.DataModels.Intermediates;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +13,10 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
     public DateTime PublishedAt { get; set; }
     public int PublisherID { get; set; }
 
-    public PublisherDataModel Publisher { get; set; } = null!;
-    public ICollection<AuthorDataModel> Authors { get; set; } = null!;
+    public virtual PublisherDataModel Publisher { get; set; } = null!;
+    public virtual ICollection<AuthorDataModel> Authors { get; set; } = [];
 
-    // Intermediates
-    public ICollection<BookAuthorDataModel> BookAuthors { get; set; } = null!;
+    [IntermediateTable] public virtual ICollection<BookAuthorDataModel> BookAuthors { get; set; } = [];
 
     public override Book ToEntity()
         => new(
@@ -40,19 +40,10 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
         PublisherID = entity.Publisher.Value;
     }
 
-    public override void ClearIntermediates(BookDbContext dbContext)
-    {
-        dbContext.RemoveRange(BookAuthors);
-    }
-
     public override bool OnTransferAfterSave(Book entity)
     {
         BookAuthors = entity.Authors
-            .Select(x => new BookAuthorDataModel
-            {
-                BookID = ID,
-                AuthorID = x.Value
-            })
+            .Select(x => new BookAuthorDataModel { BookID = ID, AuthorID = x.Value })
             .ToList();
         return true;
     }

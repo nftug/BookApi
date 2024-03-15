@@ -15,10 +15,6 @@ public class AuthorRepository(BookDbContext context)
             .Where(AuthorDataModel.QueryPredicate(actor))
             .Include(x => x.Books);
 
-    protected override IQueryable<AuthorDataModel> QueryForSave(IActor actor)
-        => DbContext.Authors
-            .Where(AuthorDataModel.QueryPredicate(actor));
-
     public async Task<bool> IsAllIDsExistedAsync(IActor actor, HashSet<int> itemIDs)
     {
         var existingIDs =
