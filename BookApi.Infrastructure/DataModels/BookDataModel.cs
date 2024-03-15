@@ -1,6 +1,7 @@
 using BookApi.Domain.Entities;
 using BookApi.Infrastructure.Abstractions.DataModels;
 using BookApi.Infrastructure.DataModels.Intermediates;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookApi.Infrastructure.DataModels;
 
@@ -50,5 +51,10 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
             })
             .ToList();
         return true;
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<BookDataModel>().HasIndex(x => x.ISBN).IsUnique();
     }
 }

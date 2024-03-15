@@ -1,5 +1,4 @@
 using BookApi.Domain.Abstractions.Entities;
-using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.ValueObjects.Shared;
 
 namespace BookApi.Domain.Entities;
@@ -28,10 +27,10 @@ public class Publisher : AggregateEntityBase<Publisher>
         Name = PublisherName.CreateWithValidation(name);
     }
 
-    public static Publisher CreateNew(IActorPermission permission, string name)
+    internal static Publisher CreateNew(AdminOnlyPermission permission, string name)
         => new Publisher(name).CreateNew(permission);
 
-    public void Update(IActorPermission permission, string name)
+    internal void Update(AdminOnlyPermission permission, string name)
     {
         Name = PublisherName.CreateWithValidation(name);
         Update(permission);

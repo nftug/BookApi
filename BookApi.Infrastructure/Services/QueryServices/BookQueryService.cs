@@ -21,5 +21,4 @@ public class BookQueryService(BookDbContext dbContext) : IBookQueryService
                 new(x.PublisherID, x.Publisher.Name)
             ))
             .SingleOrDefaultAsync();
-
 }

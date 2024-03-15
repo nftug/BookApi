@@ -28,6 +28,8 @@ public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AuthorDataModel>().HasIndex(x => x.Name).IsUnique();
+
         modelBuilder.Entity<BookAuthorDataModel>().ToTable("BookAuthor");
 
         modelBuilder.Entity<AuthorDataModel>()

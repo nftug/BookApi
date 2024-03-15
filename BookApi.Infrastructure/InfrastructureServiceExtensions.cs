@@ -9,7 +9,7 @@ namespace BookApi.Infrastructure;
 
 public static class InfrastructureServiceExtensions
 {
-    public static IServiceCollection AddInfrastructure(
+    public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services, IConfiguration configuration
     )
         => services
