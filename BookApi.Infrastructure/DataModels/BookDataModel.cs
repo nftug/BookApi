@@ -38,7 +38,7 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
         Title = entity.Title.Value;
         PublishedAt = entity.PublishedAt.Value;
         PublisherID = entity.Publisher.Value;
-        BookAuthors.Clear();
+        BookAuthors?.Clear();
     }
 
     public override bool OnTransferAfterSave(Book entity)

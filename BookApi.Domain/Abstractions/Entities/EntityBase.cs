@@ -37,6 +37,7 @@ public abstract class EntityBase<T> : IEntity<T>
     {
         if (!permission.CanCreate) throw new ForbiddenException();
 
+        ItemID = ItemID.Reconstruct(0);
         DateTimeRecord = new() { CreatedAt = DateTime.UtcNow };
         ActorRecord = new() { CreatedBy = permission.Actor };
         return (T)this;
