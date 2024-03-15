@@ -26,37 +26,24 @@ public record ISBNCode
             throw new ValidationErrorException("ISBNコードを入力してください。");
 
         // ハイフンを削除して数字だけを抽出
-        string digitsOnly = Regex.Replace(value, @"[^0-9]", "");
+        string valueWithoutHyphen = value.Replace("-", "");
+        if (!Regex.IsMatch(valueWithoutHyphen, @"^\d+$"))
+            throw new ValidationErrorException("ISBNコードに不正な文字が含まれています。");
 
         // ISBNコードの形式に合わせてバリデーションとハイフン区切りの文字列への変換を行う
-        string formattedValue = digitsOnly.Length switch
+        string formattedValue = valueWithoutHyphen.Length switch
         {
-            10 => ValidateAndFormat10DigitISBN(digitsOnly),
-            13 => ValidateAndFormat13DigitISBN(digitsOnly),
-            _ => throw new ValidationErrorException("無効なISBNコードです。")
+            10 => SplitDigitWithHyphen(valueWithoutHyphen, 1, 2, 6, 1),
+            13 => SplitDigitWithHyphen(valueWithoutHyphen, 3, 1, 2, 6, 1),
+            _ => throw new ValidationErrorException("ISBNコードの桁数が多すぎます。")
         };
 
         return new(formattedValue);
     }
 
-    private static string ValidateAndFormat10DigitISBN(string digitsOnly)
-    {
-        if (!Regex.IsMatch(digitsOnly, @"^\d{10}$"))
-            throw new ValidationErrorException("無効なISBNコードです。");
-
-        return SplitDigitWithHyphen(digitsOnly, 1, 2, 6, 1);
-    }
-
-    private static string ValidateAndFormat13DigitISBN(string digitsOnly)
-    {
-        if (!Regex.IsMatch(digitsOnly, @"^\d{13}$"))
-            throw new ValidationErrorException("無効なISBNコードです。");
-
-        return SplitDigitWithHyphen(digitsOnly, 3, 1, 2, 6, 1);
-    }
-
     private static string SplitDigitWithHyphen(string digitsOnly, params int[] numberOfDigitsPerBlock)
     {
+        // NOTE: コーディング上の間違いがない限り、この例外は出ないはず
         if (numberOfDigitsPerBlock.Sum() != digitsOnly.Length)
             throw new ArgumentException("Number of digits does not match.");
 
