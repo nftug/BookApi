@@ -23,4 +23,7 @@ public class BookRepository(BookDbContext context)
     public async Task<Book?> FindByISBNAsync(IActor actor, string isbn)
         => (await QueryForRead(actor).Where(x => x.ISBN == isbn).SingleOrDefaultAsync())
             ?.ToEntity();
+
+    public async Task<bool> AnyByISBNAsync(string isbn)
+        => await DbContext.Books.AnyAsync(x => x.ISBN == isbn);
 }

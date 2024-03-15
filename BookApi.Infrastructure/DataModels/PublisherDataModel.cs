@@ -27,6 +27,8 @@ public class PublisherDataModel : AggregateDataModelBase<Publisher, PublisherDat
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<PublisherDataModel>().HasIndex(x => x.Name).IsUnique();
+
         modelBuilder.Entity<PublisherDataModel>()
             .HasMany(a => a.Books)
             .WithOne(b => b.Publisher)

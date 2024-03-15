@@ -42,14 +42,14 @@ public class Book : AggregateEntityBase<Book>
         PublishedAt = BookPublicationDate.CreateWithValidation(publishedAt);
     }
 
-    public static Book CreateNew(
-        IActorPermission permission,
+    internal static Book CreateNew(
+        AdminOnlyPermission permission,
         string name, string isbn, int[] authorIDs, int publisherID, DateTime publishedAt
     )
         => new Book(name, isbn, authorIDs, publisherID, publishedAt).CreateNew(permission);
 
-    public void Update(
-        IActorPermission permission,
+    internal void Update(
+        AdminOnlyPermission permission,
         string title, string isbn, int[] authorIDs, int publisherID, DateTime publishedAt
     )
     {

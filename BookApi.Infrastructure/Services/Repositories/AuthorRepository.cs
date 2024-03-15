@@ -18,4 +18,19 @@ public class AuthorRepository(BookDbContext context)
     protected override IQueryable<AuthorDataModel> QueryForSave(IActor actor)
         => DbContext.Authors
             .Where(AuthorDataModel.QueryPredicate(actor));
+
+    public async Task<bool> IsAllIDsExistedAsync(IActor actor, HashSet<int> itemIDs)
+    {
+        var existingIDs =
+            await DbContext.Authors
+                .Where(AuthorDataModel.QueryPredicate(actor))
+                .Where(x => itemIDs.Contains(x.ID))
+                .Select(x => x.ID)
+                .ToListAsync();
+
+        return itemIDs.All(existingIDs.Contains);
+    }
+
+    public async Task<bool> AnyByNameAsync(string name)
+        => await DbContext.Authors.AnyAsync(x => x.Name == name);
 }
