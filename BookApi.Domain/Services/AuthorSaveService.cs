@@ -7,7 +7,7 @@ namespace BookApi.Domain.Services;
 
 public class AuthorSaveService(IAuthorRepository authorRepository)
 {
-    public async Task<ItemID> CreateAsync(AdminOnlyPermission permission, string name)
+    public async Task<Author> CreateAsync(AdminOnlyPermission permission, string name)
     {
         if (await authorRepository.AnyByNameAsync(name))
             throw new ValidationErrorException("既に同じ名前の著者が存在します。");
@@ -15,7 +15,7 @@ public class AuthorSaveService(IAuthorRepository authorRepository)
         var newAuthor = Author.CreateNew(permission, name);
 
         await authorRepository.SaveAsync(permission.Actor, newAuthor);
-        return newAuthor.ItemID;
+        return newAuthor;
     }
 
     public async Task UpdateAsync(AdminOnlyPermission permission, Author author, string name)

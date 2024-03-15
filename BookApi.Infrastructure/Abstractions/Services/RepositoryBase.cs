@@ -54,9 +54,12 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
         if (shouldDoPostTransfer) await SaveChangesAsync();
     }
 
-    public virtual async Task DeleteAsync(IActorPermission actor, int itemID)
+    public virtual async Task DeleteAsync(IActorPermission permission, int itemID)
     {
-        if (!actor.CanDelete) throw new ForbiddenException();
+        if (!await AnyAsync(permission.Actor, itemID))
+            throw new ItemNotFoundException();
+
+        if (!permission.CanDelete) throw new ForbiddenException();
 
         var dataToRemove = new TDataModel { ID = itemID };
         DbContext.Attach(dataToRemove);
