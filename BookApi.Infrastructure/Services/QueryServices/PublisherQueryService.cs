@@ -9,7 +9,8 @@ namespace BookApi.Infrastructure.Services.QueryServices;
 public class PublisherQueryService(BookDbContext dbContext) : IPublisherQueryService
 {
     public async Task<PublisherResponseDTO?> FindAsync(IActor actor, int itemId)
-        => await dbContext.Publishers
+    {
+        var response = await dbContext.Publishers
             .Where(PublisherDataModel.QueryPredicate(actor))
             .Where(x => x.ID == itemId)
             .Select(x => new PublisherResponseDTO(
@@ -21,11 +22,22 @@ public class PublisherQueryService(BookDbContext dbContext) : IPublisherQuerySer
                     b.PublishedAt,
                     b.Authors.Select(a => a.ID),
                     b.PublisherID
-                )),
-                x.Books
-                    .SelectMany(b => b.Authors)
-                    .Select(a => new ItemSummaryResponseDTO(a.ID, a.Name))
-                    .ToHashSet()
+                ))
             ))
             .SingleOrDefaultAsync();
+
+        return response is { }
+            ? response with
+            {
+                RelatedAuthors =
+                    (await dbContext.Books
+                        .Where(b => b.PublisherID == itemId)
+                        .SelectMany(b => b.Authors)
+                        .Select(a => new ItemSummaryResponseDTO(a.ID, a.Name))
+                        .ToArrayAsync())
+                        .Distinct()
+                        .OrderBy(x => x.ID)
+            }
+            : null;
+    }
 }
