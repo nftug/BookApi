@@ -12,7 +12,7 @@ public class BookSaveService(
     IPublisherRepository publisherRepository
 )
 {
-    public async Task<ItemID> CreateAsync(
+    public async Task<Book> CreateAsync(
         AdminOnlyPermission permission,
         string name, string isbn, int[] authorIDs, int publisherID, DateTime publishedAt
     )
@@ -26,7 +26,7 @@ public class BookSaveService(
         var newBook = Book.CreateNew(permission, name, isbn, authorIDs, publisherID, publishedAt);
 
         await bookRepository.SaveAsync(permission.Actor, newBook);
-        return newBook.ItemID;
+        return newBook;
     }
 
     public async Task UpdateAsync(
