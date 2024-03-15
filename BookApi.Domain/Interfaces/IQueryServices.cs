@@ -1,11 +1,12 @@
 using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.DTOs.Responses;
+using BookApi.Domain.ValueObjects.Books;
 
 namespace BookApi.Domain.Interfaces;
 
 public interface IBookQueryService
 {
-    Task<BookResponseDTO?> FindByISBNAsync(IActor actor, string isbn);
+    Task<BookResponseDTO?> FindByISBNAsync(IActor actor, ISBNCode isbn);
 }
 
 public interface IAuthorQueryService
