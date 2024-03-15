@@ -7,14 +7,14 @@ namespace BookApi.UseCase.Books;
 
 public class DeleteBook
 {
-    public record Command(ActorForPermission Actor, int BookID) : IRequest;
+    public record Command(ActorForPermission Actor, string ISBN) : IRequest;
 
     public class Handler(IBookRepository bookRepository) : IRequestHandler<Command>
     {
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
             var book =
-                await bookRepository.FindAsync(request.Actor, request.BookID)
+                await bookRepository.FindByISBNAsync(request.Actor, request.ISBN)
                 ?? throw new ItemNotFoundException();
 
             var permission = new AdminOnlyPermission(request.Actor);
