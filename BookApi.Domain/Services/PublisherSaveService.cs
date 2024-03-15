@@ -5,16 +5,16 @@ using BookApi.Domain.ValueObjects.Shared;
 
 namespace BookApi.Domain.Services;
 
-public class PublisherSaveService(IPublisherRepository PublisherRepository)
+public class PublisherSaveService(IPublisherRepository publisherRepository)
 {
     public async Task<Publisher> CreateAsync(AdminOnlyPermission permission, string name)
     {
-        if (await PublisherRepository.AnyByNameAsync(name))
+        if (await publisherRepository.AnyByNameAsync(name))
             throw new ValidationErrorException("既に同じ名前の出版社が存在します。");
 
         var newPublisher = Publisher.CreateNew(permission, name);
 
-        await PublisherRepository.SaveAsync(permission.Actor, newPublisher);
+        await publisherRepository.SaveAsync(permission.Actor, newPublisher);
         return newPublisher;
     }
 
@@ -22,6 +22,6 @@ public class PublisherSaveService(IPublisherRepository PublisherRepository)
     {
         // NOTE: 今のところはインフラ層に頼るバリデーションなどはないが、後々の拡張性を考慮して実装しておく
         publisher.Update(permission, name);
-        await PublisherRepository.SaveAsync(permission.Actor, publisher);
+        await publisherRepository.SaveAsync(permission.Actor, publisher);
     }
 }
