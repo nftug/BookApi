@@ -1,10 +1,7 @@
 namespace BookApi.Domain.Exceptions;
 
-public class ValidationErrorException : Exception
+public class ValidationErrorException(string message) : Exception(message)
 {
-    public ValidationErrorException(string message) : base(message)
-    {
-    }
 }
 
 public class ForbiddenException : Exception;
