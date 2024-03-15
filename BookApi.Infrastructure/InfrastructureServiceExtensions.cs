@@ -14,7 +14,9 @@ public static class InfrastructureServiceExtensions
     )
         => services
             .AddDbContext<BookDbContext>(
-                opt => opt.UseSqlite(configuration.GetConnectionString("DefaultConnection"))
+                opt => opt
+                    .UseSqlite(configuration.GetConnectionString("DefaultConnection"))
+                    .UseLazyLoadingProxies()
             )
             .AddScoped<IBookRepository, BookRepository>()
             .AddScoped<IAuthorRepository, AuthorRepository>()

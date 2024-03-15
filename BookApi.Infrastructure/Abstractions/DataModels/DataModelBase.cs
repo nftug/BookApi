@@ -42,9 +42,6 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     /// </summary>
     public virtual bool OnTransferAfterSave(TEntity entity) => false;
 
-    // 中間テーブル初期化の処理
-    public virtual void ClearIntermediates(BookDbContext dbContext) { }
-
     // データモデル作成時の処理
     public static void CreateModel(ModelBuilder modelBuilder)
     {
@@ -75,6 +72,5 @@ public interface IDataModel<TEntity, TSelf>
 
     TEntity ToEntity();
     TSelf FromEntity(TEntity entity);
-    void ClearIntermediates(BookDbContext dbContext);
     bool OnTransferAfterSave(TEntity entity);
 }
