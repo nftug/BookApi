@@ -1,3 +1,4 @@
+using BookApi.Domain.Exceptions;
 using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Shared;
 using MediatR;
@@ -13,7 +14,12 @@ public class DeleteAuthor
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
             var permission = new AdminOnlyPermission(request.Actor);
-            await authorRepository.DeleteAsync(permission, request.AuthorID);
+
+            var author =
+                await authorRepository.FindAsync(permission.Actor, request.AuthorID)
+                ?? throw new ItemNotFoundException();
+
+            await authorRepository.DeleteAsync(permission, author);
         }
     }
 }

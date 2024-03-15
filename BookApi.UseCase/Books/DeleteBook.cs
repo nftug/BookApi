@@ -21,7 +21,7 @@ public class DeleteBook
 
             var permission = new AdminOnlyPermission(request.Actor);
 
-            await bookRepository.DeleteAsync(permission, book.ID);
+            await bookRepository.DeleteAsync(permission, book);
         }
     }
 }
