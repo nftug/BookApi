@@ -35,7 +35,7 @@ public record ISBNCode
         {
             10 => SplitDigitWithHyphen(valueWithoutHyphen, 1, 2, 6, 1),
             13 => SplitDigitWithHyphen(valueWithoutHyphen, 3, 1, 2, 6, 1),
-            _ => throw new ValidationErrorException("ISBNコードの桁数が多すぎます。")
+            _ => throw new ValidationErrorException("ISBNコードの桁数が違います。")
         };
 
         return new(formattedValue);
