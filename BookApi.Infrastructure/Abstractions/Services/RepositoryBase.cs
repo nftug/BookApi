@@ -51,19 +51,16 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
 
         // 保存後に後処理と追加の保存が必要な場合は実行する (中間テーブルの作成など)
         bool shouldDoPostTransfer = dataModel.OnTransferAfterSave(entity);
-        if (shouldDoPostTransfer) await SaveChangesAsync();
+        //if (shouldDoPostTransfer) await SaveChangesAsync();
     }
 
-    public virtual async Task DeleteAsync(IActorPermission permission, int itemID)
+    public virtual async Task DeleteAsync(IActorPermission permission, TAggregate entity)
     {
-        if (!await AnyAsync(permission.Actor, itemID))
-            throw new ItemNotFoundException();
-
         if (!permission.CanDelete) throw new ForbiddenException();
 
-        var dataToRemove = new TDataModel { ID = itemID };
-        DbContext.Attach(dataToRemove);
-        DbContext.Remove(dataToRemove);
+        var dataModel = new TDataModel { ID = entity.ID, VersionID = entity.VersionID };
+        DbContext.Attach(dataModel);
+        DbContext.Remove(dataModel);
 
         await SaveChangesAsync();
     }
