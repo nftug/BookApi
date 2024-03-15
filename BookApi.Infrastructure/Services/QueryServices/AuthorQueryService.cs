@@ -24,7 +24,7 @@ public class AuthorQueryService(BookDbContext dbContext) : IAuthorQueryService
                 )),
                 x.Books
                     .Select(b => new ItemSummaryResponseDTO(b.PublisherID, b.Publisher.Name))
-                    .DistinctBy(x => x.ID)
+                    .ToHashSet()
             ))
             .SingleOrDefaultAsync();
 }
