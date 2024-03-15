@@ -113,22 +113,16 @@ namespace BookApi.Infrastructure.Migrations
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.Intermediates.BookAuthorDataModel", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("AuthorID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BookDataModelID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("BookID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ID");
+                    b.Property<int?>("BookDataModelID")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("AuthorID");
+                    b.HasKey("AuthorID", "BookID");
 
                     b.HasIndex("BookDataModelID");
 
@@ -204,7 +198,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.HasOne("BookApi.Infrastructure.DataModels.BookDataModel", null)
                         .WithMany()
                         .HasForeignKey("BookID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookApi.Infrastructure.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20240315151634_InitialMigration")]
+    [Migration("20240315190606_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -116,22 +116,16 @@ namespace BookApi.Infrastructure.Migrations
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.Intermediates.BookAuthorDataModel", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("AuthorID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("BookDataModelID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("BookID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ID");
+                    b.Property<int?>("BookDataModelID")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("AuthorID");
+                    b.HasKey("AuthorID", "BookID");
 
                     b.HasIndex("BookDataModelID");
 
@@ -207,7 +201,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.HasOne("BookApi.Infrastructure.DataModels.BookDataModel", null)
                         .WithMany()
                         .HasForeignKey("BookID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

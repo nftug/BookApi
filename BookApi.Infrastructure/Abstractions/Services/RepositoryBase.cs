@@ -43,6 +43,9 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
 
             entity.IncreaseVersionIDFromRepository();
             dataModel.FromEntity(entity);
+
+            // 中間テーブルをクリア
+            dataModel.ClearIntermediates(DbContext);
         }
 
         // DBに保存し、付与されたIDをエンティティに反映する
@@ -51,7 +54,7 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
 
         // 保存後に後処理と追加の保存が必要な場合は実行する (中間テーブルの作成など)
         bool shouldDoPostTransfer = dataModel.OnTransferAfterSave(entity);
-        //if (shouldDoPostTransfer) await SaveChangesAsync();
+        if (shouldDoPostTransfer) await SaveChangesAsync();
     }
 
     public virtual async Task DeleteAsync(IActorPermission permission, TAggregate entity)
