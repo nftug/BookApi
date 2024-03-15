@@ -84,15 +84,13 @@ namespace BookApi.Infrastructure.Migrations
                 name: "BookAuthor",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
                     BookID = table.Column<int>(type: "INTEGER", nullable: false),
                     AuthorID = table.Column<int>(type: "INTEGER", nullable: false),
                     BookDataModelID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookAuthor", x => x.ID);
+                    table.PrimaryKey("PK_BookAuthor", x => new { x.AuthorID, x.BookID });
                     table.ForeignKey(
                         name: "FK_BookAuthor_Author_AuthorID",
                         column: x => x.AuthorID,
@@ -109,7 +107,7 @@ namespace BookApi.Infrastructure.Migrations
                         column: x => x.BookID,
                         principalTable: "Book",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -128,11 +126,6 @@ namespace BookApi.Infrastructure.Migrations
                 name: "IX_Book_PublisherID",
                 table: "Book",
                 column: "PublisherID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookAuthor_AuthorID",
-                table: "BookAuthor",
-                column: "AuthorID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookAuthor_BookDataModelID",

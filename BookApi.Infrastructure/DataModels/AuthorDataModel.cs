@@ -31,7 +31,9 @@ public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
         modelBuilder.Entity<AuthorDataModel>().HasIndex(x => x.Name).IsUnique();
 
         modelBuilder.Entity<BookAuthorDataModel>().ToTable("BookAuthor");
+        modelBuilder.Entity<BookAuthorDataModel>().HasKey(x => new { x.AuthorID, x.BookID });
 
+        // TODO: 中間テーブルは削除されるものの、著者を削除しても書籍は消えない
         modelBuilder.Entity<AuthorDataModel>()
             .HasMany(a => a.Books)
             .WithMany(b => b.Authors)
@@ -40,7 +42,7 @@ public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
                     .HasOne<BookDataModel>()
                     .WithMany()
                     .HasForeignKey(j => j.BookID)
-                    .OnDelete(DeleteBehavior.Restrict),
+                    .OnDelete(DeleteBehavior.Cascade),
                 r => r
                     .HasOne<AuthorDataModel>()
                     .WithMany()
