@@ -9,14 +9,14 @@ namespace BookApi.UseCase.Books;
 
 public class UpdateBook
 {
-    public record Command(ActorForPermission Actor, int BookID, BookCommandDTO CommandForm) : IRequest;
+    public record Command(ActorForPermission Actor, string ISBN, BookCommandDTO CommandForm) : IRequest;
 
     public class Handler(BookSaveService bookSaveService, IBookRepository bookRepository) : IRequestHandler<Command>
     {
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
             var book =
-                await bookRepository.FindAsync(request.Actor, request.BookID)
+                await bookRepository.FindByISBNAsync(request.Actor, request.ISBN)
                 ?? throw new ItemNotFoundException();
 
             var permission = new AdminOnlyPermission(request.Actor);
