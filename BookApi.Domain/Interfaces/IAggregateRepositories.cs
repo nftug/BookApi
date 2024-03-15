@@ -1,13 +1,14 @@
 using BookApi.Domain.Abstractions.Interfaces;
 using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.Entities;
+using BookApi.Domain.ValueObjects.Books;
 
 namespace BookApi.Domain.Interfaces;
 
 public interface IBookRepository : IRepositoryBase<Book>
 {
-    Task<Book?> FindByISBNAsync(IActor actor, string isbn);
-    Task<bool> AnyByISBNAsync(string isbn);
+    Task<Book?> FindByISBNAsync(IActor actor, ISBNCode isbn);
+    Task<bool> AnyByISBNAsync(ISBNCode isbn);
 }
 
 public interface IAuthorRepository : IRepositoryBase<Author>
