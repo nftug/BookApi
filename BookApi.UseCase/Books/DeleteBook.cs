@@ -1,5 +1,6 @@
 using BookApi.Domain.Exceptions;
 using BookApi.Domain.Interfaces;
+using BookApi.Domain.ValueObjects.Books;
 using BookApi.Domain.ValueObjects.Shared;
 using MediatR;
 
@@ -13,8 +14,9 @@ public class DeleteBook
     {
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
+            var isbnCode = ISBNCode.CreateWithValidation(request.ISBN);
             var book =
-                await bookRepository.FindByISBNAsync(request.Actor, request.ISBN)
+                await bookRepository.FindByISBNAsync(request.Actor, isbnCode)
                 ?? throw new ItemNotFoundException();
 
             var permission = new AdminOnlyPermission(request.Actor);

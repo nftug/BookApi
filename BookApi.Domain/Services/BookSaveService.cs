@@ -2,6 +2,7 @@ using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.Entities;
 using BookApi.Domain.Exceptions;
 using BookApi.Domain.Interfaces;
+using BookApi.Domain.ValueObjects.Books;
 using BookApi.Domain.ValueObjects.Shared;
 
 namespace BookApi.Domain.Services;
@@ -20,7 +21,8 @@ public class BookSaveService(
         await ValidateAllAuthorsExistedAsync(permission.Actor, authorIDs);
         await ValidatePublisherExistedAsync(permission.Actor, publisherID);
 
-        if (await bookRepository.AnyByISBNAsync(isbn))
+        var isbnCode = ISBNCode.CreateWithValidation(isbn);
+        if (await bookRepository.AnyByISBNAsync(isbnCode))
             throw new ValidationErrorException("既に同じISBNコードの書籍が存在します。");
 
         var newBook = Book.CreateNew(permission, name, isbn, authorIDs, publisherID, publishedAt);
