@@ -1,4 +1,5 @@
 using BookApi.Domain.Abstractions.Entities;
+using BookApi.Domain.ValueObjects.Books;
 using BookApi.Domain.ValueObjects.Shared;
 
 namespace BookApi.Domain.Entities;
