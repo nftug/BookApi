@@ -18,7 +18,9 @@ public class AuthorSaveService(IAuthorRepository authorRepository, IDateTimeProv
         return newAuthor;
     }
 
-    public async Task UpdateAsync(AdminOnlyPermission permission, Author author, string name)
+    public async Task UpdateAsync(
+        AdminOnlyPermission permission, IDateTimeProvider dateTimeProvider, Author author, string name
+    )
     {
         // NOTE: 今のところはインフラ層に頼るバリデーションなどはないが、後々の拡張性を考慮して実装しておく
         author.Update(permission, dateTimeProvider, name);
