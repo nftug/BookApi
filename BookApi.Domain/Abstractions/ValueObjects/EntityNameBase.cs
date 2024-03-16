@@ -20,7 +20,7 @@ public abstract record EntityNameBase<TSelf>
         if (value is not { Length: > 0 })
             throw new ValidationErrorException($"{FieldDisplayName}は空にできません。");
         if (value.Length > LimitLength)
-            throw new ValidationErrorException($"{LimitLength}文字以内で入力してください。");
+            throw new ValidationErrorException($"{FieldDisplayName}は{LimitLength}文字以内で入力してください。");
 
         return new() { Value = value };
     }
