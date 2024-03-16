@@ -40,9 +40,6 @@ public abstract class UseCaseTestBase : IDisposable
                 .AddSingleton(_ => DateTimeProvider.Object)
                 .BuildServiceProvider();
 
-        // 現在の日付のモックを設定
-        DateTimeProvider.SetupGet(x => x.UtcNow).Returns(DateTimeFixture.UtcNow);
-
         // DBの初期化
         using var temporaryScope = ServiceProvider.CreateScope();
         var dbContext = temporaryScope.ServiceProvider.GetRequiredService<BookDbContext>();
