@@ -10,7 +10,8 @@ namespace BookApi.Domain.Services;
 public class BookSaveService(
     IBookRepository bookRepository,
     IAuthorRepository authorRepository,
-    IPublisherRepository publisherRepository
+    IPublisherRepository publisherRepository,
+    IDateTimeProvider dateTimeProvider
 )
 {
     public async Task<Book> CreateAsync(
@@ -25,7 +26,9 @@ public class BookSaveService(
         if (await bookRepository.AnyByISBNAsync(isbnCode))
             throw new ValidationErrorException("既に同じISBNコードの書籍が存在します。");
 
-        var newBook = Book.CreateNew(permission, name, isbn, authorIds, publisherId, publishedAt);
+        var newBook = Book.CreateNew(
+            permission, dateTimeProvider, name, isbn, authorIds, publisherId, publishedAt
+        );
 
         await bookRepository.SaveAsync(permission.Actor, newBook);
         return newBook;
@@ -40,7 +43,9 @@ public class BookSaveService(
         await ValidateAllAuthorsExistedAsync(permission.Actor, authorIds);
         await ValidatePublisherExistedAsync(permission.Actor, publisherId);
 
-        book.Update(permission, name, isbn, authorIds, publisherId, publishedAt);
+        book.Update(
+            permission, dateTimeProvider, name, isbn, authorIds, publisherId, publishedAt
+        );
 
         await bookRepository.SaveAsync(permission.Actor, book);
     }
