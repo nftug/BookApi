@@ -46,13 +46,12 @@ public abstract class AuthorUseCaseTestBase : UseCaseTestBase
             VersionId = originData.VersionId + 1
         };
 
-    protected AuthorDataModel ArrangeStoredData(
-        IActor createdBy, string authorName, DateTime createdAt, int itemId = 1
+    protected AuthorDataModel AddDataToDatabase(
+        IActor createdBy, string authorName, DateTime createdAt
     )
     {
         var data = new AuthorDataModel
         {
-            Id = itemId,
             Name = authorName,
             CreatedAt = createdAt,
             CreatedById = createdBy.UserId,

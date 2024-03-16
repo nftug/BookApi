@@ -15,7 +15,7 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
     {
         // Arrange
         var actor = UserFixture.Admin;
-        var command = new AuthorCommandDTO("テスト太郎");
+        var command = new AuthorCommandDTO("後藤ひとり");
         var expected = GetExpectedDataAfterCreation(actor, command, CreatedAt);
 
         // Act
@@ -45,7 +45,7 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
     {
         // Arrange
         var actor = UserFixture.User1;
-        var command = new AuthorCommandDTO("テスト太郎");
+        var command = new AuthorCommandDTO("後藤ひとり");
 
         // Act
         var act = () => Mediator.Send(new CreateAuthor.Command(actor, command));
@@ -94,10 +94,10 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
     public async Task 異常系_既に登録されている名前の著者は登録できない()
     {
         // Arrange
-        ArrangeStoredData(UserFixture.Admin, "テスト太郎", CreatedAt);
+        AddDataToDatabase(UserFixture.Admin, "後藤ひとり", CreatedAt);
 
         var actor = UserFixture.Admin;
-        var command = new AuthorCommandDTO("テスト太郎");
+        var command = new AuthorCommandDTO("後藤ひとり");
 
         // Act
         var act = () => Mediator.Send(new CreateAuthor.Command(actor, command));
