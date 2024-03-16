@@ -1,5 +1,5 @@
 using BookApi.Domain.Abstractions.Entities;
-using BookApi.Domain.Abstractions.ValueObjects;
+using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Books;
 using BookApi.Domain.ValueObjects.Shared;
 
@@ -44,12 +44,15 @@ public class Book : AggregateEntityBase<Book>
 
     internal static Book CreateNew(
         AdminOnlyPermission permission,
+        IDateTimeProvider dateTimeProvider,
         string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
-        => new Book(name, isbn, authorIds, publisherId, publishedAt).CreateNew(permission);
+        => new Book(name, isbn, authorIds, publisherId, publishedAt)
+            .CreateNew(permission, dateTimeProvider);
 
     internal void Update(
         AdminOnlyPermission permission,
+        IDateTimeProvider dateTimeProvider,
         string title, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
     {
@@ -58,6 +61,6 @@ public class Book : AggregateEntityBase<Book>
         Authors = BookAuthorList.CreateWithValidation(authorIds);
         Publisher = ItemId.CreateWithValidation(publisherId);
         PublishedAt = BookPublicationDate.CreateWithValidation(publishedAt);
-        Update(permission);
+        Update(permission, dateTimeProvider);
     }
 }

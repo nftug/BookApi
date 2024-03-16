@@ -1,5 +1,6 @@
 using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.Exceptions;
+using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Shared;
 
 namespace BookApi.Domain.Abstractions.Entities;
@@ -33,21 +34,21 @@ public abstract class EntityBase<T> : IEntity<T>
     // エンティティの新規作成用
     protected EntityBase() { }
 
-    protected T CreateNew(IActorPermission permission)
+    protected T CreateNew(IActorPermission permission, IDateTimeProvider dateTimeProvider)
     {
         if (!permission.CanCreate) throw new ForbiddenException();
 
         ItemId = ItemId.Reconstruct(0);
-        DateTimeRecord = new() { CreatedAt = DateTime.UtcNow };
+        DateTimeRecord = new() { CreatedAt = dateTimeProvider.UtcNow };
         ActorRecord = new() { CreatedBy = permission.Actor };
         return (T)this;
     }
 
-    protected void Update(IActorPermission permission)
+    protected void Update(IActorPermission permission, IDateTimeProvider dateTimeProvider)
     {
         if (!permission.CanUpdate) throw new ForbiddenException();
 
-        DateTimeRecord = DateTimeRecord with { UpdatedAt = DateTime.UtcNow };
+        DateTimeRecord = DateTimeRecord with { UpdatedAt = dateTimeProvider.UtcNow };
         ActorRecord = ActorRecord with { UpdatedBy = permission.Actor };
     }
 
