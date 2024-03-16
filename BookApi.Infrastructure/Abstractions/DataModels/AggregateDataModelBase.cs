@@ -8,11 +8,11 @@ public abstract class AggregateDataModelBase<TEntity, TSelf>
     where TEntity : IAggregateEntity<TEntity>
     where TSelf : DataModelBase<TEntity, TSelf>, new()
 {
-    [ConcurrencyCheck] public int VersionID { get; set; }
+    [ConcurrencyCheck] public int VersionId { get; set; }
 
     public override TSelf FromEntity(TEntity entity)
     {
-        VersionID = entity.VersionID;
+        VersionId = entity.VersionId;
         return base.FromEntity(entity);
     }
 }
@@ -21,5 +21,5 @@ public interface IAggregateDataModel<TEntity, TSelf> : IDataModel<TEntity, TSelf
     where TEntity : IAggregateEntity<TEntity>
     where TSelf : IDataModel<TEntity, TSelf>
 {
-    int VersionID { get; set; }
+    int VersionId { get; set; }
 }

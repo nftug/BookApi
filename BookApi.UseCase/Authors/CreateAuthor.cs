@@ -17,7 +17,7 @@ public class CreateAuthor
         {
             var permission = new AdminOnlyPermission(request.Actor);
             var newAuthor = await authorSaveService.CreateAsync(permission, request.CommandForm.Name);
-            return new(newAuthor.ID);
+            return new(newAuthor.Id);
         }
     }
 }

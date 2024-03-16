@@ -4,6 +4,6 @@ public record BookSummaryResponseDTO(
     string ISBN,
     string Title,
     DateTime PublishedAt,
-    IEnumerable<int> AuthorIDs,
-    int PublisherID
+    IEnumerable<int> AuthorIds,
+    int PublisherId
 );

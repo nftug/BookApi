@@ -12,13 +12,13 @@ public class PublisherDataModel : AggregateDataModelBase<Publisher, PublisherDat
 
     public override Publisher ToEntity()
         => new(
-            ID,
+            Id,
             CreatedAt, UpdatedAt,
-            CreatedByID, CreatedByName,
-            UpdatedByID, UpdatedByName,
-            VersionID,
+            CreatedById, CreatedByName,
+            UpdatedById, UpdatedByName,
+            VersionId,
             Name,
-            [.. Books.Select(x => x.ID)]
+            [.. Books.Select(x => x.Id)]
         );
 
     protected override void OnTransferFromEntity(Publisher entity)
@@ -33,7 +33,7 @@ public class PublisherDataModel : AggregateDataModelBase<Publisher, PublisherDat
         modelBuilder.Entity<PublisherDataModel>()
             .HasMany(a => a.Books)
             .WithOne(b => b.Publisher)
-            .HasForeignKey(b => b.PublisherID)
+            .HasForeignKey(b => b.PublisherId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

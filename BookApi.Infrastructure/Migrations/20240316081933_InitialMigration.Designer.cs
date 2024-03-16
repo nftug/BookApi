@@ -11,25 +11,29 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookApi.Infrastructure.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20240315190606_InitialMigration")]
+    [Migration("20240316081933_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true);
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.AuthorDataModel", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreatedByID")
+                    b.Property<int>("CreatedById")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedByName")
@@ -43,17 +47,17 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UpdatedByID")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UpdatedByName")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("VersionID")
+                    b.Property<int>("VersionId")
                         .IsConcurrencyToken()
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -63,14 +67,14 @@ namespace BookApi.Infrastructure.Migrations
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.BookDataModel", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreatedByID")
+                    b.Property<int>("CreatedById")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedByName")
@@ -84,7 +88,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime>("PublishedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PublisherID")
+                    b.Property<int>("PublisherId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
@@ -94,56 +98,56 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UpdatedByID")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UpdatedByName")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("VersionID")
+                    b.Property<int>("VersionId")
                         .IsConcurrencyToken()
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("ISBN")
                         .IsUnique();
 
-                    b.HasIndex("PublisherID");
+                    b.HasIndex("PublisherId");
 
                     b.ToTable("Book", (string)null);
                 });
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.Intermediates.BookAuthorDataModel", b =>
                 {
-                    b.Property<int>("AuthorID")
+                    b.Property<int>("AuthorId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("BookID")
+                    b.Property<int>("BookId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("BookDataModelID")
+                    b.Property<int?>("BookDataModelId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("AuthorID", "BookID");
+                    b.HasKey("AuthorId", "BookId");
 
-                    b.HasIndex("BookDataModelID");
+                    b.HasIndex("BookDataModelId");
 
-                    b.HasIndex("BookID");
+                    b.HasIndex("BookId");
 
                     b.ToTable("BookAuthor", (string)null);
                 });
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.PublisherDataModel", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreatedByID")
+                    b.Property<int>("CreatedById")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreatedByName")
@@ -157,17 +161,17 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("UpdatedByID")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UpdatedByName")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("VersionID")
+                    b.Property<int>("VersionId")
                         .IsConcurrencyToken()
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -179,7 +183,7 @@ namespace BookApi.Infrastructure.Migrations
                 {
                     b.HasOne("BookApi.Infrastructure.DataModels.PublisherDataModel", "Publisher")
                         .WithMany("Books")
-                        .HasForeignKey("PublisherID")
+                        .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -190,17 +194,17 @@ namespace BookApi.Infrastructure.Migrations
                 {
                     b.HasOne("BookApi.Infrastructure.DataModels.AuthorDataModel", null)
                         .WithMany()
-                        .HasForeignKey("AuthorID")
+                        .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BookApi.Infrastructure.DataModels.BookDataModel", null)
                         .WithMany("BookAuthors")
-                        .HasForeignKey("BookDataModelID");
+                        .HasForeignKey("BookDataModelId");
 
                     b.HasOne("BookApi.Infrastructure.DataModels.BookDataModel", null)
                         .WithMany()
-                        .HasForeignKey("BookID")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -4,24 +4,24 @@ using BookApi.Domain.ValueObjects.Shared;
 
 namespace BookApi.Domain.ValueObjects.Books;
 
-public class BookAuthorList : IEnumerable<ItemID>
+public class BookAuthorList : IEnumerable<ItemId>
 {
-    protected List<ItemID> Items { get; }
+    protected List<ItemId> Items { get; }
 
-    private BookAuthorList(IEnumerable<ItemID> items) => Items = [.. items];
+    private BookAuthorList(IEnumerable<ItemId> items) => Items = [.. items];
 
-    public static BookAuthorList CreateWithValidation(int[] authorIDs)
+    public static BookAuthorList CreateWithValidation(int[] authorIds)
     {
-        if (authorIDs.Length == 0)
+        if (authorIds.Length == 0)
             throw new ValidationErrorException("著者を1名以上指定してください。");
 
-        return new(authorIDs.Distinct().Select(ItemID.CreateWithValidation));
+        return new(authorIds.Distinct().Select(ItemId.CreateWithValidation));
     }
 
-    public static BookAuthorList Reconstruct(int[] authorIDs)
-        => new(authorIDs.Select(ItemID.Reconstruct));
+    public static BookAuthorList Reconstruct(int[] authorIds)
+        => new(authorIds.Select(ItemId.Reconstruct));
 
-    public IEnumerator<ItemID> GetEnumerator() => Items.GetEnumerator();
+    public IEnumerator<ItemId> GetEnumerator() => Items.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
 }

@@ -9,14 +9,14 @@ namespace BookApi.UseCase.Publishers;
 
 public class UpdatePublisher
 {
-    public record Command(ActorForPermission Actor, int PublisherID, PublisherCommandDTO CommandForm) : IRequest;
+    public record Command(ActorForPermission Actor, int PublisherId, PublisherCommandDTO CommandForm) : IRequest;
 
     public class Handler(PublisherSaveService publisherSaveService, IPublisherRepository PublisherRepository) : IRequestHandler<Command>
     {
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
             var publisher =
-                await PublisherRepository.FindAsync(request.Actor, request.PublisherID)
+                await PublisherRepository.FindAsync(request.Actor, request.PublisherId)
                 ?? throw new ItemNotFoundException();
 
             var permission = new AdminOnlyPermission(request.Actor);

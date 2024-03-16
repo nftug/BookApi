@@ -8,16 +8,16 @@ public record ActorRecord
     public IActor? UpdatedBy { get; init; }
 
     public static ActorRecord Reconstruct(
-        int createdByID, string createdByName,
-        int? updatedByID, string? updatedByName
+        int createdById, string createdByName,
+        int? updatedById, string? updatedByName
     )
     {
         return new()
         {
-            CreatedBy = new ActorForRecord(createdByID, createdByName),
+            CreatedBy = new ActorForRecord(createdById, createdByName),
             UpdatedBy =
-                updatedByID is { } _updatedByID && updatedByName is { }
-                ? new ActorForRecord(_updatedByID, updatedByName)
+                updatedById is { } _updatedById && updatedByName is { }
+                ? new ActorForRecord(_updatedById, updatedByName)
                 : null
         };
     }

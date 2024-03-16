@@ -17,7 +17,7 @@ public class CreatePublisher
         {
             var permission = new AdminOnlyPermission(request.Actor);
             var newPublisher = await publisherSaveService.CreateAsync(permission, request.CommandForm.Name);
-            return new(newPublisher.ID);
+            return new(newPublisher.Id);
         }
     }
 }

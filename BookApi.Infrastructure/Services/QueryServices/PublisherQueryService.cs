@@ -12,16 +12,16 @@ public class PublisherQueryService(BookDbContext dbContext) : IPublisherQuerySer
     {
         var response = await dbContext.Publishers
             .Where(PublisherDataModel.QueryPredicate(actor))
-            .Where(x => x.ID == itemId)
+            .Where(x => x.Id == itemId)
             .Select(x => new PublisherResponseDTO(
-                x.ID,
+                x.Id,
                 x.Name,
                 x.Books.Select(b => new BookSummaryResponseDTO(
                     b.ISBN,
                     b.Title,
                     b.PublishedAt,
-                    b.Authors.Select(a => a.ID),
-                    b.PublisherID
+                    b.Authors.Select(a => a.Id),
+                    b.PublisherId
                 ))
             ))
             .SingleOrDefaultAsync();
@@ -31,12 +31,12 @@ public class PublisherQueryService(BookDbContext dbContext) : IPublisherQuerySer
             {
                 RelatedAuthors =
                     (await dbContext.Books
-                        .Where(b => b.PublisherID == itemId)
+                        .Where(b => b.PublisherId == itemId)
                         .SelectMany(b => b.Authors)
-                        .Select(a => new ItemSummaryResponseDTO(a.ID, a.Name))
+                        .Select(a => new ItemSummaryResponseDTO(a.Id, a.Name))
                         .ToArrayAsync())
                         .Distinct()
-                        .OrderBy(x => x.ID)
+                        .OrderBy(x => x.Id)
             }
             : null;
     }

@@ -8,19 +8,19 @@ namespace BookApi.Presentation.Controllers;
 
 public class PublishersController(ISender sender) : ApiControllerBase(sender)
 {
-    [HttpGet("{publisherID}")]
-    public async Task<IActionResult> GetPublisher(int publisherID)
-        => await HandleRequest(actor => new GetPublisher.Query(actor, publisherID));
+    [HttpGet("{publisherId}")]
+    public async Task<IActionResult> GetPublisher(int publisherId)
+        => await HandleRequest(actor => new GetPublisher.Query(actor, publisherId));
 
     [HttpPost]
     public async Task<IActionResult> CreatePublisher(PublisherCommandDTO command)
         => await HandleRequest(actor => new CreatePublisher.Command(actor, command));
 
-    [HttpPut("{publisherID}")]
-    public async Task<IActionResult> UpdatePublisher(int publisherID, PublisherCommandDTO command)
-        => await HandleRequest(actor => new UpdatePublisher.Command(actor, publisherID, command));
+    [HttpPut("{publisherId}")]
+    public async Task<IActionResult> UpdatePublisher(int publisherId, PublisherCommandDTO command)
+        => await HandleRequest(actor => new UpdatePublisher.Command(actor, publisherId, command));
 
-    [HttpDelete("{publisherID}")]
-    public async Task<IActionResult> DeletePublisher(int publisherID)
-        => await HandleRequest(actor => new DeletePublisher.Command(actor, publisherID));
+    [HttpDelete("{publisherId}")]
+    public async Task<IActionResult> DeletePublisher(int publisherId)
+        => await HandleRequest(actor => new DeletePublisher.Command(actor, publisherId));
 }

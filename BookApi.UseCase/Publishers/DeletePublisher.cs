@@ -7,7 +7,7 @@ namespace BookApi.UseCase.Publishers;
 
 public class DeletePublisher
 {
-    public record Command(ActorForPermission Actor, int PublisherID) : IRequest;
+    public record Command(ActorForPermission Actor, int PublisherId) : IRequest;
 
     public class Handler(IPublisherRepository publisherRepository) : IRequestHandler<Command>
     {
@@ -16,7 +16,7 @@ public class DeletePublisher
             var permission = new AdminOnlyPermission(request.Actor);
 
             var publisher =
-                await publisherRepository.FindAsync(permission.Actor, request.PublisherID)
+                await publisherRepository.FindAsync(permission.Actor, request.PublisherId)
                 ?? throw new ItemNotFoundException();
 
             await publisherRepository.DeleteAsync(permission, publisher);

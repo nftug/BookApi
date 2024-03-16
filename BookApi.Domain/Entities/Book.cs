@@ -10,53 +10,53 @@ public class Book : AggregateEntityBase<Book>
     public BookTitle Title { get; private set; }
     public ISBNCode ISBN { get; private set; }
     public BookAuthorList Authors { get; private set; }
-    public ItemID Publisher { get; private set; }
+    public ItemId Publisher { get; private set; }
     public BookPublicationDate PublishedAt { get; private set; }
 
     public Book(
         int id,
         DateTime createdAt, DateTime? updatedAt,
-        int createdByID, string createdByName,
-        int? updatedByID, string? updatedByName,
-        int versionID,
+        int createdById, string createdByName,
+        int? updatedById, string? updatedByName,
+        int versionId,
         string title,
         string isbn,
-        int[] authorIDs,
-        int publisherID,
+        int[] authorIds,
+        int publisherId,
         DateTime publishedAt
-    ) : base(id, createdAt, updatedAt, createdByID, createdByName, updatedByID, updatedByName, versionID)
+    ) : base(id, createdAt, updatedAt, createdById, createdByName, updatedById, updatedByName, versionId)
     {
         Title = BookTitle.Reconstruct(title);
         ISBN = ISBNCode.Reconstruct(isbn);
-        Authors = BookAuthorList.Reconstruct(authorIDs);
-        Publisher = ItemID.Reconstruct(publisherID);
+        Authors = BookAuthorList.Reconstruct(authorIds);
+        Publisher = ItemId.Reconstruct(publisherId);
         PublishedAt = BookPublicationDate.Reconstruct(publishedAt);
     }
 
-    private Book(string title, string isbn, int[] authorIDs, int publisherID, DateTime publishedAt)
+    private Book(string title, string isbn, int[] authorIds, int publisherId, DateTime publishedAt)
     {
         Title = BookTitle.CreateWithValidation(title);
         ISBN = ISBNCode.CreateWithValidation(isbn);
-        Authors = BookAuthorList.CreateWithValidation(authorIDs);
-        Publisher = ItemID.CreateWithValidation(publisherID);
+        Authors = BookAuthorList.CreateWithValidation(authorIds);
+        Publisher = ItemId.CreateWithValidation(publisherId);
         PublishedAt = BookPublicationDate.CreateWithValidation(publishedAt);
     }
 
     internal static Book CreateNew(
         AdminOnlyPermission permission,
-        string name, string isbn, int[] authorIDs, int publisherID, DateTime publishedAt
+        string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
-        => new Book(name, isbn, authorIDs, publisherID, publishedAt).CreateNew(permission);
+        => new Book(name, isbn, authorIds, publisherId, publishedAt).CreateNew(permission);
 
     internal void Update(
         AdminOnlyPermission permission,
-        string title, string isbn, int[] authorIDs, int publisherID, DateTime publishedAt
+        string title, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
     {
         Title = BookTitle.CreateWithValidation(title);
         ISBN = ISBNCode.CreateWithValidation(isbn);
-        Authors = BookAuthorList.CreateWithValidation(authorIDs);
-        Publisher = ItemID.CreateWithValidation(publisherID);
+        Authors = BookAuthorList.CreateWithValidation(authorIds);
+        Publisher = ItemId.CreateWithValidation(publisherId);
         PublishedAt = BookPublicationDate.CreateWithValidation(publishedAt);
         Update(permission);
     }
