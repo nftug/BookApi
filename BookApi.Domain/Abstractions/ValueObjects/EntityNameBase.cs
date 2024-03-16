@@ -7,18 +7,22 @@ public abstract record EntityNameBase<TSelf>
 {
     public string Value { get; protected init; } = string.Empty;
 
-    public abstract string FieldDisplayName { get; }
+    protected abstract string FieldDisplayNameCore { get; }
+    protected virtual int LimitLengthCore => 200;
 
     protected EntityNameBase() { }
 
+    public static readonly string FieldDisplayName = new TSelf().FieldDisplayNameCore;
+    public static readonly int LimitLength = new TSelf().LimitLengthCore;
+
     public static TSelf CreateWithValidation(string? value)
     {
-        var item = new TSelf { Value = value! };
-
         if (value is not { Length: > 0 })
-            throw new ValidationErrorException($"{item.FieldDisplayName}は空にできません。");
+            throw new ValidationErrorException($"{FieldDisplayName}は空にできません。");
+        if (value.Length > LimitLength)
+            throw new ValidationErrorException($"{LimitLength}文字以内で入力してください。");
 
-        return item;
+        return new() { Value = value };
     }
 
     public static TSelf Reconstruct(string value) => new() { Value = value };
