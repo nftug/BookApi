@@ -1,27 +1,14 @@
-using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.DTOs.Commands;
-using BookApi.Infrastructure.DataModels;
 using BookApi.UseCase.Authors;
 
 namespace BookApi.Test.Authors;
 
-public class CreateAuthorTest : UseCaseTestBase
+public class CreateAuthorTest : AuthorUseCaseTestBase
 {
-    private void AssertNotCreatedAuthor(int newItemId = 1)
+    public CreateAuthorTest()
     {
-        bool isExistedAuthor = DbContext.Authors.Any(x => x.Id == newItemId);
-        isExistedAuthor.Should().BeFalse();
+        DateTimeProvider.SetupGet(x => x.UtcNow).Returns(CreatedAt);
     }
-
-    private static AuthorDataModel GetExpectedDataModel(int id, IActor actor, AuthorCommandDTO command)
-        => new()
-        {
-            Id = id,
-            Name = command.Name,
-            CreatedAt = DateTimeFixture.UtcNow,
-            CreatedById = actor.UserId,
-            CreatedByName = actor.UserName
-        };
 
     [Fact]
     public async Task 正常系_著者を登録()
@@ -29,14 +16,13 @@ public class CreateAuthorTest : UseCaseTestBase
         // Arrange
         var actor = UserFixture.Admin;
         var command = new AuthorCommandDTO("テスト太郎");
-        var expected = GetExpectedDataModel(1, actor, command);
+        var expected = GetExpectedDataAfterCreation(actor, command, CreatedAt);
 
         // Act
         var result = await Mediator.Send(new CreateAuthor.Command(actor, command));
 
         // Assert
-        var actual = DbContext.Authors.Single(x => x.Id == result.ItemId);
-        actual.Should().BeEquivalentTo(expected);
+        AssertData(result.ItemId, expected);
     }
 
     [Fact]
@@ -45,14 +31,13 @@ public class CreateAuthorTest : UseCaseTestBase
         // Arrange
         var actor = UserFixture.Admin;
         var command = new AuthorCommandDTO(StringFixture.GetAsciiDummyString(30));
-        var expected = GetExpectedDataModel(1, actor, command);
+        var expected = GetExpectedDataAfterCreation(actor, command, CreatedAt);
 
         // Act
         var result = await Mediator.Send(new CreateAuthor.Command(actor, command));
 
         // Assert
-        var actual = DbContext.Authors.Single(x => x.Id == result.ItemId);
-        actual.Should().BeEquivalentTo(expected);
+        AssertData(result.ItemId, expected);
     }
 
     [Fact]
@@ -109,17 +94,7 @@ public class CreateAuthorTest : UseCaseTestBase
     public async Task 異常系_既に登録されている名前の著者は登録できない()
     {
         // Arrange
-        // 登録済みのデータを用意
-        var fixture = new AuthorDataModel
-        {
-            Id = 1,
-            Name = "テスト太郎",
-            CreatedAt = DateTimeFixture.UtcNow,
-            CreatedById = UserFixture.Admin.UserId,
-            CreatedByName = UserFixture.Admin.UserName
-        };
-        DbContext.Add(fixture);
-        DbContext.SaveChanges();
+        ArrangeStoredData(UserFixture.Admin, "テスト太郎", CreatedAt);
 
         var actor = UserFixture.Admin;
         var command = new AuthorCommandDTO("テスト太郎");
