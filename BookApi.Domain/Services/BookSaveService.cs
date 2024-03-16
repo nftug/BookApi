@@ -15,17 +15,17 @@ public class BookSaveService(
 {
     public async Task<Book> CreateAsync(
         AdminOnlyPermission permission,
-        string name, string isbn, int[] authorIDs, int publisherID, DateTime publishedAt
+        string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
     {
-        await ValidateAllAuthorsExistedAsync(permission.Actor, authorIDs);
-        await ValidatePublisherExistedAsync(permission.Actor, publisherID);
+        await ValidateAllAuthorsExistedAsync(permission.Actor, authorIds);
+        await ValidatePublisherExistedAsync(permission.Actor, publisherId);
 
         var isbnCode = ISBNCode.CreateWithValidation(isbn);
         if (await bookRepository.AnyByISBNAsync(isbnCode))
             throw new ValidationErrorException("既に同じISBNコードの書籍が存在します。");
 
-        var newBook = Book.CreateNew(permission, name, isbn, authorIDs, publisherID, publishedAt);
+        var newBook = Book.CreateNew(permission, name, isbn, authorIds, publisherId, publishedAt);
 
         await bookRepository.SaveAsync(permission.Actor, newBook);
         return newBook;
@@ -34,26 +34,26 @@ public class BookSaveService(
     public async Task UpdateAsync(
         AdminOnlyPermission permission,
         Book book,
-        string name, string isbn, int[] authorIDs, int publisherID, DateTime publishedAt
+        string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
     {
-        await ValidateAllAuthorsExistedAsync(permission.Actor, authorIDs);
-        await ValidatePublisherExistedAsync(permission.Actor, publisherID);
+        await ValidateAllAuthorsExistedAsync(permission.Actor, authorIds);
+        await ValidatePublisherExistedAsync(permission.Actor, publisherId);
 
-        book.Update(permission, name, isbn, authorIDs, publisherID, publishedAt);
+        book.Update(permission, name, isbn, authorIds, publisherId, publishedAt);
 
         await bookRepository.SaveAsync(permission.Actor, book);
     }
 
-    private async Task ValidateAllAuthorsExistedAsync(IActor actor, int[] authorIDs)
+    private async Task ValidateAllAuthorsExistedAsync(IActor actor, int[] authorIds)
     {
-        if (!await authorRepository.IsAllIDsExistedAsync(actor, [.. authorIDs]))
+        if (!await authorRepository.IsAllIdsExistedAsync(actor, [.. authorIds]))
             throw new ValidationErrorException("存在しない著者IDが含まれています。");
     }
 
-    private async Task ValidatePublisherExistedAsync(IActor actor, int publisherID)
+    private async Task ValidatePublisherExistedAsync(IActor actor, int publisherId)
     {
-        if (!await publisherRepository.AnyAsync(actor, publisherID))
+        if (!await publisherRepository.AnyAsync(actor, publisherId))
             throw new ValidationErrorException("存在しない出版社IDが指定されています。");
     }
 }

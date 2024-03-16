@@ -7,11 +7,11 @@ namespace BookApi.Domain.Abstractions.Entities;
 public abstract class EntityBase<T> : IEntity<T>
     where T : EntityBase<T>
 {
-    internal ItemID ItemID { get; private set; } = null!;
+    internal ItemId ItemId { get; private set; } = null!;
     internal DateTimeRecord DateTimeRecord { get; private set; } = null!;
     internal ActorRecord ActorRecord { get; private set; } = null!;
 
-    public int ID => ItemID.Value;
+    public int Id => ItemId.Value;
     public DateTime CreatedAt => DateTimeRecord.CreatedAt;
     public DateTime? UpdatedAt => DateTimeRecord.UpdatedAt;
     public IActor CreatedBy => ActorRecord.CreatedBy;
@@ -21,13 +21,13 @@ public abstract class EntityBase<T> : IEntity<T>
     protected EntityBase(
         int id,
         DateTime createdAt, DateTime? updatedAt,
-        int createdByID, string createdByName,
-        int? updatedByID, string? updatedByName
+        int createdById, string createdByName,
+        int? updatedById, string? updatedByName
     )
     {
-        ItemID = ItemID.Reconstruct(id);
+        ItemId = ItemId.Reconstruct(id);
         DateTimeRecord = new() { CreatedAt = createdAt, UpdatedAt = updatedAt };
-        ActorRecord = ActorRecord.Reconstruct(createdByID, createdByName, updatedByID, updatedByName);
+        ActorRecord = ActorRecord.Reconstruct(createdById, createdByName, updatedById, updatedByName);
     }
 
     // エンティティの新規作成用
@@ -37,7 +37,7 @@ public abstract class EntityBase<T> : IEntity<T>
     {
         if (!permission.CanCreate) throw new ForbiddenException();
 
-        ItemID = ItemID.Reconstruct(0);
+        ItemId = ItemId.Reconstruct(0);
         DateTimeRecord = new() { CreatedAt = DateTime.UtcNow };
         ActorRecord = new() { CreatedBy = permission.Actor };
         return (T)this;
@@ -51,5 +51,5 @@ public abstract class EntityBase<T> : IEntity<T>
         ActorRecord = ActorRecord with { UpdatedBy = permission.Actor };
     }
 
-    public void SetIDFromRepository(int id) => ItemID = ItemID.Reconstruct(id);
+    public void SetIdFromRepository(int id) => ItemId = ItemId.Reconstruct(id);
 }

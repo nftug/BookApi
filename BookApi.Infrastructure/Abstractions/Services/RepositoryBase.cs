@@ -17,19 +17,19 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
 
     protected abstract IQueryable<TDataModel> QueryForRead(IActor actor);
 
-    public virtual async Task<TAggregate?> FindAsync(IActor actor, int itemID)
-        => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.ID == itemID))
+    public virtual async Task<TAggregate?> FindAsync(IActor actor, int itemId)
+        => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.Id == itemId))
             ?.ToEntity();
 
-    public virtual async Task<bool> AnyAsync(IActor actor, int itemID)
-        => await QueryForRead(actor).AnyAsync(x => x.ID == itemID);
+    public virtual async Task<bool> AnyAsync(IActor actor, int itemId)
+        => await QueryForRead(actor).AnyAsync(x => x.Id == itemId);
 
     public virtual async Task SaveAsync(IActor actor, TAggregate entity)
     {
         TDataModel dataModel;
 
         // IDの有無を確認し、新規作成か更新のどちらを行うか判断する
-        if (entity.ID == default)
+        if (entity.Id == default)
         {
             dataModel = new TDataModel().FromEntity(entity);
             await DbContext.AddAsync(dataModel);
@@ -38,7 +38,7 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
         {
             dataModel = await GetDataModelForChangeAsync(entity);
 
-            entity.IncreaseVersionIDFromRepository();
+            entity.IncreaseVersionIdFromRepository();
             dataModel.FromEntity(entity);
 
             // 中間テーブルをクリア
@@ -47,7 +47,7 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
 
         // DBに保存し、付与されたIDをエンティティに反映する
         await SaveChangesAsync();
-        entity.SetIDFromRepository(dataModel.ID);
+        entity.SetIdFromRepository(dataModel.Id);
 
         // 保存後に後処理と追加の保存が必要な場合は実行する (中間テーブルの再構成など)
         bool shouldDoPostTransfer = dataModel.OnTransferAfterSave(entity);
@@ -71,10 +71,10 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
     protected async Task<TDataModel> GetDataModelForChangeAsync(TAggregate entity)
     {
         var dataModel =
-                await DbContext.Set<TDataModel>().AsTracking().SingleAsync(x => x.ID == entity.ID);
+                await DbContext.Set<TDataModel>().AsTracking().SingleAsync(x => x.Id == entity.Id);
 
         // 楽観ロックのため、エンティティ取得時のVersion IDをEF Coreの追跡に反映する
-        DbContext.Entry(dataModel).Property(x => x.VersionID).OriginalValue = entity.VersionID;
+        DbContext.Entry(dataModel).Property(x => x.VersionId).OriginalValue = entity.VersionId;
 
         return dataModel;
     }

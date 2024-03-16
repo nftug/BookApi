@@ -15,68 +15,68 @@ namespace BookApi.Infrastructure.Migrations
                 name: "Author",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedByID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedById = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedByName = table.Column<string>(type: "TEXT", nullable: false),
-                    UpdatedByID = table.Column<int>(type: "INTEGER", nullable: true),
+                    UpdatedById = table.Column<int>(type: "INTEGER", nullable: true),
                     UpdatedByName = table.Column<string>(type: "TEXT", nullable: true),
-                    VersionID = table.Column<int>(type: "INTEGER", nullable: false)
+                    VersionId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Author", x => x.ID);
+                    table.PrimaryKey("PK_Author", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Publisher",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedByID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedById = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedByName = table.Column<string>(type: "TEXT", nullable: false),
-                    UpdatedByID = table.Column<int>(type: "INTEGER", nullable: true),
+                    UpdatedById = table.Column<int>(type: "INTEGER", nullable: true),
                     UpdatedByName = table.Column<string>(type: "TEXT", nullable: true),
-                    VersionID = table.Column<int>(type: "INTEGER", nullable: false)
+                    VersionId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Publisher", x => x.ID);
+                    table.PrimaryKey("PK_Publisher", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Book",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ISBN = table.Column<string>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     PublishedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PublisherID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PublisherId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedByID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedById = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedByName = table.Column<string>(type: "TEXT", nullable: false),
-                    UpdatedByID = table.Column<int>(type: "INTEGER", nullable: true),
+                    UpdatedById = table.Column<int>(type: "INTEGER", nullable: true),
                     UpdatedByName = table.Column<string>(type: "TEXT", nullable: true),
-                    VersionID = table.Column<int>(type: "INTEGER", nullable: false)
+                    VersionId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Book", x => x.ID);
+                    table.PrimaryKey("PK_Book", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Book_Publisher_PublisherID",
-                        column: x => x.PublisherID,
+                        name: "FK_Book_Publisher_PublisherId",
+                        column: x => x.PublisherId,
                         principalTable: "Publisher",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -84,29 +84,29 @@ namespace BookApi.Infrastructure.Migrations
                 name: "BookAuthor",
                 columns: table => new
                 {
-                    BookID = table.Column<int>(type: "INTEGER", nullable: false),
-                    AuthorID = table.Column<int>(type: "INTEGER", nullable: false),
-                    BookDataModelID = table.Column<int>(type: "INTEGER", nullable: true)
+                    BookId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
+                    BookDataModelId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookAuthor", x => new { x.AuthorID, x.BookID });
+                    table.PrimaryKey("PK_BookAuthor", x => new { x.AuthorId, x.BookId });
                     table.ForeignKey(
-                        name: "FK_BookAuthor_Author_AuthorID",
-                        column: x => x.AuthorID,
+                        name: "FK_BookAuthor_Author_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "Author",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookAuthor_Book_BookDataModelID",
-                        column: x => x.BookDataModelID,
+                        name: "FK_BookAuthor_Book_BookDataModelId",
+                        column: x => x.BookDataModelId,
                         principalTable: "Book",
-                        principalColumn: "ID");
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_BookAuthor_Book_BookID",
-                        column: x => x.BookID,
+                        name: "FK_BookAuthor_Book_BookId",
+                        column: x => x.BookId,
                         principalTable: "Book",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -123,19 +123,19 @@ namespace BookApi.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Book_PublisherID",
+                name: "IX_Book_PublisherId",
                 table: "Book",
-                column: "PublisherID");
+                column: "PublisherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookAuthor_BookDataModelID",
+                name: "IX_BookAuthor_BookDataModelId",
                 table: "BookAuthor",
-                column: "BookDataModelID");
+                column: "BookDataModelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookAuthor_BookID",
+                name: "IX_BookAuthor_BookId",
                 table: "BookAuthor",
-                column: "BookID");
+                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Publisher_Name",

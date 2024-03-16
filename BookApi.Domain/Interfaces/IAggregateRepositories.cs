@@ -13,7 +13,7 @@ public interface IBookRepository : IRepositoryBase<Book>
 
 public interface IAuthorRepository : IRepositoryBase<Author>
 {
-    Task<bool> IsAllIDsExistedAsync(IActor actor, HashSet<int> itemIDs);
+    Task<bool> IsAllIdsExistedAsync(IActor actor, HashSet<int> itemIds);
     Task<bool> AnyByNameAsync(string name);
 }
 

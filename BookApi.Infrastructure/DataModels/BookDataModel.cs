@@ -11,7 +11,7 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
     public string ISBN { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public DateTime PublishedAt { get; set; }
-    public int PublisherID { get; set; }
+    public int PublisherId { get; set; }
 
     public virtual PublisherDataModel Publisher { get; set; } = null!;
     public virtual ICollection<AuthorDataModel> Authors { get; set; } = [];
@@ -20,15 +20,15 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
 
     public override Book ToEntity()
         => new(
-            ID,
+            Id,
             CreatedAt, UpdatedAt,
-            CreatedByID, CreatedByName,
-            UpdatedByID, UpdatedByName,
-            VersionID,
+            CreatedById, CreatedByName,
+            UpdatedById, UpdatedByName,
+            VersionId,
             Title,
             ISBN,
-            [.. Authors.Select(x => x.ID)],
-            PublisherID,
+            [.. Authors.Select(x => x.Id)],
+            PublisherId,
             PublishedAt
         );
 
@@ -37,13 +37,13 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
         ISBN = entity.ISBN.Value;
         Title = entity.Title.Value;
         PublishedAt = entity.PublishedAt.Value;
-        PublisherID = entity.Publisher.Value;
+        PublisherId = entity.Publisher.Value;
     }
 
     public override bool OnTransferAfterSave(Book entity)
     {
         BookAuthors = entity.Authors
-            .Select(x => new BookAuthorDataModel { BookID = ID, AuthorID = x.Value })
+            .Select(x => new BookAuthorDataModel { BookId = Id, AuthorId = x.Value })
             .ToList();
         return true;
     }

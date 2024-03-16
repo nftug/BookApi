@@ -8,19 +8,19 @@ namespace AuthorApi.Presentation.Controllers;
 
 public class AuthorsController(ISender sender) : ApiControllerBase(sender)
 {
-    [HttpGet("{authorID}")]
-    public async Task<IActionResult> GetAuthor(int authorID)
-        => await HandleRequest(actor => new GetAuthor.Query(actor, authorID));
+    [HttpGet("{authorId}")]
+    public async Task<IActionResult> GetAuthor(int authorId)
+        => await HandleRequest(actor => new GetAuthor.Query(actor, authorId));
 
     [HttpPost]
     public async Task<IActionResult> CreateAuthor(AuthorCommandDTO command)
         => await HandleRequest(actor => new CreateAuthor.Command(actor, command));
 
-    [HttpPut("{authorID}")]
-    public async Task<IActionResult> UpdateAuthor(int authorID, AuthorCommandDTO command)
-        => await HandleRequest(actor => new UpdateAuthor.Command(actor, authorID, command));
+    [HttpPut("{authorId}")]
+    public async Task<IActionResult> UpdateAuthor(int authorId, AuthorCommandDTO command)
+        => await HandleRequest(actor => new UpdateAuthor.Command(actor, authorId, command));
 
-    [HttpDelete("{authorID}")]
-    public async Task<IActionResult> DeleteAuthor(int authorID)
-        => await HandleRequest(actor => new DeleteAuthor.Command(actor, authorID));
+    [HttpDelete("{authorId}")]
+    public async Task<IActionResult> DeleteAuthor(int authorId)
+        => await HandleRequest(actor => new DeleteAuthor.Command(actor, authorId));
 }

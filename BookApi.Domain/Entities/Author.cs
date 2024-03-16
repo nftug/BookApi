@@ -7,20 +7,20 @@ namespace BookApi.Domain.Entities;
 public class Author : AggregateEntityBase<Author>
 {
     public AuthorName Name { get; private set; }
-    public ItemID[] Books { get; } = [];
+    public ItemId[] Books { get; } = [];
 
     public Author(
         int id,
         DateTime createdAt, DateTime? updatedAt,
-        int createdByID, string createdByName,
-        int? updatedByID, string? updatedByName,
-        int versionID,
+        int createdById, string createdByName,
+        int? updatedById, string? updatedByName,
+        int versionId,
         string name,
-        int[] bookIDs
-    ) : base(id, createdAt, updatedAt, createdByID, createdByName, updatedByID, updatedByName, versionID)
+        int[] bookIds
+    ) : base(id, createdAt, updatedAt, createdById, createdByName, updatedById, updatedByName, versionId)
     {
         Name = AuthorName.Reconstruct(name);
-        Books = [.. bookIDs.Select(ItemID.Reconstruct)];
+        Books = [.. bookIds.Select(ItemId.Reconstruct)];
     }
 
     private Author(string name)

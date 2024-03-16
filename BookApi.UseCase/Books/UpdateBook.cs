@@ -27,7 +27,7 @@ public class UpdateBook
             await bookSaveService.UpdateAsync(
                 permission,
                 book,
-                command.Title, command.ISBN, command.AuthorIDs, command.PublisherID, command.PublishedAt
+                command.Title, command.ISBN, command.AuthorIds, command.PublisherId, command.PublishedAt
             );
         }
     }

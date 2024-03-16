@@ -15,16 +15,16 @@ public class AuthorRepository(BookDbContext context)
             .Where(AuthorDataModel.QueryPredicate(actor))
             .Include(x => x.Books);
 
-    public async Task<bool> IsAllIDsExistedAsync(IActor actor, HashSet<int> itemIDs)
+    public async Task<bool> IsAllIdsExistedAsync(IActor actor, HashSet<int> itemIds)
     {
-        var existingIDs =
+        var existingIds =
             await DbContext.Authors
                 .Where(AuthorDataModel.QueryPredicate(actor))
-                .Where(x => itemIDs.Contains(x.ID))
-                .Select(x => x.ID)
+                .Where(x => itemIds.Contains(x.Id))
+                .Select(x => x.Id)
                 .ToListAsync();
 
-        return itemIDs.All(existingIDs.Contains);
+        return itemIds.All(existingIds.Contains);
     }
 
     public async Task<bool> AnyByNameAsync(string name)

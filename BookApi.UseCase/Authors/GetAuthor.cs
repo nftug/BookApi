@@ -8,12 +8,12 @@ namespace BookApi.UseCase.Authors;
 
 public class GetAuthor
 {
-    public record Query(ActorForPermission Actor, int AuthorID) : IRequest<AuthorResponseDTO>;
+    public record Query(ActorForPermission Actor, int AuthorId) : IRequest<AuthorResponseDTO>;
 
     public class Handler(IAuthorQueryService authorQueryService) : IRequestHandler<Query, AuthorResponseDTO>
     {
         public async Task<AuthorResponseDTO> Handle(Query request, CancellationToken cancellationToken)
-            => await authorQueryService.FindAsync(request.Actor, request.AuthorID)
+            => await authorQueryService.FindAsync(request.Actor, request.AuthorId)
                 ?? throw new ItemNotFoundException();
     }
 }

@@ -14,13 +14,13 @@ public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
 
     public override Author ToEntity()
         => new(
-            ID,
+            Id,
             CreatedAt, UpdatedAt,
-            CreatedByID, CreatedByName,
-            UpdatedByID, UpdatedByName,
-            VersionID,
+            CreatedById, CreatedByName,
+            UpdatedById, UpdatedByName,
+            VersionId,
             Name,
-            [.. Books.Select(x => x.ID)]
+            [.. Books.Select(x => x.Id)]
         );
 
     protected override void OnTransferFromEntity(Author entity)
@@ -33,7 +33,7 @@ public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
         modelBuilder.Entity<AuthorDataModel>().HasIndex(x => x.Name).IsUnique();
 
         modelBuilder.Entity<BookAuthorDataModel>().ToTable("BookAuthor");
-        modelBuilder.Entity<BookAuthorDataModel>().HasKey(x => new { x.AuthorID, x.BookID });
+        modelBuilder.Entity<BookAuthorDataModel>().HasKey(x => new { x.AuthorId, x.BookId });
 
         // NOTE: 書籍と著者が多対多の関係だと、著者を削除すると中間テーブルは削除されるものの、書籍そのものは削除されない！
         // 著者の削除時に書籍を削除する仕様はDBの制約で宣言できないため、手動で削除する必要がある。
@@ -47,12 +47,12 @@ public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
                 l => l
                     .HasOne<BookDataModel>()
                     .WithMany()
-                    .HasForeignKey(j => j.BookID)
+                    .HasForeignKey(j => j.BookId)
                     .OnDelete(DeleteBehavior.Cascade),
                 r => r
                     .HasOne<AuthorDataModel>()
                     .WithMany()
-                    .HasForeignKey(j => j.AuthorID)
+                    .HasForeignKey(j => j.AuthorId)
                     .OnDelete(DeleteBehavior.Cascade)
             );
     }

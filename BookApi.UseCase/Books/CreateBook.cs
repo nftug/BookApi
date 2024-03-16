@@ -20,7 +20,7 @@ public class CreateBook
             var command = request.CommandForm;
             var newBook = await bookSaveService.CreateAsync(
                 permission,
-                command.Title, command.ISBN, command.AuthorIDs, command.PublisherID, command.PublishedAt
+                command.Title, command.ISBN, command.AuthorIds, command.PublisherId, command.PublishedAt
             );
 
             return new(newBook.ISBN.Value);

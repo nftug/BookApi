@@ -1,7 +1,7 @@
 namespace BookApi.Domain.DTOs.Responses;
 
 public record PublisherResponseDTO(
-    int ID,
+    int Id,
     string Name,
     IEnumerable<BookSummaryResponseDTO> Books
 )

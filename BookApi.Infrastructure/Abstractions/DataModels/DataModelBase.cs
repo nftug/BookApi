@@ -10,12 +10,12 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     where TEntity : IEntity<TEntity>
     where TSelf : DataModelBase<TEntity, TSelf>, new()
 {
-    [Key] public int ID { get; set; }
+    [Key] public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public int CreatedByID { get; set; }
+    public int CreatedById { get; set; }
     public string CreatedByName { get; set; } = string.Empty;
-    public int? UpdatedByID { get; set; }
+    public int? UpdatedById { get; set; }
     public string? UpdatedByName { get; set; }
 
     // レイヤー間の詰替え用
@@ -25,9 +25,9 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     {
         CreatedAt = entity.CreatedAt;
         UpdatedAt = entity.UpdatedAt;
-        CreatedByID = entity.CreatedBy.UserId;
+        CreatedById = entity.CreatedBy.UserId;
         CreatedByName = entity.CreatedBy.UserName;
-        UpdatedByID = entity.UpdatedBy?.UserId;
+        UpdatedById = entity.UpdatedBy?.UserId;
         UpdatedByName = entity.UpdatedBy?.UserName;
         OnTransferFromEntity(entity);
 
@@ -62,12 +62,12 @@ public interface IDataModel<TEntity, TSelf>
     where TEntity : IEntity<TEntity>
     where TSelf : IDataModel<TEntity, TSelf>
 {
-    int ID { get; set; }
+    int Id { get; set; }
     DateTime CreatedAt { get; set; }
     DateTime? UpdatedAt { get; set; }
-    int CreatedByID { get; set; }
+    int CreatedById { get; set; }
     string CreatedByName { get; set; }
-    int? UpdatedByID { get; set; }
+    int? UpdatedById { get; set; }
     string? UpdatedByName { get; set; }
 
     TEntity ToEntity();

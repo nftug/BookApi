@@ -4,6 +4,6 @@ public record BookCommandDTO(
     string ISBN,
     string Title,
     DateTime PublishedAt,
-    int[] AuthorIDs,
-    int PublisherID
+    int[] AuthorIds,
+    int PublisherId
 );

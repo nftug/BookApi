@@ -17,8 +17,8 @@ public class BookQueryService(BookDbContext dbContext) : IBookQueryService
                 x.ISBN,
                 x.Title,
                 x.PublishedAt,
-                x.Authors.Select(a => new ItemSummaryResponseDTO(a.ID, a.Name)),
-                new(x.PublisherID, x.Publisher.Name)
+                x.Authors.Select(a => new ItemSummaryResponseDTO(a.Id, a.Name)),
+                new(x.PublisherId, x.Publisher.Name)
             ))
             .SingleOrDefaultAsync();
 }
