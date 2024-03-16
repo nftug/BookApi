@@ -1,6 +1,11 @@
 using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.DTOs.Commands;
+using BookApi.Domain.Entities;
+using BookApi.Domain.Interfaces;
+using BookApi.Infrastructure;
 using BookApi.Infrastructure.DataModels;
+using BookApi.Infrastructure.Services.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BookApi.Test.Authors;
 
@@ -8,12 +13,6 @@ public abstract class AuthorUseCaseTestBase : UseCaseTestBase
 {
     protected static readonly DateTime CreatedAt = new(2024, 3, 16, 20, 0, 0);
     protected static readonly DateTime UpdatedAt = new(2024, 3, 17, 20, 0, 0);
-
-    protected void AssertNotCreatedAuthor(int newItemId = 1)
-    {
-        bool isExistedAuthor = DbContext.Authors.Any(x => x.Id == newItemId);
-        isExistedAuthor.Should().BeFalse();
-    }
 
     protected static AuthorDataModel GetExpectedDataAfterCreation(
         IActor createdBy, AuthorCommandDTO command, DateTime createdAt, int itemId = 1
@@ -46,25 +45,21 @@ public abstract class AuthorUseCaseTestBase : UseCaseTestBase
             VersionId = originData.VersionId + 1
         };
 
-    protected AuthorDataModel AddDataToDatabase(
-        IActor createdBy, string authorName, DateTime createdAt
-    )
+    protected IServiceProvider BuildServiceProviderForConcurrencyTest()
     {
-        var data = new AuthorDataModel
-        {
-            Name = authorName,
-            CreatedAt = createdAt,
-            CreatedById = createdBy.UserId,
-            CreatedByName = createdBy.UserName
-        };
-        DbContext.Add(data);
-        DbContext.SaveChanges();
-        return data;
-    }
+        // リポジトリをモックで差し替えるため、呼び出し元のテストメソッド内でのみ有効なService providerを構築する
+        // (DBの接続先はクラス内メンバと共有する)
+        var dbContext = new BookDbContext(DbContextOptions);
+        var authorRepositoryMock =
+            new Mock<AuthorRepository>(dbContext) { CallBase = true }
+                .SetupRepositoryForConcurrencyTest<Author, AuthorDataModel, AuthorRepository>(
+                    repositoryBuilder: () => new AuthorRepository(dbContext),
+                    dbContextBuilder: () => new BookDbContext(DbContextOptions)
+                );
 
-    protected void AssertData(int itemId, AuthorDataModel expected)
-    {
-        var actual = DbContext.Authors.Single(x => x.Id == itemId);
-        actual.Should().BeEquivalentTo(expected);
+        return BuildServiceCollectionBase()
+                .AddScoped(_ => dbContext)
+                .AddScoped<IAuthorRepository>(_ => authorRepositoryMock.Object)
+                .BuildServiceProvider();
     }
 }
