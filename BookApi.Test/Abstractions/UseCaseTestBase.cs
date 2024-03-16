@@ -13,14 +13,14 @@ public abstract class UseCaseTestBase : IDisposable
     private readonly SqliteConnection _connection;
     protected readonly IServiceProvider ServiceProvider;
 
-    protected ISender Mediatr => ServiceProvider.GetRequiredService<ISender>();
+    protected ISender Mediator => ServiceProvider.GetRequiredService<ISender>();
     protected BookDbContext DbContext => ServiceProvider.GetRequiredService<BookDbContext>();
 
     // setup
     public UseCaseTestBase()
     {
         // テストケースごとにSQLiteのインメモリDBを作成する
-        _connection = new SqliteConnection();
+        _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
 
         // DIコンテナの設定
@@ -28,7 +28,7 @@ public abstract class UseCaseTestBase : IDisposable
             new ServiceCollection()
                 .AddDbContext<BookDbContext>(
                     opt => opt
-                        .UseSqlite("DataSource=:memory:")
+                        .UseSqlite(_connection)
                         .UseLazyLoadingProxies()
                 )
                 .AddDomainServices()
