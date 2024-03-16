@@ -1,4 +1,5 @@
 using BookApi.Domain;
+using BookApi.Domain.Interfaces;
 using BookApi.Infrastructure;
 using BookApi.UseCase.Books;
 using MediatR;
@@ -16,8 +17,10 @@ public abstract class UseCaseTestBase : IDisposable
     protected ISender Mediator => ServiceProvider.GetRequiredService<ISender>();
     protected BookDbContext DbContext => ServiceProvider.GetRequiredService<BookDbContext>();
 
+    protected readonly Mock<IDateTimeProvider> DateTimeProvider = new();
+
     // setup
-    public UseCaseTestBase()
+    protected UseCaseTestBase()
     {
         // テストケースごとにSQLiteのインメモリDBを作成する
         _connection = new SqliteConnection("DataSource=:memory:");
@@ -34,7 +37,11 @@ public abstract class UseCaseTestBase : IDisposable
                 .AddDomainServices()
                 .AddInfrastructureServices()
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetBook).Assembly))
+                .AddSingleton(_ => DateTimeProvider.Object)
                 .BuildServiceProvider();
+
+        // 現在の日付のモックを設定
+        DateTimeProvider.SetupGet(x => x.UtcNow).Returns(DateTimeFixture.UtcNow);
 
         // DBの初期化
         using var temporaryScope = ServiceProvider.CreateScope();

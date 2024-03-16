@@ -15,7 +15,10 @@ public class CreateAuthorTest : UseCaseTestBase
         var expected = new AuthorDataModel
         {
             Id = 1,
-            Name = "テスト太郎"
+            Name = "テスト太郎",
+            CreatedAt = DateTimeFixture.UtcNow,
+            CreatedById = actor.UserId,
+            CreatedByName = actor.UserName
         };
 
         // Act
