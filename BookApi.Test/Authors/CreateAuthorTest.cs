@@ -1,4 +1,5 @@
 using BookApi.Domain.DTOs.Commands;
+using BookApi.Infrastructure.DataModels;
 using BookApi.UseCase.Authors;
 
 namespace BookApi.Test.Authors;
@@ -22,7 +23,7 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
         var result = await Mediator.Send(new CreateAuthor.Command(actor, command));
 
         // Assert
-        AssertData(result.ItemId, expected);
+        DbContext.AssertData(result.ItemId, expected);
     }
 
     [Fact]
@@ -37,7 +38,7 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
         var result = await Mediator.Send(new CreateAuthor.Command(actor, command));
 
         // Assert
-        AssertData(result.ItemId, expected);
+        DbContext.AssertData(result.ItemId, expected);
     }
 
     [Fact]
@@ -52,7 +53,7 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
 
         // Assert
         await act.Should().ThrowAsync<ForbiddenException>();
-        AssertNotCreatedAuthor();
+        DbContext.AssertNotExistData<AuthorDataModel>();
     }
 
     [Theory]
@@ -70,7 +71,7 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
         await act.Should()
             .ThrowAsync<ValidationErrorException>()
             .WithMessage("著者名は空にできません。");
-        AssertNotCreatedAuthor();
+        DbContext.AssertNotExistData<AuthorDataModel>();
     }
 
     [Fact]
@@ -87,14 +88,14 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
         await act.Should()
             .ThrowAsync<ValidationErrorException>()
             .WithMessage("著者名は30文字以内で入力してください。");
-        AssertNotCreatedAuthor();
+        DbContext.AssertNotExistData<AuthorDataModel>();
     }
 
     [Fact]
     public async Task 異常系_既に登録されている名前の著者は登録できない()
     {
         // Arrange
-        AddDataToDatabase(UserFixture.Admin, "後藤ひとり", CreatedAt);
+        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
 
         var actor = UserFixture.Admin;
         var command = new AuthorCommandDTO("後藤ひとり");
@@ -106,6 +107,6 @@ public class CreateAuthorTest : AuthorUseCaseTestBase
         await act.Should()
             .ThrowAsync<ValidationErrorException>()
             .WithMessage("既に同じ名前の著者が存在します。");
-        AssertNotCreatedAuthor(2);
+        DbContext.AssertNotExistData<AuthorDataModel>(2);
     }
 }

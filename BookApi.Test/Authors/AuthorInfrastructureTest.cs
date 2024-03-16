@@ -9,11 +9,11 @@ public class AuthorInfrastructureTest : AuthorUseCaseTestBase
     public void 異常系_名前欄がDBのユニーク制約に違反()
     {
         // Arrange
-        AddDataToDatabase(UserFixture.Admin, "後藤ひとり", CreatedAt);
+        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
 
         // Act
         // ドメイン層のバリデーションを経由せずに、直接データを更新する
-        var act = () => AddDataToDatabase(UserFixture.Admin, "後藤ひとり", UpdatedAt);
+        var act = () => DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
 
         // Assert
         act.Should()
