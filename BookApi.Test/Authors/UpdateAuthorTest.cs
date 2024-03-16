@@ -64,6 +64,23 @@ public class UpdateAuthorTest : AuthorUseCaseTestBase
     }
 
     [Fact]
+    public async Task 正常系_取得時と同じ名前で保存できる()
+    {
+        // Arrange
+        var origin = DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
+
+        var actor = UserFixture.Admin;
+        var command = new AuthorCommandDTO("後藤ひとり");
+        var expected = GetExpectedDataAfterUpdate(origin, actor, command, UpdatedAt);
+
+        // Act
+        await Mediator.Send(new UpdateAuthor.Command(actor, 1, command));
+
+        // Assert
+        DbContext.AssertData(1, expected);
+    }
+
+    [Fact]
     public async Task 異常系_一般ユーザーは更新できない()
     {
         // Arrange
