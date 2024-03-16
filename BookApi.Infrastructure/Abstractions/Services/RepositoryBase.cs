@@ -103,8 +103,16 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
     {
 #if DEBUG
         // デバッグ時にEF Coreによる変更履歴を出力する
-        Console.WriteLine(DbContext.ChangeTracker.DebugView.ShortView);
+        System.Diagnostics.Debug.WriteLine(DbContext.ChangeTracker.DebugView.LongView);
 #endif
-        await DbContext.SaveChangesAsync();
+
+        try
+        {
+            await DbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new ConcurrencyException();
+        }
     }
 }

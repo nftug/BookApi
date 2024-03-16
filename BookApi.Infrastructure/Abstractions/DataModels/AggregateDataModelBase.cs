@@ -17,9 +17,13 @@ public abstract class AggregateDataModelBase<TEntity, TSelf>
     }
 }
 
-public interface IAggregateDataModel<TEntity, TSelf> : IdataModel<TEntity, TSelf>
+public interface IAggregateDataModel<TEntity, TSelf> : IDataModel<TEntity, TSelf>, IAggregateDataModel
     where TEntity : IAggregateEntity<TEntity>
-    where TSelf : IdataModel<TEntity, TSelf>
+    where TSelf : IDataModel<TEntity, TSelf>
+{
+}
+
+public interface IAggregateDataModel : IDataModel
 {
     int VersionId { get; set; }
 }

@@ -13,9 +13,10 @@ public abstract class UseCaseTestBase : IDisposable
 {
     private readonly SqliteConnection _connection;
     protected readonly IServiceProvider ServiceProvider;
+    protected readonly DbContextOptions<BookDbContext> DbContextOptions;
 
-    protected ISender Mediator => ServiceProvider.GetRequiredService<ISender>();
     protected BookDbContext DbContext => ServiceProvider.GetRequiredService<BookDbContext>();
+    protected ISender Mediator => ServiceProvider.GetRequiredService<ISender>();
 
     protected readonly Mock<IDateTimeProvider> DateTimeProvider = new();
 
@@ -26,27 +27,31 @@ public abstract class UseCaseTestBase : IDisposable
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
 
+        // DbContextのオプションを構築
+        DbContextOptions = new DbContextOptionsBuilder<BookDbContext>()
+            .UseSqlite(_connection)
+            .UseLazyLoadingProxies()
+            .Options;
+
         // DIコンテナの設定
         ServiceProvider =
-            new ServiceCollection()
-                .AddDbContext<BookDbContext>(
-                    opt => opt
-                        .UseSqlite(_connection)
-                        .UseLazyLoadingProxies()
-                )
-                .AddDomainServices()
-                .AddInfrastructureServices()
-                .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetBook).Assembly))
-                .AddSingleton(_ => DateTimeProvider.Object)
+            BuildServiceCollectionBase()
+                .AddScoped(_ => new BookDbContext(DbContextOptions))
                 .BuildServiceProvider();
 
         // DBの初期化
-        using var temporaryScope = ServiceProvider.CreateScope();
-        var dbContext = temporaryScope.ServiceProvider.GetRequiredService<BookDbContext>();
+        using var dbContext = new BookDbContext(DbContextOptions);
         dbContext.Database.EnsureCreated();
 
         // ここに共通のシード処理を書く
     }
+
+    protected IServiceCollection BuildServiceCollectionBase()
+        => new ServiceCollection()
+                .AddDomainServices()
+                .AddInfrastructureServices()
+                .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetBook).Assembly))
+                .AddSingleton(_ => DateTimeProvider.Object);
 
     // teardown
     public void Dispose()
