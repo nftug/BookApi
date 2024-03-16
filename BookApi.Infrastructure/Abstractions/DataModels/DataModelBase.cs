@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookApi.Infrastructure.Abstractions.DataModels;
 
-public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
+public abstract class DataModelBase<TEntity, TSelf> : IdataModel<TEntity, TSelf>
     where TEntity : IEntity<TEntity>
     where TSelf : DataModelBase<TEntity, TSelf>, new()
 {
@@ -58,9 +58,9 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     protected virtual Expression<Func<TSelf, bool>> QueryPredicateCore(IActor actor) => x => true;
 }
 
-public interface IDataModel<TEntity, TSelf>
+public interface IdataModel<TEntity, TSelf>
     where TEntity : IEntity<TEntity>
-    where TSelf : IDataModel<TEntity, TSelf>
+    where TSelf : IdataModel<TEntity, TSelf>
 {
     int Id { get; set; }
     DateTime CreatedAt { get; set; }
