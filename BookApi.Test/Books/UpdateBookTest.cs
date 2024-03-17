@@ -17,8 +17,6 @@ public class UpdateBookTest : BookUseCaseTestBase
         DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "スターリー出版");
     }
 
-    private readonly string DefaultISBN = "000-0-00-000000-0";
-
     [Theory]
     [InlineData("978-4-83-227072-5"), InlineData("4-83-227072-9")]
     public async Task 正常系_書籍を更新(string isbnCode)
@@ -267,6 +265,26 @@ public class UpdateBookTest : BookUseCaseTestBase
         AssertBookData(origin, [2]);
     }
 
+    [Fact]
+    public async Task 異常系_出版日が空()
+    {
+        // Arrange
+        var origin = DbContext.AddBookToDatabase(UserFixture.Admin, CreatedAt, DefaultISBN, "更新前", [2], 2);
+        var actor = UserFixture.Admin;
+        DateTime emptyDateTime = default;
+        var command =
+            new BookCommandDTO(DefaultISBN, "ぼっち・ざ・ろっく！(1)", emptyDateTime, [1], 2);
+
+        // Act
+        var act = () => Mediator.Send(new UpdateBook.Command(actor, DefaultISBN, command));
+
+        // Assert
+        await act.Should()
+            .ThrowAsync<ValidationErrorException>()
+            .WithMessage("出版日が不正です。");
+        AssertBookData(origin, [2]);
+    }
+
     [Theory]
     [InlineData("978-4-83-227072-5"), InlineData("4-83-227072-9")]
     [InlineData("9784832270725"), InlineData("4832270729")]
@@ -325,6 +343,21 @@ public class UpdateBookTest : BookUseCaseTestBase
             .ThrowAsync<ValidationErrorException>()
             .WithMessage(expectedErrorMessage);
         AssertBookData(origin, [2]);
+    }
+
+    [Fact]
+    public async Task 異常系_対象の書籍が見つからない()
+    {
+        // Arrange
+        var actor = UserFixture.Admin;
+        string notExistentISBN = "123-4-56-789012-3";
+        var command = new BookCommandDTO(notExistentISBN, "ぼっち・ざ・ろっく！(1)", new(2019, 2, 27), [1], 1);
+
+        // Act
+        var act = () => Mediator.Send(new UpdateBook.Command(actor, notExistentISBN, command));
+
+        // Assert
+        await act.Should().ThrowAsync<ItemNotFoundException>();
     }
 
     [Fact]

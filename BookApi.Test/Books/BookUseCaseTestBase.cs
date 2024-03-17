@@ -15,6 +15,8 @@ public abstract class BookUseCaseTestBase : UseCaseTestBase
     protected static readonly DateTime CreatedAt = new(2024, 3, 16, 20, 0, 0);
     protected static readonly DateTime UpdatedAt = new(2024, 3, 17, 20, 0, 0);
 
+    protected readonly string DefaultISBN = "000-0-00-000000-0";
+
     protected static BookDataModel GetExpectedDataAfterCreation(
         IActor createdBy, BookCommandDTO command, string isbnCodeFormatted, DateTime createdAt, int itemId = 1
     )

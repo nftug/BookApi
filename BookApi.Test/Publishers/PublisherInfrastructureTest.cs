@@ -12,7 +12,7 @@ public class PublisherInfrastructureTest : PublisherUseCaseTestBase
         DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "スターリー出版");
 
         // Act
-        // ドメイン層のバリデーションを経由せずに、直接データを更新する
+        // ドメイン層のバリデーションを経由せずに、直接データを追加する
         var act = () => DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "スターリー出版");
 
         // Assert
