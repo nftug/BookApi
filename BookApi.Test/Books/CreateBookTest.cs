@@ -31,7 +31,6 @@ public class CreateBookTest : BookUseCaseTestBase
         VerifyBookAuthor(1, [1]);
     }
 
-    // 正常系_書名が100文字の境界値で登録できる
     [Fact]
     public async Task 正常系_書名が100文字の境界値で登録できる()
     {
@@ -54,7 +53,7 @@ public class CreateBookTest : BookUseCaseTestBase
 
     [Theory]
     [InlineData("9784832270725"), InlineData("4832270729")]
-    public async Task 正常系_ISBNコードが数字のみ(string isbnDigitsOnly)
+    public async Task 正常系_ハイフン無しのISBNコードをフォーマットして格納(string isbnDigitsOnly)
     {
         // Arrange
         DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
@@ -116,7 +115,6 @@ public class CreateBookTest : BookUseCaseTestBase
         DbContext.AssertNotExistData<BookDataModel>();
     }
 
-    // 異常系_空の書名だと登録できない
     [Theory]
     [InlineData(""), InlineData(null)]
     public async Task 異常系_空の書名だと登録できない(string emptyTitle)
@@ -241,7 +239,6 @@ public class CreateBookTest : BookUseCaseTestBase
         };
 
         DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
         DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
         DbContext.AddBookToDatabase(
             UserFixture.Admin, CreatedAt, formattedISBN, "ぼっち・ざ・ろっく！(1)", [1], 1
@@ -260,8 +257,6 @@ public class CreateBookTest : BookUseCaseTestBase
         DbContext.AssertNotExistData<BookDataModel>(2);
     }
 
-    // 異常系_ISBNコードの形式が不正
-    // 空, 桁数が不正 (ハイフンなし、あり), 数字以外が含まれている
     [Theory]
     [InlineData(""), InlineData(null)]
     [InlineData("1234567A91234")]

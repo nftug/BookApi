@@ -40,7 +40,7 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     /// 中間テーブルの作成などに使用する後処理<br />
     /// 処理後にSaveChangesを実行する場合はtrueを返す
     /// </summary>
-    public virtual bool OnTransferAfterSave(TEntity entity) => false;
+    public virtual bool ReconstructIntermediates(TEntity entity) => false;
 
     // データモデル作成時の処理
     public static void CreateModel(ModelBuilder modelBuilder)
@@ -64,7 +64,7 @@ public interface IDataModel<TEntity, TSelf> : IDataModel
 {
     TEntity ToEntity();
     TSelf FromEntity(TEntity entity);
-    bool OnTransferAfterSave(TEntity entity);
+    bool ReconstructIntermediates(TEntity entity);
 }
 
 public interface IDataModel

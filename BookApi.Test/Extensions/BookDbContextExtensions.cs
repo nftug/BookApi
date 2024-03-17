@@ -63,7 +63,7 @@ public static class BookDbContextForTestExtensions
 
         dbContext.AddRange(
             authorIds
-                .Select(x => new BookAuthorDataModel { BookId = data.Id, AuthorId = x })
+                .Select((x, i) => new BookAuthorDataModel { BookId = data.Id, AuthorId = x, Order = i })
         );
         dbContext.SaveChanges();
 
