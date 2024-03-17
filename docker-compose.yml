@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  api:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: Data Source=BookApi.db
+    ports:
+      - 5000:8080
