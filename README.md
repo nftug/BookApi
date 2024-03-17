@@ -4,11 +4,13 @@
 
 ## プロジェクト構成
 
-- [BookApi.Domain](/BookApi.Domain/): ビジネスロジックを担当するドメイン層
-- [BookApi.Infrastructure](/BookApi.Infrastructure/): DBとやり取りするインフラ層
-- [BookApi.UseCase](/BookApi.UseCase/): コントローラから呼び出すユースケース層
-- [BookApi.Presentation](/BookApi.Presentation/): APIの起点となるプレゼンテーション層
-- [BookApi.Test](/BookApi.Test/): ユースケース単位のユニットテスト
+- [src](/src)
+  - [BookApi.Domain](/src/BookApi.Domain/): ビジネスロジックを担当するドメイン層
+  - [BookApi.Infrastructure](/src/BookApi.Infrastructure/): DBとやり取りするインフラ層
+  - [BookApi.UseCase](/src/BookApi.UseCase/): コントローラから呼び出すユースケース層
+  - [BookApi.Presentation](/src/BookApi.Presentation/): APIのプレゼンテーション層
+  - [BookApi.Test](/src/BookApi.Test/): ユースケース単位のユニットテスト
+
 - [Diagrams](/Diagrams/): 設計書 (ドメインモデル図及びER図)
 
 ## 動作環境
