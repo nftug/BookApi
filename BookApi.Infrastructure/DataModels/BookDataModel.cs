@@ -43,7 +43,12 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
     public override bool OnTransferAfterSave(Book entity)
     {
         BookAuthors = entity.Authors
-            .Select(x => new BookAuthorDataModel { BookId = Id, AuthorId = x.Value })
+            .Select((x, i) => new BookAuthorDataModel
+            {
+                BookId = Id,
+                AuthorId = x.Value,
+                Order = i
+            })
             .ToList();
         return true;
     }

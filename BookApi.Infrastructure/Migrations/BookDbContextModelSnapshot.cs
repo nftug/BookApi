@@ -126,6 +126,9 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<int?>("BookDataModelId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("AuthorId", "BookId");
 
                     b.HasIndex("BookDataModelId");
