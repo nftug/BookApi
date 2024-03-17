@@ -9,6 +9,9 @@ public class CreateBookTest : BookUseCaseTestBase
     public CreateBookTest()
     {
         DateTimeProvider.SetupGet(x => x.UtcNow).Returns(CreatedAt);
+
+        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
+        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
     }
 
     [Theory]
@@ -16,9 +19,6 @@ public class CreateBookTest : BookUseCaseTestBase
     public async Task 正常系_書籍を登録(string isbnCode)
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         var command = new BookCommandDTO(isbnCode, "ぼっち・ざ・ろっく！(1)", new(2019, 2, 27), [1], 1);
 
@@ -27,17 +27,13 @@ public class CreateBookTest : BookUseCaseTestBase
 
         // Assert
         var expected = GetExpectedDataAfterCreation(actor, command, isbnCode, CreatedAt, 1);
-        DbContext.AssertData(1, expected);
-        VerifyBookAuthor(1, [1]);
+        AssertBookData(expected, command.AuthorIds);
     }
 
     [Fact]
     public async Task 正常系_書名が100文字の境界値で登録できる()
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         string longestTitle = StringFixture.GetAsciiDummyString(100);
         var command = new BookCommandDTO("978-4-83-227072-5", longestTitle, new(2019, 2, 27), [1], 1);
@@ -47,8 +43,7 @@ public class CreateBookTest : BookUseCaseTestBase
 
         // Assert
         var expected = GetExpectedDataAfterCreation(actor, command, "978-4-83-227072-5", CreatedAt, 1);
-        DbContext.AssertData(1, expected);
-        VerifyBookAuthor(1, [1]);
+        AssertBookData(expected, command.AuthorIds);
     }
 
     [Theory]
@@ -56,9 +51,6 @@ public class CreateBookTest : BookUseCaseTestBase
     public async Task 正常系_ハイフン無しのISBNコードをフォーマットして格納(string isbnDigitsOnly)
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         var command = new BookCommandDTO(isbnDigitsOnly, "ぼっち・ざ・ろっく！(1)", new(2019, 2, 27), [1], 1);
 
@@ -68,19 +60,14 @@ public class CreateBookTest : BookUseCaseTestBase
         // Assert
         string expectedISBN = isbnDigitsOnly.Length == 13 ? "978-4-83-227072-5" : "4-83-227072-9";
         var expected = GetExpectedDataAfterCreation(actor, command, expectedISBN, CreatedAt, 1);
-        DbContext.AssertData(1, expected);
-        VerifyBookAuthor(1, [1]);
+        AssertBookData(expected, command.AuthorIds);
     }
 
     [Fact]
     public async Task 正常系_著者の順番が入力した順で保持される()
     {
-
         // Arrange
         DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         var command = new BookCommandDTO(
             "978-4-83-227072-5", "ぼっち・ざ・ろっく！(1)", new(2019, 2, 27), [2, 1], 1
@@ -91,17 +78,13 @@ public class CreateBookTest : BookUseCaseTestBase
 
         // Assert
         var expected = GetExpectedDataAfterCreation(actor, command, "978-4-83-227072-5", CreatedAt, 1);
-        DbContext.AssertData(1, expected);
-        VerifyBookAuthor(1, [2, 1]);
+        AssertBookData(expected, command.AuthorIds);
     }
 
     [Fact]
     public async Task 異常系_一般ユーザーは登録できない()
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.User1;
         var command = new BookCommandDTO(
             "978-4-83-227072-5", "ぼっち・ざ・ろっく！(1)", new(2019, 2, 27), [1], 1
@@ -120,9 +103,6 @@ public class CreateBookTest : BookUseCaseTestBase
     public async Task 異常系_空の書名だと登録できない(string emptyTitle)
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         var command = new BookCommandDTO("978-4-83-227072-5", emptyTitle, new(2019, 2, 27), [1], 1);
 
@@ -140,9 +120,6 @@ public class CreateBookTest : BookUseCaseTestBase
     public async Task 異常系_書名が101文字以上だと登録できない()
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         string tooLongTitle = StringFixture.GetAsciiDummyString(101);
         var command = new BookCommandDTO("978-4-83-227072-5", tooLongTitle, new(2019, 2, 27), [1], 1);
@@ -161,9 +138,6 @@ public class CreateBookTest : BookUseCaseTestBase
     public async Task 異常系_存在しない出版社IDが指定されている()
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         int notExistentPubId = 2;
         var command = new BookCommandDTO(
@@ -184,9 +158,6 @@ public class CreateBookTest : BookUseCaseTestBase
     public async Task 異常系_存在しない著者IDが含まれている()
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         int[] invalidAuthorIds = [1, 2];
         var command = new BookCommandDTO(
@@ -207,8 +178,6 @@ public class CreateBookTest : BookUseCaseTestBase
     public async Task 異常系_著者IDが空()
     {
         // Arrange
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         int[] emptyAuthorIds = [];
         var command = new BookCommandDTO(
@@ -237,9 +206,6 @@ public class CreateBookTest : BookUseCaseTestBase
             "4832270729" => "4-83-227072-9",
             { } isbn => isbn
         };
-
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
         DbContext.AddBookToDatabase(
             UserFixture.Admin, CreatedAt, formattedISBN, "ぼっち・ざ・ろっく！(1)", [1], 1
         );
@@ -265,9 +231,6 @@ public class CreateBookTest : BookUseCaseTestBase
     public async Task 異常系_ISBNコードの形式が不正(string invalidIsbn)
     {
         // Arrange
-        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");
-        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "芳文社");
-
         var actor = UserFixture.Admin;
         var command = new BookCommandDTO(
             invalidIsbn, "ぼっち・ざ・ろっく！(1)", new(2019, 2, 27), [1], 1

@@ -17,7 +17,7 @@ public class BookRepository(BookDbContext context)
             .Include(x => x.BookAuthors)
             .ThenInclude(x => x.Author);
 
-    public async Task<Book?> FindByISBNAsync(IActor actor, ISBNCode isbn)
+    public virtual async Task<Book?> FindByISBNAsync(IActor actor, ISBNCode isbn)
         => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.ISBN == isbn.Value))
             ?.ToEntity();
 

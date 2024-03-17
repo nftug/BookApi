@@ -53,16 +53,17 @@ public abstract class BookUseCaseTestBase : UseCaseTestBase
             VersionId = originData.VersionId + 1
         };
 
-    protected void VerifyBookAuthor(int bookId, int[] orderedAuthorIds)
+    protected void AssertBookData(BookDataModel expected, int[] authorIds)
     {
+        DbContext.AssertData(expected.Id, expected);
+
         var actualAuthorIds =
             DbContext.Set<BookAuthorDataModel>()
-                .Where(x => x.BookId == bookId)
+                .Where(x => x.BookId == expected.Id)
                 .OrderBy(x => x.Order)
                 .Select(x => x.AuthorId)
                 .ToArray();
-
-        actualAuthorIds.Should().Equal(orderedAuthorIds);
+        actualAuthorIds.Should().Equal(authorIds);
     }
 
     protected IServiceProvider BuildServiceProviderForConcurrencyTest()
@@ -72,7 +73,7 @@ public abstract class BookUseCaseTestBase : UseCaseTestBase
         var dbContext = new BookDbContext(DbContextOptions);
         var BookRepositoryMock =
             new Mock<BookRepository>(dbContext) { CallBase = true }
-                .SetupRepositoryForConcurrencyTest<Book, BookDataModel, BookRepository>(
+                .SetupBookRepositoryForConcurrencyTest(
                     repositoryBuilder: () => new BookRepository(dbContext),
                     dbContextBuilder: () => new BookDbContext(DbContextOptions)
                 );

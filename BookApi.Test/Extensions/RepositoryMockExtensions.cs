@@ -1,8 +1,11 @@
 using BookApi.Domain.Abstractions.Entities;
 using BookApi.Domain.Abstractions.Interfaces;
 using BookApi.Domain.Abstractions.ValueObjects;
+using BookApi.Domain.ValueObjects.Books;
 using BookApi.Infrastructure;
 using BookApi.Infrastructure.Abstractions.DataModels;
+using BookApi.Infrastructure.DataModels;
+using BookApi.Infrastructure.Services.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookApi.Test.Extensions;
@@ -37,6 +40,32 @@ public static class RepositoryMockExtensions
                 anotherDbContext.SaveChanges();  // バージョンを更新して保存
 
                 return entityBeforeUpdated;  // 返却されるのは更新前の古いデータ
+            });
+
+        return repositoryMock;
+    }
+
+    public static Mock<BookRepository> SetupBookRepositoryForConcurrencyTest(
+        this Mock<BookRepository> repositoryMock,
+        Func<BookRepository> repositoryBuilder,
+        Func<BookDbContext> dbContextBuilder
+    )
+    {
+        repositoryMock.CallBase.Should().BeTrue();
+
+        repositoryMock
+            .Setup(m => m.FindByISBNAsync(It.IsAny<IActor>(), It.IsAny<ISBNCode>()))
+            .Returns(async (IActor actor, ISBNCode isbn) =>
+            {
+                var repository = repositoryBuilder();
+                var entityBeforeUpdated = await repository.FindByISBNAsync(actor, isbn);
+
+                using var anotherDbContext = dbContextBuilder();
+                var data = anotherDbContext.Set<BookDataModel>().AsTracking().Single(x => x.ISBN == isbn.Value);
+                data.VersionId++;
+                anotherDbContext.SaveChanges();
+
+                return entityBeforeUpdated;
             });
 
         return repositoryMock;

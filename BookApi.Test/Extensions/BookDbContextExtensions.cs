@@ -60,13 +60,13 @@ public static class BookDbContextForTestExtensions
         };
         dbContext.Add(data);
         dbContext.SaveChanges();
+        dbContext.ChangeTracker.Clear();
 
         dbContext.AddRange(
             authorIds
                 .Select((x, i) => new BookAuthorDataModel { BookId = data.Id, AuthorId = x, Order = i })
         );
         dbContext.SaveChanges();
-
         dbContext.ChangeTracker.Clear();
 
         return data;

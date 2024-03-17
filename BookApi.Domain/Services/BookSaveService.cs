@@ -37,7 +37,7 @@ public class BookSaveService(
         string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
     {
-        await VerifySameISBNNotExistAsync(isbn, shouldExcludeSameBook: true);
+        await VerifySameISBNNotExistAsync(isbn, origin: book);
         await VerifyAllAuthorsExistedAsync(permission.Actor, authorIds);
         await VerifyPublisherExistedAsync(permission.Actor, publisherId);
 
@@ -60,10 +60,10 @@ public class BookSaveService(
             throw new ValidationErrorException("存在しない出版社IDが指定されています。");
     }
 
-    private async Task VerifySameISBNNotExistAsync(string isbn, bool shouldExcludeSameBook = false)
+    private async Task VerifySameISBNNotExistAsync(string isbn, Book? origin = null)
     {
         var isbnCode = ISBNCode.CreateWithValidation(isbn);
-        if (await bookRepository.AnyByISBNAsync(isbnCode, shouldExcludeSameBook ? isbnCode : null))
+        if (await bookRepository.AnyByISBNAsync(isbnCode, origin is { } ? origin.ISBN : null))
             throw new ValidationErrorException("既に同じISBNコードの書籍が存在します。");
     }
 }
