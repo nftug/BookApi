@@ -194,6 +194,26 @@ public class CreateBookTest : BookUseCaseTestBase
         DbContext.AssertNotExistData<BookDataModel>();
     }
 
+    [Fact]
+    public async Task 異常系_出版日が空()
+    {
+        // Arrange
+        var actor = UserFixture.Admin;
+        DateTime emptyDateTime = default;
+        var command = new BookCommandDTO(
+            "978-4-83-227072-5", "ぼっち・ざ・ろっく！(1)", emptyDateTime, [1], 1
+        );
+
+        // Act
+        var act = () => Mediator.Send(new CreateBook.Command(actor, command));
+
+        // Assert
+        await act.Should()
+            .ThrowAsync<ValidationErrorException>()
+            .WithMessage("出版日が不正です。");
+        DbContext.AssertNotExistData<BookDataModel>();
+    }
+
     [Theory]
     [InlineData("978-4-83-227072-5"), InlineData("4-83-227072-9")]
     [InlineData("9784832270725"), InlineData("4832270729")]

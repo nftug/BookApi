@@ -126,7 +126,7 @@ public class DeletePublisherTest : PublisherUseCaseTestBase
         var serviceProviderWithLocalMock = BuildServiceProviderForConcurrencyTest();
 
         // Arrange data
-        var origin = DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "スターリー出版");
+        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "スターリー出版");
         var actor = UserFixture.Admin;
 
         // Act

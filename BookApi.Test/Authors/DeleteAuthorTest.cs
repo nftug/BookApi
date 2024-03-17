@@ -124,7 +124,7 @@ public class DeleteAuthorTest : AuthorUseCaseTestBase
         var serviceProviderWithLocalMock = BuildServiceProviderForConcurrencyTest();
 
         // Arrange data
-        var origin = DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
+        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
         var actor = UserFixture.Admin;
 
         // Act

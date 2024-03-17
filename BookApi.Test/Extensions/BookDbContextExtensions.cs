@@ -45,7 +45,8 @@ public static class BookDbContextForTestExtensions
 
     public static BookDataModel AddBookToDatabase(
         this BookDbContext dbContext, IActor createdBy, DateTime createdAt,
-        string isbn, string title, int[] authorIds, int publisherId
+        string isbn, string title, int[] authorIds, int publisherId,
+        DateTime? publishedAt = null
     )
     {
         var data = new BookDataModel
@@ -53,7 +54,7 @@ public static class BookDbContextForTestExtensions
             ISBN = isbn,
             Title = title,
             PublisherId = publisherId,
-            PublishedAt = default,
+            PublishedAt = publishedAt ?? default,
             CreatedAt = createdAt,
             CreatedById = createdBy.UserId,
             CreatedByName = createdBy.UserName

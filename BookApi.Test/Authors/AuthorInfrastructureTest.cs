@@ -12,7 +12,7 @@ public class AuthorInfrastructureTest : AuthorUseCaseTestBase
         DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
 
         // Act
-        // ドメイン層のバリデーションを経由せずに、直接データを更新する
+        // ドメイン層のバリデーションを経由せずに、直接データを追加する
         var act = () => DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
 
         // Assert
