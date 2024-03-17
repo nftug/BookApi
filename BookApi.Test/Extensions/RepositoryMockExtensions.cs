@@ -32,8 +32,7 @@ public static class RepositoryMockExtensions
                 // 取得後にエンティティを返却するまでの間にデータが更新されたものとする
                 // ⇒リポジトリが返却するバージョンと、実データのバージョンの間にズレがある状況を作る
                 using var anotherDbContext = dbContextBuilder();
-                var data = anotherDbContext.Set<TDataModel>().AsTracking().Single(x => x.Id == 1);
-
+                var data = anotherDbContext.Set<TDataModel>().AsTracking().Single(x => x.Id == id);
                 data.VersionId++;
                 anotherDbContext.SaveChanges();  // バージョンを更新して保存
 

@@ -95,7 +95,6 @@ public class GetAuthorTest : AuthorUseCaseTestBase
     {
         // Arrange
         DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
-        var expected = new AuthorResponseDTO(1, "後藤ひとり", []) with { RelatedPublishers = [] };
         var actor = UserFixture.Admin;
 
         // Act
