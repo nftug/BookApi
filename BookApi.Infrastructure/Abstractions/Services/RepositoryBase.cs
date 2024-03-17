@@ -37,21 +37,19 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
         else
         {
             dataModel = await GetDataModelForChangeAsync(entity);
-
             entity.IncreaseVersionIdFromRepository();
             dataModel.FromEntity(entity);
 
-            // 中間テーブルをクリア
-            ClearIntermediateTables();
+            ClearIntermediateTables();  // 中間テーブルのクリア
         }
 
         // DBに保存し、付与されたIDをエンティティに反映する
         await SaveChangesAsync();
         entity.SetIdFromRepository(dataModel.Id);
 
-        // 保存後に後処理と追加の保存が必要な場合は実行する (中間テーブルの再構成など)
-        bool shouldDoPostTransfer = dataModel.OnTransferAfterSave(entity);
-        if (shouldDoPostTransfer) await SaveChangesAsync();
+        // 多対多のテーブルがある場合、中間テーブルを再構成する必要がある
+        if (dataModel.ReconstructIntermediates(entity))
+            await SaveChangesAsync();
 
         DbContext.ChangeTracker.Clear();    // EF Coreの追跡を解除
     }
@@ -71,7 +69,7 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
     protected async Task<TDataModel> GetDataModelForChangeAsync(TAggregate entity)
     {
         var dataModel =
-                await DbContext.Set<TDataModel>().AsTracking().SingleAsync(x => x.Id == entity.Id);
+            await DbContext.Set<TDataModel>().AsTracking().SingleAsync(x => x.Id == entity.Id);
 
         // 楽観ロックのため、エンティティ取得時のVersion IDをEF Coreの追跡に反映する
         DbContext.Entry(dataModel).Property(x => x.VersionId).OriginalValue = entity.VersionId;
@@ -85,7 +83,7 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
         foreach (var entry in DbContext.ChangeTracker.Entries().ToList())
         {
             var intermediates = entry.Entity.GetType().GetProperties()
-                .Where(p => p.GetCustomAttribute<IntermediateTableAttribute>() != null)
+                .Where(p => p.GetCustomAttribute<IntermediateAttribute>() != null)
                 .Where(p => p.PropertyType.IsGenericType
                         && p.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>))
                 .Select(p => p.GetValue(entry.Entity))
@@ -103,8 +101,15 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
     {
 #if DEBUG
         // デバッグ時にEF Coreによる変更履歴を出力する
-        Console.WriteLine(DbContext.ChangeTracker.DebugView.ShortView);
+        System.Diagnostics.Debug.WriteLine(DbContext.ChangeTracker.DebugView.LongView);
 #endif
-        await DbContext.SaveChangesAsync();
+        try
+        {
+            await DbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new ConcurrencyException();
+        }
     }
 }

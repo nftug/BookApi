@@ -9,19 +9,24 @@ public class AuthorSaveService(IAuthorRepository authorRepository, IDateTimeProv
 {
     public async Task<Author> CreateAsync(AdminOnlyPermission permission, string name)
     {
-        if (await authorRepository.AnyByNameAsync(name))
-            throw new ValidationErrorException("既に同じ名前の著者が存在します。");
+        await VerifySameNameItemNotExistAsync(name);
 
         var newAuthor = Author.CreateNew(permission, dateTimeProvider, name);
-
         await authorRepository.SaveAsync(permission.Actor, newAuthor);
         return newAuthor;
     }
 
     public async Task UpdateAsync(AdminOnlyPermission permission, Author author, string name)
     {
-        // NOTE: 今のところはインフラ層に頼るバリデーションなどはないが、後々の拡張性を考慮して実装しておく
+        await VerifySameNameItemNotExistAsync(name, excludedItemId: author.Id);
+
         author.Update(permission, dateTimeProvider, name);
         await authorRepository.SaveAsync(permission.Actor, author);
+    }
+
+    private async Task VerifySameNameItemNotExistAsync(string name, int? excludedItemId = null)
+    {
+        if (await authorRepository.AnyByNameAsync(name, excludedItemId))
+            throw new ValidationErrorException("既に同じ名前の著者が存在します。");
     }
 }

@@ -11,6 +11,7 @@ public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
     public string Name { get; set; } = string.Empty;
 
     [CascadeDelete] public virtual ICollection<BookDataModel> Books { get; set; } = [];
+    public virtual ICollection<BookAuthorDataModel> BookAuthors { get; set; } = [];
 
     public override Author ToEntity()
         => new(
@@ -45,13 +46,13 @@ public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
             .WithMany(b => b.Authors)
             .UsingEntity<BookAuthorDataModel>(
                 l => l
-                    .HasOne<BookDataModel>()
-                    .WithMany()
+                    .HasOne(x => x.Book)
+                    .WithMany(x => x.BookAuthors)
                     .HasForeignKey(j => j.BookId)
                     .OnDelete(DeleteBehavior.Cascade),
                 r => r
-                    .HasOne<AuthorDataModel>()
-                    .WithMany()
+                    .HasOne(x => x.Author)
+                    .WithMany(x => x.BookAuthors)
                     .HasForeignKey(j => j.AuthorId)
                     .OnDelete(DeleteBehavior.Cascade)
             );

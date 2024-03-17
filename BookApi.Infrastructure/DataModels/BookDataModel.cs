@@ -16,7 +16,7 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
     public virtual PublisherDataModel Publisher { get; set; } = null!;
     public virtual ICollection<AuthorDataModel> Authors { get; set; } = [];
 
-    [IntermediateTable] public virtual ICollection<BookAuthorDataModel> BookAuthors { get; set; } = [];
+    [Intermediate] public virtual ICollection<BookAuthorDataModel> BookAuthors { get; set; } = [];
 
     public override Book ToEntity()
         => new(
@@ -27,7 +27,7 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
             VersionId,
             Title,
             ISBN,
-            [.. Authors.Select(x => x.Id)],
+            [.. BookAuthors.OrderBy(x => x.Order).Select(x => x.AuthorId)],
             PublisherId,
             PublishedAt
         );
@@ -40,10 +40,15 @@ public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
         PublisherId = entity.Publisher.Value;
     }
 
-    public override bool OnTransferAfterSave(Book entity)
+    public override bool ReconstructIntermediates(Book entity)
     {
         BookAuthors = entity.Authors
-            .Select(x => new BookAuthorDataModel { BookId = Id, AuthorId = x.Value })
+            .Select((x, i) => new BookAuthorDataModel
+            {
+                BookId = Id,
+                AuthorId = x.Value,
+                Order = i
+            })
             .ToList();
         return true;
     }

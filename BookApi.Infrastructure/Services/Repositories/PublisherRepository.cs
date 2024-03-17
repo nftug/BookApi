@@ -15,6 +15,8 @@ public class PublisherRepository(BookDbContext context)
             .Where(PublisherDataModel.QueryPredicate(actor))
             .Include(x => x.Books);
 
-    public async Task<bool> AnyByNameAsync(string name)
-        => await DbContext.Publishers.AnyAsync(x => x.Name == name);
+    public async Task<bool> AnyByNameAsync(string name, int? itemIdExcluded = null)
+        => await DbContext.Publishers
+            .Where(x => itemIdExcluded == null || x.Id != itemIdExcluded)
+            .AnyAsync(x => x.Name == name);
 }
