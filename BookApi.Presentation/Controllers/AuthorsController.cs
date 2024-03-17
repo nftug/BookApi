@@ -4,7 +4,7 @@ using BookApi.UseCase.Authors;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AuthorApi.Presentation.Controllers;
+namespace BookApi.Presentation.Controllers;
 
 public class AuthorsController(ISender sender) : ApiControllerBase(sender)
 {
