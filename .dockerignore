@@ -1,0 +1,19 @@
+.dockerignore
+.env
+.git
+.gitignore
+.vs
+.vscode
+docker-compose.yml
+docker-compose.*.yml
+*/bin
+*/obj
+
+# SQLite DB files
+*.db
+*.db-shm
+*.db-wal
+
+# VSCode
+.vscode/
+.VSCodeCounter/
