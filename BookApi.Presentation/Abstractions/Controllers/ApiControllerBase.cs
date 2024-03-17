@@ -46,5 +46,9 @@ public abstract class ApiControllerBase(ISender sender) : ControllerBase
         {
             return Forbid();
         }
+        catch (ConcurrencyException)
+        {
+            return Conflict();
+        }
     }
 }

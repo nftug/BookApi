@@ -27,6 +27,8 @@ public class AuthorRepository(BookDbContext context)
         return itemIds.All(existingIds.Contains);
     }
 
-    public async Task<bool> AnyByNameAsync(string name)
-        => await DbContext.Authors.AnyAsync(x => x.Name == name);
+    public async Task<bool> AnyByNameAsync(string name, int? itemIdExcluded = null)
+        => await DbContext.Authors
+            .Where(x => itemIdExcluded == null || x.Id != itemIdExcluded)
+            .AnyAsync(x => x.Name == name);
 }

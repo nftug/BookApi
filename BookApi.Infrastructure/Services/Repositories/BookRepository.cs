@@ -14,12 +14,15 @@ public class BookRepository(BookDbContext context)
     protected override IQueryable<BookDataModel> QueryForRead(IActor actor)
         => DbContext.Books
             .Where(BookDataModel.QueryPredicate(actor))
-            .Include(x => x.Authors);
+            .Include(x => x.BookAuthors)
+            .ThenInclude(x => x.Author);
 
-    public async Task<Book?> FindByISBNAsync(IActor actor, ISBNCode isbn)
+    public virtual async Task<Book?> FindByISBNAsync(IActor actor, ISBNCode isbn)
         => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.ISBN == isbn.Value))
             ?.ToEntity();
 
-    public async Task<bool> AnyByISBNAsync(ISBNCode isbn)
-        => await DbContext.Books.AnyAsync(x => x.ISBN == isbn.Value);
+    public async Task<bool> AnyByISBNAsync(ISBNCode isbn, ISBNCode? isbnExcluded = null)
+        => await DbContext.Books
+            .Where(x => isbnExcluded == null || x.ISBN != isbnExcluded.Value)
+            .AnyAsync(x => x.ISBN == isbn.Value);
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookApi.Infrastructure.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20240316081933_InitialMigration")]
+    [Migration("20240317101830_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -127,6 +127,9 @@ namespace BookApi.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("BookDataModelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Order")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("AuthorId", "BookId");

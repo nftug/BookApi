@@ -86,6 +86,7 @@ namespace BookApi.Infrastructure.Migrations
                 {
                     BookId = table.Column<int>(type: "INTEGER", nullable: false),
                     AuthorId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Order = table.Column<int>(type: "INTEGER", nullable: false),
                     BookDataModelId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>

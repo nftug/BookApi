@@ -19,12 +19,9 @@ public class BookSaveService(
         string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
     {
-        await ValidateAllAuthorsExistedAsync(permission.Actor, authorIds);
-        await ValidatePublisherExistedAsync(permission.Actor, publisherId);
-
-        var isbnCode = ISBNCode.CreateWithValidation(isbn);
-        if (await bookRepository.AnyByISBNAsync(isbnCode))
-            throw new ValidationErrorException("既に同じISBNコードの書籍が存在します。");
+        await VerifySameISBNNotExistAsync(isbn);
+        await VerifyAllAuthorsExistedAsync(permission.Actor, authorIds);
+        await VerifyPublisherExistedAsync(permission.Actor, publisherId);
 
         var newBook = Book.CreateNew(
             permission, dateTimeProvider, name, isbn, authorIds, publisherId, publishedAt
@@ -40,8 +37,9 @@ public class BookSaveService(
         string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
     )
     {
-        await ValidateAllAuthorsExistedAsync(permission.Actor, authorIds);
-        await ValidatePublisherExistedAsync(permission.Actor, publisherId);
+        await VerifySameISBNNotExistAsync(isbn, origin: book);
+        await VerifyAllAuthorsExistedAsync(permission.Actor, authorIds);
+        await VerifyPublisherExistedAsync(permission.Actor, publisherId);
 
         book.Update(
             permission, dateTimeProvider, name, isbn, authorIds, publisherId, publishedAt
@@ -50,15 +48,22 @@ public class BookSaveService(
         await bookRepository.SaveAsync(permission.Actor, book);
     }
 
-    private async Task ValidateAllAuthorsExistedAsync(IActor actor, int[] authorIds)
+    private async Task VerifyAllAuthorsExistedAsync(IActor actor, int[] authorIds)
     {
         if (!await authorRepository.IsAllIdsExistedAsync(actor, [.. authorIds]))
             throw new ValidationErrorException("存在しない著者IDが含まれています。");
     }
 
-    private async Task ValidatePublisherExistedAsync(IActor actor, int publisherId)
+    private async Task VerifyPublisherExistedAsync(IActor actor, int publisherId)
     {
         if (!await publisherRepository.AnyAsync(actor, publisherId))
             throw new ValidationErrorException("存在しない出版社IDが指定されています。");
+    }
+
+    private async Task VerifySameISBNNotExistAsync(string isbn, Book? origin = null)
+    {
+        var isbnCode = ISBNCode.CreateWithValidation(isbn);
+        if (await bookRepository.AnyByISBNAsync(isbnCode, origin is { } ? origin.ISBN : null))
+            throw new ValidationErrorException("既に同じISBNコードの書籍が存在します。");
     }
 }
