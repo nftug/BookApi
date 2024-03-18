@@ -1,11 +1,37 @@
 version: '3.4'
 
 services:
+  postgres:
+    image: postgres:16.2-alpine
+    container_name: bookapi_postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: book-db
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
   api:
+    depends_on:
+      postgres:
+        condition: service_healthy
     build:
       context: ./src
       dockerfile: Dockerfile
+    image: bookapi
+    container_name: bookapi_api
     environment:
-      ConnectionStrings__DefaultConnection: Data Source=BookApi.db
+      ConnectionStrings__DefaultConnection: "Server=postgres;Port=5432;Database=book-db;Username=postgres;Password=password"
     ports:
       - 5000:8080
+
+volumes:
+  postgres_volume:
