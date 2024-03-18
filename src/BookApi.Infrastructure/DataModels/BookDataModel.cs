@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using BookApi.Domain.Entities;
 using BookApi.Infrastructure.Abstractions.DataModels;
 using BookApi.Infrastructure.Attributes;
@@ -9,7 +10,7 @@ namespace BookApi.Infrastructure.DataModels;
 public class BookDataModel : AggregateDataModelBase<Book, BookDataModel>
 {
     public string ISBN { get; set; } = string.Empty;
-    public string Title { get; set; } = string.Empty;
+    [MaxLength(100)] public string Title { get; set; } = string.Empty;
     public DateTime PublishedAt { get; set; }
     public int PublisherId { get; set; }
 

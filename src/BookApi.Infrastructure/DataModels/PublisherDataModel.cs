@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using BookApi.Domain.Entities;
 using BookApi.Infrastructure.Abstractions.DataModels;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ namespace BookApi.Infrastructure.DataModels;
 
 public class PublisherDataModel : AggregateDataModelBase<Publisher, PublisherDataModel>
 {
-    public string Name { get; set; } = string.Empty;
+    [MaxLength(20)] public string Name { get; set; } = string.Empty;
 
     public virtual ICollection<BookDataModel> Books { get; set; } = [];
 

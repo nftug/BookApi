@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services
     .AddDbContext<BookDbContext>(
         opt => opt
-            .UseSqlite(configuration.GetConnectionString("DefaultConnection"))
+            .UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
             .UseLazyLoadingProxies()
     )
     .AddDomainServices()
