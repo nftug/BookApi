@@ -32,9 +32,11 @@ public class AuthorQueryService(BookDbContext dbContext) : IAuthorQueryService
                 RelatedPublishers =
                     (await dbContext.Books
                         .Where(b => b.Authors.Any(a => a.Id == itemId))
-                        .Select(b => new ItemSummaryResponseDTO(b.PublisherId, b.Publisher.Name))
+                        .GroupBy(
+                            b => b.PublisherId,
+                            (k, g) => new ItemSummaryResponseDTO(k, g.First().Publisher.Name)
+                        )
                         .ToArrayAsync())
-                        .Distinct()
                         .OrderBy(x => x.Id)
             }
             : null;

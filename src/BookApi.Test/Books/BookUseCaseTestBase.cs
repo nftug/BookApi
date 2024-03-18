@@ -1,6 +1,5 @@
 using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.DTOs.Commands;
-using BookApi.Domain.Entities;
 using BookApi.Domain.Interfaces;
 using BookApi.Infrastructure;
 using BookApi.Infrastructure.DataModels;

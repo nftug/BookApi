@@ -52,6 +52,7 @@ public class DeleteBookTest : BookUseCaseTestBase
         DbContext.AssertNotExistData<BookAuthorDataModel>(x => x.BookId == 1);
 
         // 出版社、削除された本の他の著者、他の書籍には影響しない
+        DbContext.AssertData(1, bocchi);
         DbContext.AssertData(2, nijika);
         DbContext.AssertData(3, ryou);
         DbContext.AssertData(4, ikuyo);
