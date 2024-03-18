@@ -26,4 +26,9 @@
     <ProjectReference Include="..\BookApi.UseCase\BookApi.UseCase.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="dotnet tool restore" />
+    <Exec Command="dotnet swagger tofile --output ./openapi.json ./bin/Debug/net8.0/BookApi.dll v1" />
+  </Target>
+
 </Project>
