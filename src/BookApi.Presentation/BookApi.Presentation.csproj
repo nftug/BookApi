@@ -26,9 +26,10 @@
     <ProjectReference Include="..\BookApi.UseCase\BookApi.UseCase.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Debug'">
     <Exec Command="dotnet tool restore" />
-    <Exec Command="dotnet swagger tofile --output ./openapi.json ./bin/Debug/net8.0/BookApi.dll v1" />
+    <Exec Command="dotnet swagger tofile --output ../../openapi.json $(OutputPath)$(AssemblyName).dll v1"
+          EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" />
   </Target>
 
 </Project>
