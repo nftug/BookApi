@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using BookApi.Domain.Entities;
 using BookApi.Infrastructure.Abstractions.DataModels;
 using BookApi.Infrastructure.Attributes;
@@ -8,7 +9,7 @@ namespace BookApi.Infrastructure.DataModels;
 
 public class AuthorDataModel : AggregateDataModelBase<Author, AuthorDataModel>
 {
-    public string Name { get; set; } = string.Empty;
+    [MaxLength(30)] public string Name { get; set; } = string.Empty;
 
     [CascadeDelete] public virtual ICollection<BookDataModel> Books { get; set; } = [];
     public virtual ICollection<BookAuthorDataModel> BookAuthors { get; set; } = [];
