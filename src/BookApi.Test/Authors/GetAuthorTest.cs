@@ -47,6 +47,12 @@ public class GetAuthorTest : AuthorUseCaseTestBase
             UserFixture.Admin, CreatedAt, "000-0-00-000000-0", "あああ", [1], 2
         );
 
+        var actor = UserFixture.Admin;
+
+        // Act
+        var result = await Mediator.Send(new GetAuthor.Query(actor, 1));
+
+        // Assert
         var expected = new AuthorResponseDTO(
             1, "後藤ひとり",
             [
@@ -58,16 +64,56 @@ public class GetAuthorTest : AuthorUseCaseTestBase
             RelatedPublishers = [new(1, "B社"), new(2, "A社")]
         };
 
+        result.Should().BeEquivalentTo(expected);
+        result.Books.Should().SatisfyRespectively(
+            first => first.Should().BeEquivalentTo(expected.Books.ToArray()[0]),
+            second => second.Should().BeEquivalentTo(expected.Books.ToArray()[1])
+        );
+        result.RelatedPublishers.Should().SatisfyRespectively(
+            first => first.Should().BeEquivalentTo(expected.RelatedPublishers.ToArray()[0]),
+            second => second.Should().BeEquivalentTo(expected.RelatedPublishers.ToArray()[1])
+        );
+    }
+
+    [Fact]
+    public async Task 関連する出版社名は重複させない()
+    {
+        // Arrange
+        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "スターリー出版");
+        DbContext.AddPublisherToDatabase(UserFixture.Admin, CreatedAt, "FOLTパブリッシング");
+        DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "後藤ひとり");
+        var book1 = DbContext.AddBookToDatabase(
+            UserFixture.Admin, CreatedAt, "000-0-00-000000-1", "一冊目", [1], 2
+        );
+        var book2 = DbContext.AddBookToDatabase(
+            UserFixture.Admin, CreatedAt, "000-0-00-000000-2", "二冊目", [1], 1
+        );
+        var book3 = DbContext.AddBookToDatabase(
+            UserFixture.Admin, CreatedAt, "000-0-00-000000-3", "三冊目", [1], 1
+        );
+
         var actor = UserFixture.Admin;
 
         // Act
         var result = await Mediator.Send(new GetAuthor.Query(actor, 1));
 
         // Assert
+        var expected = new AuthorResponseDTO(
+            1, "後藤ひとり",
+            [
+                new("000-0-00-000000-1", "一冊目", book1.PublishedAt, [1], 2),
+                new("000-0-00-000000-2", "二冊目", book1.PublishedAt, [1], 1),
+                new("000-0-00-000000-3", "三冊目", book2.PublishedAt, [1], 1),
+            ]
+        ) with
+        {
+            RelatedPublishers = [new(1, "スターリー出版"), new(2, "FOLTパブリッシング")]
+        };
         result.Should().BeEquivalentTo(expected);
         result.Books.Should().SatisfyRespectively(
             first => first.Should().BeEquivalentTo(expected.Books.ToArray()[0]),
-            second => second.Should().BeEquivalentTo(expected.Books.ToArray()[1])
+            second => second.Should().BeEquivalentTo(expected.Books.ToArray()[1]),
+            third => third.Should().BeEquivalentTo(expected.Books.ToArray()[2])
         );
         result.RelatedPublishers.Should().SatisfyRespectively(
             first => first.Should().BeEquivalentTo(expected.RelatedPublishers.ToArray()[0]),

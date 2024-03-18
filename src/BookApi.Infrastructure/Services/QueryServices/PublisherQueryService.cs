@@ -33,9 +33,11 @@ public class PublisherQueryService(BookDbContext dbContext) : IPublisherQuerySer
                     (await dbContext.Books
                         .Where(b => b.PublisherId == itemId)
                         .SelectMany(b => b.Authors)
-                        .Select(a => new ItemSummaryResponseDTO(a.Id, a.Name))
+                        .GroupBy(
+                            a => a.Id,
+                            (k, g) => new ItemSummaryResponseDTO(k, g.First().Name)
+                        )
                         .ToArrayAsync())
-                        .Distinct()
                         .OrderBy(x => x.Id)
             }
             : null;
