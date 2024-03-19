@@ -7,8 +7,8 @@
     <InvariantGlobalization>true</InvariantGlobalization>
 
     <AssemblyName>BookApi</AssemblyName>
-		<AssemblyTitle>Galapagos Book API</AssemblyTitle>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
+    <AssemblyTitle>Galapagos Book API</AssemblyTitle>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,8 +28,8 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Debug'">
     <Exec Command="dotnet tool restore" />
-    <Exec Command="dotnet swagger tofile --output ../../openapi.json $(OutputPath)$(AssemblyName).dll v1"
-          EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" />
+    <Exec Command="dotnet swagger tofile --output ../openapi.json $(OutputPath)$(AssemblyName).dll v1"
+          EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development;DOTNET_ROLL_FORWARD=LatestMajor" />
   </Target>
 
 </Project>

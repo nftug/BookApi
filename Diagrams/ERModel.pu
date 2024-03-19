@@ -8,27 +8,35 @@ left to right direction
 
 package "Book Domain" {
     entity Author {
-        * ID : int <<generated>>
+        * Id : int <<generated>>
         --
         * Name : string
     }
 
     entity Publisher {
-        * ID : int <<generated>>
+        * Id : int <<generated>>
         --
         * Name : string
     }
 
     entity Book {
-        * ID : int <<generated>>
+        * Id : int <<generated>>
         --
         * ISBN : string
-        * Name : string
+        * Title : string
         * PublishedAt : DateTime
         * FKPublisher : int <<FK>>
     }
 
-    Book }|..o{  Author
+    entity BookAuthor {
+        * BookId : int <<FK>>
+        * AuthorId : int <<FK>>
+        --
+        * Order : int
+    }
+
     Book ||..o{ Publisher
+    Book }|..|| BookAuthor
+    BookAuthor ||..o{ Author
 }
 @enduml

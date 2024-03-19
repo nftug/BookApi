@@ -11,7 +11,13 @@
   - [BookApi.Presentation](/src/BookApi.Presentation/): APIのプレゼンテーション層
   - [BookApi.Test](/src/BookApi.Test/): ユースケース単位のユニットテスト
 
+- [Docker](/Docker/): Docker Composeの設定ファイル
+
 - [Diagrams](/Diagrams/): 設計書 (ドメインモデル図及びER図)
+
+## ドメインモデル図
+
+![ドメインモデル図](/Diagrams/BookApi_DomainModel.svg)
 
 ## 動作環境
 
@@ -27,13 +33,56 @@ DB                  |PostgreSQL           |16.2      |
 テストフレームワーク|xUnit                |2.4.2     |
 コンテナ            |Docker               |24.0.4    |
 
-## 動作手順
+## 開発環境への入り方
 
-### コンテナの起動
+### 開発用コンテナの起動
 
-リポジトリのルートディレクトリでDockerコンテナを起動します。
+開発環境のDockerコンテナを起動します。
 
 ```bash
+cd ./Docker/bookapi-development
+docker-compose up -d
+```
+
+MacOSでDocker Desktopの代替にLimaを使用している場合、事前にマウントの書き込み許可を設定する必要があります。
+
+`~/.lima/docker/lima.yaml` を開き、`mounts` の項目を下記の例に倣って編集してください。
+
+```yaml
+mounts:
+  - location: '~'
+  - location: '~/Projects/GalapagosBookApi/src'  # このディレクトリ以下への書き込みを許可する
+    writable: true
+  - location: '/tmp/lima'
+    writable: true
+```
+
+### VSCodeでアタッチ
+
+VSCodeで `bookapi-dev` コンテナにアタッチし、 `/src/` ディレクトリを開きます。
+
+画面右端にC# Dev Kitの拡張機能のインストールを促すポップアップが表示されます。指示に従ってインストールしてください。
+
+### デバッグ実行
+
+コンテナ内で下記のコマンドを実行すると、APIをデバッグ実行できます。
+
+```bash
+dotnet watch run --project /src/BookApi.Presentation/
+```
+
+### テストの実行
+
+ユースケースの自動テストはVSCodeのテストエクスプローラから実行できます。
+
+## 動作手順
+
+### 実行用コンテナの起動
+
+実行用のDockerコンテナを起動します。
+
+```bash
+cd ./Docker/bookapi-production
 docker-compose up -d
 ```
 
@@ -51,7 +100,7 @@ docker-compose up -d
 
 ## APIドキュメント
 
-APIの仕様ドキュメントは [/openapi.json](/openapi.json) にあります。
+APIの仕様ドキュメントはソースディレクトリ内の [openapi.json](/src/openapi.json) にあります。
 
 ドキュメントはOpenAPI Specification対応のJSON形式です。Postmanなどの対応するアプリケーションでインポートしてお使いください。
 
@@ -72,4 +121,4 @@ APIの仕様ドキュメントは [/openapi.json](/openapi.json) にあります
 
 ### その他の仕様について
 
-詳しい仕様に関しては、[Swagger UI](http://localhost:5000/swagger) もしくは [付属のOpenAPIドキュメント](./openapi.json) を参照してください。
+詳しい仕様に関しては、[Swagger UI](http://localhost:5000/swagger) もしくは [付属のOpenAPIドキュメント](/src/openapi.json) を参照してください。

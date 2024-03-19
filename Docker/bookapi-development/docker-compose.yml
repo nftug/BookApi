@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16.2-alpine
+    container_name: bookapi-dev-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: book-db
+    volumes:
+      - postgres-volume-dev:/var/lib/postgresql/data
+
+  dev:
+    depends_on:
+      - postgres
+    build:
+      context: ../../src/
+      dockerfile: Development.dockerfile
+    image: bookapi-dev
+    container_name: bookapi-dev
+    tty: true
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=postgres;Port=5432;Database=book-db;Username=postgres;Password=password"
+    ports:
+      - "5285:5285"
+      - "7299:7299"
+    volumes:
+      - ../../src:/src
+volumes:
+  postgres-volume-dev:
