@@ -28,8 +28,15 @@ package "Book Domain" as Domain {
         * Authors: Authors
     }
 
+    class BookLike {
+        * Book: Book / BookId
+        * User: User
+        * LikedAt: LikedAt
+    }
+
     Book "0..*" o--* "1..*" Author
     Book "0..*" --* "1" Publisher
+    Book "1..*" *--o "0..*" BookLike
 
     note left of Book
         * ISBNにはバリデーションをかける
@@ -49,4 +56,17 @@ package "Book Domain" as Domain {
         * 名前欄の重複は許容しない
     endnote
 }
+
+package "User Domain" {
+    entity User {
+        * Id: Id
+        --
+        * Name: Name
+        * Role: Role
+        * <<N/A>>: LikedBooks
+    }
+}
+
+BookLike "0..*" o-up-* "1..*" User
+
 @enduml
