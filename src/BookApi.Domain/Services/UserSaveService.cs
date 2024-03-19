@@ -17,13 +17,14 @@ public class UserSaveService(
         string rawUserId, string userName, string rawPassword
     )
     {
-        await VerifySameUserIdNotExistAsync(rawUserId);
+        var userId = UserId.CreateWithValidation(rawUserId);
+        if (await userRepository.AnyByUserIdAsync(userId))
+            throw new ValidationErrorException("既に同じユーザーIDが登録されています。");
 
         var newUser = User.CreateNew(
             permission, dateTimeProvider, passwordService,
             rawUserId, userName, rawPassword
         );
-
         await userRepository.SaveAsync(permission.Actor, newUser);
         return newUser;
     }
@@ -38,12 +39,5 @@ public class UserSaveService(
     {
         user.ChangePassword(permission, dateTimeProvider, passwordService, rawPassword);
         await userRepository.SaveAsync(permission.Actor, user);
-    }
-
-    private async Task VerifySameUserIdNotExistAsync(string rawUserId)
-    {
-        var userId = UserId.CreateWithValidation(rawUserId);
-        if (await userRepository.AnyByUserIdAsync(userId))
-            throw new ValidationErrorException("既に同じユーザーIDが登録されています。");
     }
 }

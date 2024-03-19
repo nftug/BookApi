@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookApi.Infrastructure.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    [Migration("20240319145345_AddedUserAndBookLike")]
+    [Migration("20240319173105_AddedUserAndBookLike")]
     partial class AddedUserAndBookLike
     {
         /// <inheritdoc />
@@ -208,6 +208,9 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<string>("HashedPassword")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
