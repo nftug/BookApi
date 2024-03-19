@@ -22,13 +22,12 @@ public abstract class EntityBase<T> : IEntity<T>
     protected EntityBase(
         int id,
         DateTime createdAt, DateTime? updatedAt,
-        int createdById, string createdByName,
-        int? updatedById, string? updatedByName
+        string createdByUserId, string? updatedByUserId
     )
     {
         ItemId = ItemId.Reconstruct(id);
         DateTimeRecord = new() { CreatedAt = createdAt, UpdatedAt = updatedAt };
-        ActorRecord = ActorRecord.Reconstruct(createdById, createdByName, updatedById, updatedByName);
+        ActorRecord = ActorRecord.Reconstruct(createdByUserId, updatedByUserId);
     }
 
     // エンティティの新規作成用

@@ -13,12 +13,11 @@ public class Publisher : AggregateEntityBase<Publisher>
     public Publisher(
         int id,
         DateTime createdAt, DateTime? updatedAt,
-        int createdById, string createdByName,
-        int? updatedById, string? updatedByName,
+        string createdByUserId, string? updatedByUserId,
         int versionId,
         string name,
         int[] bookIds
-    ) : base(id, createdAt, updatedAt, createdById, createdByName, updatedById, updatedByName, versionId)
+    ) : base(id, createdAt, updatedAt, createdByUserId, updatedByUserId, versionId)
     {
         Name = PublisherName.Reconstruct(name);
         Books = [.. bookIds.Select(ItemId.Reconstruct)];

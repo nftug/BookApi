@@ -13,7 +13,7 @@ public abstract class ApiControllerBase(ISender sender) : ControllerBase
     protected async Task<IActionResult> HandleRequest<T>(Func<ActorForPermission, T> requestFunc)
         where T : IBaseRequest
     {
-        var dummyActor = new ActorForPermission(0, "Admin", true);
+        var dummyActor = new ActorForPermission(ItemId.Reconstruct(1), "Admin", true);
         return await HandleActionAsync(() => Mediator.Send(requestFunc(dummyActor)));
     }
 

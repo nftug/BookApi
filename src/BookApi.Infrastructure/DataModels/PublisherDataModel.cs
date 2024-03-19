@@ -15,8 +15,7 @@ public class PublisherDataModel : AggregateDataModelBase<Publisher, PublisherDat
         => new(
             Id,
             CreatedAt, UpdatedAt,
-            CreatedById, CreatedByName,
-            UpdatedById, UpdatedByName,
+            CreatedByUserId, UpdatedByUserId,
             VersionId,
             Name,
             [.. Books.Select(x => x.Id)]

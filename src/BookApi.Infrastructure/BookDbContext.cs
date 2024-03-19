@@ -15,12 +15,14 @@ public class BookDbContext : DbContext
     public DbSet<BookDataModel> Books { get; set; } = null!;
     public DbSet<AuthorDataModel> Authors { get; set; } = null!;
     public DbSet<PublisherDataModel> Publishers { get; set; } = null!;
+    public DbSet<UserDataModel> Users { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         AuthorDataModel.CreateModel(modelBuilder);
         PublisherDataModel.CreateModel(modelBuilder);
         BookDataModel.CreateModel(modelBuilder);
+        UserDataModel.CreateModel(modelBuilder);
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

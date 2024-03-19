@@ -17,8 +17,7 @@ public static class BookDbContextForTestExtensions
         {
             Name = authorName,
             CreatedAt = createdAt,
-            CreatedById = createdBy.UserId,
-            CreatedByName = createdBy.UserName
+            CreatedByUserId = createdBy.UserId
         };
         dbContext.Add(data);
         dbContext.SaveChanges();
@@ -34,8 +33,7 @@ public static class BookDbContextForTestExtensions
         {
             Name = publisherName,
             CreatedAt = createdAt,
-            CreatedById = createdBy.UserId,
-            CreatedByName = createdBy.UserName
+            CreatedByUserId = createdBy.UserId
         };
         dbContext.Add(data);
         dbContext.SaveChanges();
@@ -56,8 +54,7 @@ public static class BookDbContextForTestExtensions
             PublisherId = publisherId,
             PublishedAt = publishedAt ?? default,
             CreatedAt = createdAt,
-            CreatedById = createdBy.UserId,
-            CreatedByName = createdBy.UserName
+            CreatedByUserId = createdBy.UserId
         };
         dbContext.Add(data);
         dbContext.SaveChanges();

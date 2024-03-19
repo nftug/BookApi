@@ -30,7 +30,9 @@ public class GetBookTest : BookUseCaseTestBase
             "ぼっち・ざ・ろっく！",
             new(2019, 2, 27),
             [new(1, "はまじあき")],
-            new(1, "芳文社")
+            new(1, "芳文社"),
+            0,
+            false
         );
 
         result.Should().BeEquivalentTo(expected);
@@ -68,7 +70,9 @@ public class GetBookTest : BookUseCaseTestBase
             "ぼっち・ざ・ろっく！",
             new(2019, 2, 27),
             [new(1, "はまじあき")],
-            new(1, "芳文社")
+            new(1, "芳文社"),
+            0,
+            false
         );
 
         result.Should().BeEquivalentTo(expected);
@@ -100,7 +104,9 @@ public class GetBookTest : BookUseCaseTestBase
             "ぼっち・ざ・ろっく！",
             new(2019, 2, 27),
             [new(2, "はまじあき"), new(1, "後藤ひとり")],
-            new(1, "芳文社")
+            new(1, "芳文社"),
+            0,
+            false
         );
 
         result.Should().BeEquivalentTo(expected);
@@ -131,7 +137,9 @@ public class GetBookTest : BookUseCaseTestBase
             "ぼっち・ざ・ろっく！",
             new(2019, 2, 27),
             [new(1, "はまじあき")],
-            new(1, "芳文社")
+            new(1, "芳文社"),
+            0,
+            false
         );
 
         result.Should().BeEquivalentTo(expected);

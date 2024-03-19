@@ -12,25 +12,30 @@ public class Book : AggregateEntityBase<Book>
     public BookAuthorList Authors { get; private set; }
     public ItemId Publisher { get; private set; }
     public BookPublicationDate PublishedAt { get; private set; }
+    public BookLikeList Likes { get; private set; }
+
+    public int CountOfLikes => Likes.Count();
+    public ItemId[] UserIdsWhoLiked => [.. Likes.Select(x => x.LikedByItemId)];
 
     public Book(
         int id,
         DateTime createdAt, DateTime? updatedAt,
-        int createdById, string createdByName,
-        int? updatedById, string? updatedByName,
+        string createdByUserId, string? updatedByUserId,
         int versionId,
         string title,
         string isbn,
         int[] authorIds,
         int publisherId,
-        DateTime publishedAt
-    ) : base(id, createdAt, updatedAt, createdById, createdByName, updatedById, updatedByName, versionId)
+        DateTime publishedAt,
+        IEnumerable<BookLike> bookLikes
+    ) : base(id, createdAt, updatedAt, createdByUserId, updatedByUserId, versionId)
     {
         Title = BookTitle.Reconstruct(title);
         ISBN = ISBNCode.Reconstruct(isbn);
         Authors = BookAuthorList.Reconstruct(authorIds);
         Publisher = ItemId.Reconstruct(publisherId);
         PublishedAt = BookPublicationDate.Reconstruct(publishedAt);
+        Likes = BookLikeList.Reconstruct(bookLikes);
     }
 
     private Book(string title, string isbn, int[] authorIds, int publisherId, DateTime publishedAt)
@@ -40,6 +45,7 @@ public class Book : AggregateEntityBase<Book>
         Authors = BookAuthorList.CreateWithValidation(authorIds);
         Publisher = ItemId.CreateWithValidation(publisherId);
         PublishedAt = BookPublicationDate.CreateWithValidation(publishedAt);
+        Likes = BookLikeList.Empty();
     }
 
     internal static Book CreateNew(
@@ -62,5 +68,18 @@ public class Book : AggregateEntityBase<Book>
         Publisher = ItemId.CreateWithValidation(publisherId);
         PublishedAt = BookPublicationDate.CreateWithValidation(publishedAt);
         Update(permission, dateTimeProvider);
+    }
+
+    internal void ToggleLike(PassThroughPermission permission, IDateTimeProvider dateTimeProvider)
+    {
+        Likes = Likes.RecreateWithToggle(permission, dateTimeProvider);
+    }
+
+    internal void EditLike(
+        AdminOnlyPermission permission, IDateTimeProvider dateTimeProvider,
+        ItemId userItemId, bool doLikeBook
+    )
+    {
+        Likes = Likes.RecreateWithEdit(permission, dateTimeProvider, userItemId, doLikeBook);
     }
 }

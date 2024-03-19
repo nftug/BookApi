@@ -15,7 +15,7 @@ public class BookRepository(BookDbContext context)
         => DbContext.Books
             .Where(BookDataModel.QueryPredicate(actor))
             .Include(x => x.BookAuthors)
-            .ThenInclude(x => x.Author);
+            .Include(x => x.BookLikes);
 
     public virtual async Task<Book?> FindByISBNAsync(IActor actor, ISBNCode isbn)
         => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.ISBN == isbn.Value))
