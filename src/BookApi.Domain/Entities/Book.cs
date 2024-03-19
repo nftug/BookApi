@@ -15,7 +15,6 @@ public class Book : AggregateEntityBase<Book>
     public BookLikeList Likes { get; private set; }
 
     public int CountOfLikes => Likes.Count();
-    public ItemId[] UserIdsWhoLiked => [.. Likes.Select(x => x.LikedByItemId)];
 
     public Book(
         int id,

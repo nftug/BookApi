@@ -15,7 +15,10 @@ builder.Services.AddControllers();
 builder.Services
     .AddDbContext<BookDbContext>(
         opt => opt
-            .UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+            .UseNpgsql(
+                configuration.GetConnectionString("DefaultConnection"),
+                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+            )
             .UseLazyLoadingProxies()
     )
     .AddDomainServices()

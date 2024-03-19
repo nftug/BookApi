@@ -59,12 +59,19 @@ package "Book Domain" as Domain {
 
 package "User Domain" {
     entity User {
-        * Id: Id
+        * Id: <<N/A>>
         --
+        * UserId : UserId <<Slug>>
         * Name: Name
+        * HashedPassword : <<N/A>>
         * Role: Role
-        * <<N/A>>: LikedBooks
     }
+
+    note bottom of User
+        * ユーザーIDは全て小文字に変換される
+        * ユーザーIDの重複は許容しない
+        * パスワードはハッシュ化して保存
+    endnote
 }
 
 BookLike "0..*" o-up-* "1..*" User

@@ -29,7 +29,7 @@ public abstract class UseCaseTestBase : IDisposable
 
         // DbContextのオプションを構築
         DbContextOptions = new DbContextOptionsBuilder<BookDbContext>()
-            .UseSqlite(_connection)
+            .UseSqlite(_connection, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
             .UseLazyLoadingProxies()
             .Options;
 
