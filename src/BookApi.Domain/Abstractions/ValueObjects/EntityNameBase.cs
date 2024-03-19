@@ -22,8 +22,13 @@ public abstract record EntityNameBase<TSelf>
         if (value.Length > LimitLength)
             throw new ValidationErrorException($"{FieldDisplayName}は{LimitLength}文字以内で入力してください。");
 
-        return new() { Value = value };
+        var item = new TSelf { Value = value };
+
+        item.ExtendValidation(value);
+        return item;
     }
+
+    protected virtual void ExtendValidation(string value) { }
 
     public static TSelf Reconstruct(string value) => new() { Value = value };
 

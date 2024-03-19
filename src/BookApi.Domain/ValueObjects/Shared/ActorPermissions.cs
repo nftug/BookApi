@@ -1,8 +1,9 @@
+using BookApi.Domain.Abstractions.Entities;
 using BookApi.Domain.Abstractions.ValueObjects;
 
 namespace BookApi.Domain.ValueObjects.Shared;
 
-public class PassThroughPermission(IActor actor) : IActorPermission
+public class PassThroughPermission(ActorForPermission actor) : IActorPermission
 {
     public bool CanCreate => true;
 
@@ -10,16 +11,30 @@ public class PassThroughPermission(IActor actor) : IActorPermission
 
     public bool CanDelete => true;
 
-    public IActor Actor { get; } = actor;
+    public ActorForPermission Actor { get; } = actor;
 }
 
 public class AdminOnlyPermission(ActorForPermission actor) : IActorPermission
 {
-    public bool CanCreate => ((ActorForPermission)Actor).IsAdmin;
+    public bool CanCreate => Actor.IsAdmin;
 
-    public bool CanUpdate => ((ActorForPermission)Actor).IsAdmin;
+    public bool CanUpdate => Actor.IsAdmin;
 
-    public bool CanDelete => ((ActorForPermission)Actor).IsAdmin;
+    public bool CanDelete => Actor.IsAdmin;
 
-    public IActor Actor { get; } = actor;
+    public ActorForPermission Actor { get; } = actor;
+}
+
+public class OwnerOnlyPermission(ActorForPermission actor, IEntity entity) : IActorPermission
+{
+    private readonly ActorRecord _actorRecord =
+        ActorRecord.Reconstruct(entity.CreatedBy.UserId, entity.UpdatedBy?.UserId);
+
+    public bool CanCreate => true;
+
+    public bool CanUpdate => Actor.IsAdmin || Actor.UserId == _actorRecord.CreatedBy.UserId;
+
+    public bool CanDelete => Actor.IsAdmin || Actor.UserId == _actorRecord.CreatedBy.UserId;
+
+    public ActorForPermission Actor { get; } = actor;
 }

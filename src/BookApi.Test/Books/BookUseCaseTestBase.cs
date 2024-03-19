@@ -27,8 +27,7 @@ public abstract class BookUseCaseTestBase : UseCaseTestBase
             PublishedAt = command.PublishedAt,
             PublisherId = command.PublisherId,
             CreatedAt = createdAt,
-            CreatedById = createdBy.UserId,
-            CreatedByName = createdBy.UserName
+            CreatedByUserId = createdBy.UserId
         };
 
     protected static BookDataModel GetExpectedDataAfterUpdate(
@@ -46,11 +45,9 @@ public abstract class BookUseCaseTestBase : UseCaseTestBase
             PublishedAt = command.PublishedAt,
             PublisherId = command.PublisherId,
             CreatedAt = originData.CreatedAt,
-            CreatedById = originData.CreatedById,
-            CreatedByName = originData.CreatedByName,
+            CreatedByUserId = originData.CreatedByUserId,
             UpdatedAt = updatedAt,
-            UpdatedById = updatedBy.UserId,
-            UpdatedByName = updatedBy.UserName,
+            UpdatedByUserId = updatedBy.UserId,
             VersionId = originData.VersionId + 1
         };
 
