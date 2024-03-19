@@ -6,7 +6,7 @@ namespace BookApi.Test.Books;
 public class BookInfrastructureTest : BookUseCaseTestBase
 {
     [Fact]
-    public void 異常系_名前欄がDBのユニーク制約に違反()
+    public void 異常系_ISBNがDBのユニーク制約に違反()
     {
         // Arrange
         DbContext.AddAuthorToDatabase(UserFixture.Admin, CreatedAt, "はまじあき");

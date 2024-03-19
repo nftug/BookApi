@@ -5,14 +5,14 @@ skinparam DefaultFontName Helvetica
 
 package "Book Domain" as Domain {
     entity Author {
-        * ID: AuthorID <<Slug>>
+        * Id: Id <<Slug>>
         --
         * Name: Name
         * <<N/A>>: RelatedPublishers
     }
 
     entity Publisher {
-        * ID: PublisherID <<Slug>>
+        * Id: Id <<Slug>>
         --
         * Name: Name
         * <<N/A>>: RelatedAuthors
@@ -21,7 +21,7 @@ package "Book Domain" as Domain {
     entity Book {
         * ISBN: ISBN <<Slug>>
         --
-        * ID: <<N/A>>
+        * Id: <<N/A>>
         * Title: Title
         * PublishedAt : PublishedAt
         * Publisher: Publisher
@@ -31,16 +31,22 @@ package "Book Domain" as Domain {
     Book "0..*" o--* "1..*" Author
     Book "0..*" --* "1" Publisher
 
-    note right of Book
+    note left of Book
         * ISBNにはバリデーションをかける
-        * ID (DB上のPK) はResponseから秘匿する
+        * ID (DB上の主キー) はResponseから秘匿する
         * 著者欄の入力はIDのリストにより行う
           - 入力順を保持すること
         * 出版日は未来の日時の入力も可とする
+        * ISBNの重複は許容しない
     endnote
 
     note bottom of Author
         * 日本語の人名には正規化を行わない (運用でカバーを想定)
+        * 名前欄の重複は許容しない
+    endnote
+
+    note bottom of Publisher
+        * 名前欄の重複は許容しない
     endnote
 }
 @enduml
