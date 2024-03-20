@@ -48,10 +48,10 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     protected virtual void OnModelCreating(ModelBuilder modelBuilder) { }
 
     // クエリ発行時の条件
-    public static Expression<Func<TSelf, bool>> QueryPredicate(IActor actor)
+    public static Expression<Func<TSelf, bool>> QueryPredicate(IActor? actor)
         => new TSelf().QueryPredicateCore(actor);
 
-    protected virtual Expression<Func<TSelf, bool>> QueryPredicateCore(IActor actor) => x => true;
+    protected virtual Expression<Func<TSelf, bool>> QueryPredicateCore(IActor? actor) => x => true;
 }
 
 public interface IDataModel<TEntity, TSelf> : IDataModel

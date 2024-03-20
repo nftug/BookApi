@@ -9,7 +9,7 @@ namespace BookApi.UseCase.Books;
 
 public class GetBookList
 {
-    public record Query(Actor Actor, BookQueryDTO QueryFields)
+    public record Query(Actor? Actor, BookQueryDTO QueryFields)
         : IRequest<PaginationResponseDTO<BookListItemResponseDTO>>;
 
     public class Handler(IBookQueryService bookQueryService)

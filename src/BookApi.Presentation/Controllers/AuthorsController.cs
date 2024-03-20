@@ -4,6 +4,7 @@ using BookApi.Presentation.Abstractions.Controllers;
 using BookApi.Presentation.Services;
 using BookApi.UseCase.Authors;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookApi.Presentation.Controllers;
@@ -11,13 +12,13 @@ namespace BookApi.Presentation.Controllers;
 public class AuthorsController(ISender sender, ActorFactoryService actorFactory)
     : ApiControllerBase(sender, actorFactory)
 {
-    [HttpGet]
+    [HttpGet, AllowAnonymous]
     public async Task<IActionResult> GetAuthorList([FromQuery] AuthorQueryDTO queryFields)
-        => await HandleRequest(actor => new GetAuthorList.Query(actor, queryFields));
+        => await HandleRequestForView(actor => new GetAuthorList.Query(actor, queryFields));
 
-    [HttpGet("{authorId}")]
+    [HttpGet("{authorId}"), AllowAnonymous]
     public async Task<IActionResult> GetAuthor(int authorId)
-        => await HandleRequest(actor => new GetAuthor.Query(actor, authorId));
+        => await HandleRequestForView(actor => new GetAuthor.Query(actor, authorId));
 
     [HttpPost]
     public async Task<IActionResult> CreateAuthor(AuthorCommandDTO command)

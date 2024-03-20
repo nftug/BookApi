@@ -12,7 +12,7 @@ namespace BookApi.Infrastructure.Services.QueryServices;
 
 public class BookQueryService(BookDbContext dbContext) : IBookQueryService
 {
-    public async Task<BookResponseDTO?> FindByISBNAsync(Actor actor, ISBNCode isbn)
+    public async Task<BookResponseDTO?> FindByISBNAsync(Actor? actor, ISBNCode isbn)
         => await dbContext.Books
             .Where(BookDataModel.QueryPredicate(actor))
             .Where(x => x.ISBN == isbn.Value)
@@ -25,12 +25,12 @@ public class BookQueryService(BookDbContext dbContext) : IBookQueryService
                     .Select(x => new AuthorSummaryResponseDTO(x.AuthorId, x.Author.Name)),
                 new(x.PublisherId, x.Publisher.Name),
                 x.BookLikes.Count(),
-                x.BookLikes.Any(l => l.UserId == actor.Id.Value)
+                actor != null && x.BookLikes.Any(l => l.UserId == actor.Id.Value)
             ))
             .SingleOrDefaultAsync();
 
     public async Task<PaginationResponseDTO<BookListItemResponseDTO>> GetPaginatedResults(
-        Actor actor, BookQueryDTO queryFields
+        Actor? actor, BookQueryDTO queryFields
     )
     {
         var paginationQuery = new PaginationQuery(queryFields);
@@ -53,7 +53,7 @@ public class BookQueryService(BookDbContext dbContext) : IBookQueryService
                         .Select(x => new AuthorSummaryResponseDTO(x.AuthorId, x.Author.Name)),
                     new(x.PublisherId, x.Publisher.Name),
                     x.BookLikes.Count(),
-                    x.BookLikes.Any(l => l.UserId == actor.Id.Value)
+                    actor != null && x.BookLikes.Any(l => l.UserId == actor.Id.Value)
                 ))
                 .ToListAsync();
 

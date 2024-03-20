@@ -8,7 +8,7 @@ namespace BookApi.UseCase.Publishers;
 
 public class GetPublisher
 {
-    public record Query(Actor Actor, int PublisherId) : IRequest<PublisherResponseDTO>;
+    public record Query(Actor? Actor, int PublisherId) : IRequest<PublisherResponseDTO>;
 
     public class Handler(IPublisherQueryService publisherQueryService) : IRequestHandler<Query, PublisherResponseDTO>
     {

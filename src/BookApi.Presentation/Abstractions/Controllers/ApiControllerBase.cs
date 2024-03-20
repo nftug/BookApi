@@ -16,7 +16,16 @@ public abstract class ApiControllerBase(ISender sender, ActorFactoryService acto
         where T : IBaseRequest
         => await HandleActionAsync(async () =>
         {
-            var actor = await actorFactory.GetActorAsync();
+            var actor =
+                await actorFactory.TryGetActorAsync() ?? throw new UnauthorizedException();
+            return await Mediator.Send(requestFunc(actor));
+        });
+
+    protected async Task<IActionResult> HandleRequestForView<T>(Func<Actor?, T> requestFunc)
+        where T : IBaseRequest
+        => await HandleActionAsync(async () =>
+        {
+            var actor = await actorFactory.TryGetActorAsync();
             return await Mediator.Send(requestFunc(actor));
         });
 

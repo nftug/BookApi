@@ -9,7 +9,7 @@ namespace BookApi.UseCase.Authors;
 
 public class GetAuthorList
 {
-    public record Query(Actor Actor, AuthorQueryDTO QueryFields)
+    public record Query(Actor? Actor, AuthorQueryDTO QueryFields)
         : IRequest<PaginationResponseDTO<AuthorSummaryResponseDTO>>;
 
     public class Handler(IAuthorQueryService authorQueryService)

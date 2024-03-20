@@ -9,7 +9,7 @@ namespace BookApi.UseCase.Publishers;
 
 public class GetPublisherList
 {
-    public record Query(Actor Actor, PublisherQueryDTO QueryFields)
+    public record Query(Actor? Actor, PublisherQueryDTO QueryFields)
         : IRequest<PaginationResponseDTO<PublisherSummaryResponseDTO>>;
 
     public class Handler(IPublisherQueryService publisherQueryService)
