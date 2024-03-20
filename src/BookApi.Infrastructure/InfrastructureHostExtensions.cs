@@ -27,7 +27,7 @@ public static class InfrastructureHostExtensions
         var settings = serviceProvider.GetRequiredService<IOptions<InitialUserSettings>>().Value;
 
         // Seed admin user
-        if (dbContext.Users.Any(x => x.UserId == settings.UserId.ToLower())) return;
+        if (dbContext.Users.Any(x => x.UserId.ToLower() == settings.UserId.ToLower())) return;
 
         var adminUser =
             new UserDataModel

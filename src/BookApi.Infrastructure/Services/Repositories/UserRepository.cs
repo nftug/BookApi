@@ -16,10 +16,9 @@ public class UserRepository(BookDbContext dbContext)
 
     public async Task<User?> FindByUserIdAsync(UserId userId)
         => (await DbContext.Users
-            .SingleOrDefaultAsync(x => x.UserId == userId.Value || x.UserId == userId.ToLower()))
+            .SingleOrDefaultAsync(x => x.UserId.ToLower() == userId.ToLower()))
             ?.ToEntity();
 
     public async Task<bool> AnyByUserIdAsync(UserId userId)
-        => await DbContext.Users
-            .AnyAsync(x => x.UserId == userId.Value || x.UserId == userId.ToLower());
+        => await DbContext.Users.AnyAsync(x => x.UserId.ToLower() == userId.ToLower());
 }
