@@ -46,7 +46,7 @@ public class PublisherQueryService(BookDbContext dbContext) : IPublisherQuerySer
             : null;
     }
 
-    public async Task<PaginationResponseDTO<PublisherSummaryResponseDTO>> GetPaginatedResults(
+    public async Task<PaginationResponseDTO<PublisherSummaryResponseDTO>> GetPaginatedResultsAsync(
         Actor? actor, PublisherQueryDTO queryFields
     )
     {
@@ -62,6 +62,6 @@ public class PublisherQueryService(BookDbContext dbContext) : IPublisherQuerySer
                 .Select(x => new PublisherSummaryResponseDTO(x.Id, x.Name))
                 .ToListAsync();
 
-        return new(results, totalItems, queryFields);
+        return new(results, totalItems, paginationQuery);
     }
 }

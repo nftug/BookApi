@@ -1,5 +1,3 @@
-using BookApi.Domain.Abstractions.DTOs;
-
 namespace BookApi.Domain.DTOs.Responses;
 
 public record BookResponseDTO(

@@ -18,6 +18,6 @@ public class GetUserList
         public async Task<PaginationResponseDTO<UserSummaryResponseDTO>> Handle(
             Query request, CancellationToken cancellationToken
         )
-            => await userQueryService.GetPaginatedResults(request.Actor, request.QueryFields);
+            => await userQueryService.GetPaginatedResultsAsync(request.Actor, request.QueryFields);
     }
 }

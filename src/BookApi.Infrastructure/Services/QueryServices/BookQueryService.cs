@@ -5,6 +5,7 @@ using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Books;
 using BookApi.Domain.ValueObjects.Pagination;
 using BookApi.Domain.ValueObjects.Shared;
+using BookApi.Domain.ValueObjects.Users;
 using BookApi.Infrastructure.DataModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,18 +30,59 @@ public class BookQueryService(BookDbContext dbContext) : IBookQueryService
             ))
             .SingleOrDefaultAsync();
 
-    public async Task<PaginationResponseDTO<BookListItemResponseDTO>> GetPaginatedResults(
+    public async Task<PaginationResponseDTO<BookListItemResponseDTO>> GetPaginatedResultsAsync(
         Actor? actor, BookQueryDTO queryFields
     )
     {
         var paginationQuery = new PaginationQuery(queryFields);
+        var query = ListQueryBase(actor, queryFields);
+        return await GetPaginatedResultsAsyncCore(actor, paginationQuery, query);
+    }
 
-        var query = dbContext.Books
+    public async Task<PaginationResponseDTO<BookListItemResponseDTO>> GetLikedBooksAsync(
+        Actor? actor, UserId userId, BookQueryDTO queryFields
+    )
+    {
+        var paginationQuery = new PaginationQuery(queryFields);
+        var query = ListQueryBase(actor, queryFields)
+            .Where(x => x.BookLikes.Any(x => x.User.UserId.ToLower() == userId.ToLower()))
+            .OrderByDescending(x => x.BookLikes.Single(x => x.User.UserId.ToLower() == userId.ToLower()).LikedAt);
+
+        return await GetPaginatedResultsAsyncCore(actor, paginationQuery, query);
+    }
+
+    public async Task<PaginationResponseDTO<BookLikeListItemResponseDTO>> GetLikesAsync(
+        ISBNCode isbn, BookLikeQueryDTO queryFields
+    )
+    {
+        var paginationQuery = new PaginationQuery(queryFields);
+        var query = dbContext.BookLikes
+            .Where(x => x.Book.ISBN == isbn.Value)
+            .OrderByDescending(x => x.LikedAt);
+
+        int totalItems = await query.CountAsync();
+        var results =
+            await paginationQuery.PaginateQuery(query)
+                .Select(x => new BookLikeListItemResponseDTO(
+                    new(x.User.UserId, x.User.UserName),
+                    x.LikedAt
+                ))
+                .ToListAsync();
+
+        return new(results, totalItems, paginationQuery);
+    }
+
+    private IQueryable<BookDataModel> ListQueryBase(Actor? actor, BookQueryDTO queryFields)
+        => dbContext.Books
             .Where(BookDataModel.QueryPredicate(actor))
             .Where(x => queryFields.Search == null || x.Title.Contains(queryFields.Search))
             .Where(x => queryFields.AuthorId == null || x.Authors.Any(a => a.Id == queryFields.AuthorId))
             .Where(x => queryFields.PublisherId == null || x.PublisherId == queryFields.PublisherId);
 
+    private static async Task<PaginationResponseDTO<BookListItemResponseDTO>> GetPaginatedResultsAsyncCore(
+        Actor? actor, PaginationQuery paginationQuery, IQueryable<BookDataModel> query
+    )
+    {
         int totalItems = await query.CountAsync();
         var results =
             await paginationQuery.PaginateQuery(query)
@@ -57,6 +99,6 @@ public class BookQueryService(BookDbContext dbContext) : IBookQueryService
                 ))
                 .ToListAsync();
 
-        return new(results, totalItems, queryFields);
+        return new(results, totalItems, paginationQuery);
     }
 }
