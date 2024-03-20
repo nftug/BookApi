@@ -81,4 +81,8 @@ public class Book : AggregateEntityBase<Book>
     {
         Likes = Likes.RecreateWithEdit(permission, dateTimeProvider, userItemId, doLikeBook);
     }
+
+    public bool IsLikedBy(ItemId userItemId) => Likes.IsLikedBy(userItemId);
+
+    public bool IsLikedByMe(Actor actor) => Likes.IsLikedBy(actor.Id);
 }
