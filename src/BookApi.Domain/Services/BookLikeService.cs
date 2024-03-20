@@ -16,6 +16,9 @@ public class BookLikeService(IBookRepository bookRepository, IDateTimeProvider d
         AdminOnlyPermission permission, Book book, User user, bool doLikeBook
     )
     {
+        // 現在の状態と同じならば何もしない
+        if (book.IsLikedBy(user.ItemId) == doLikeBook) return;
+
         book.EditLike(permission, dateTimeProvider, user.ItemId, doLikeBook);
         await bookRepository.SaveAsync(permission.Actor, book);
     }
