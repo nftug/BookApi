@@ -25,6 +25,6 @@ public interface IPublisherRepository : IRepositoryBase<Publisher>
 
 public interface IUserRepository : IRepositoryBase<User>
 {
-    Task<User?> FindByUserIdAsync(IActor actor, UserId userId);
+    Task<User?> FindByUserIdAsync(UserId userId);
     Task<bool> AnyByUserIdAsync(UserId userId);
 }

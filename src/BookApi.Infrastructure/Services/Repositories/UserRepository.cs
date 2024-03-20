@@ -14,10 +14,12 @@ public class UserRepository(BookDbContext dbContext)
     protected override IQueryable<UserDataModel> QueryForRead(IActor actor)
         => DbContext.Users.Where(UserDataModel.QueryPredicate(actor));
 
-    public async Task<User?> FindByUserIdAsync(IActor actor, UserId userId)
-        => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.UserId == userId.Value))
-                ?.ToEntity();
+    public async Task<User?> FindByUserIdAsync(UserId userId)
+        => (await DbContext.Users
+            .SingleOrDefaultAsync(x => x.UserId == userId.Value || x.UserId == userId.ToLower()))
+            ?.ToEntity();
 
     public async Task<bool> AnyByUserIdAsync(UserId userId)
-        => await DbContext.Users.AnyAsync(x => x.UserId == userId.Value);
+        => await DbContext.Users
+            .AnyAsync(x => x.UserId == userId.Value || x.UserId == userId.ToLower());
 }

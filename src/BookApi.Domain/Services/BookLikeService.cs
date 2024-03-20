@@ -20,7 +20,7 @@ public class BookLikeService(
         AdminOnlyPermission permission, Book book, UserId userId, bool doLikeBook
     )
     {
-        var user = await userRepository.FindByUserIdAsync(permission.Actor, userId)
+        var user = await userRepository.FindByUserIdAsync(userId)
             ?? throw new ValidationErrorException("指定されたユーザーが見つかりません。");
 
         book.EditLike(permission, dateTimeProvider, user.ItemId, doLikeBook);

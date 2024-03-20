@@ -1,12 +1,14 @@
 using BookApi.Domain.DTOs.Commands;
 using BookApi.Presentation.Abstractions.Controllers;
+using BookApi.Presentation.Services;
 using BookApi.UseCase.Books;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookApi.Presentation.Controllers;
 
-public class BooksController(ISender sender) : ApiControllerBase(sender)
+public class BooksController(ISender sender, ActorFactoryService actorFactory)
+    : ApiControllerBase(sender, actorFactory)
 {
     [HttpGet("{isbn}")]
     public async Task<IActionResult> GetBook(string isbn)

@@ -1,12 +1,14 @@
 using BookApi.Domain.DTOs.Commands;
 using BookApi.Presentation.Abstractions.Controllers;
+using BookApi.Presentation.Services;
 using BookApi.UseCase.Publishers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookApi.Presentation.Controllers;
 
-public class PublishersController(ISender sender) : ApiControllerBase(sender)
+public class PublishersController(ISender sender, ActorFactoryService actorFactory)
+    : ApiControllerBase(sender, actorFactory)
 {
     [HttpGet("{publisherId}")]
     public async Task<IActionResult> GetPublisher(int publisherId)

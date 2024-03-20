@@ -12,7 +12,7 @@ public class UserQueryService(BookDbContext dbContext) : IUserQueryService
     public async Task<UserResponseDTO?> FindByUserIdAsync(IActor actor, UserId userId)
         => await dbContext.Users
             .Where(UserDataModel.QueryPredicate(actor))
-            .Where(x => x.UserId == userId.Value)
+            .Where(x => x.UserId == userId.ToLower())
             .Select(x => new UserResponseDTO(
                 x.UserId,
                 x.UserName,

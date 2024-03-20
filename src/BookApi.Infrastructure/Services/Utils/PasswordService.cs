@@ -1,3 +1,4 @@
+using System.Text;
 using BookApi.Domain.Interfaces;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +9,9 @@ namespace BookApi.Infrastructure.Services.Utils;
 public class PasswordService(IConfiguration config) : IPasswordService
 {
     private readonly byte[] _salt =
-        Convert.FromBase64String(
-            config.GetValue<string>("HashSalt:PasswordSalt")
-            ?? throw new InvalidDataException("HashSalt__PasswordSalt is not configured.")
+        Encoding.UTF8.GetBytes(
+            config.GetValue<string>("HashSalts:PasswordSalt")
+            ?? throw new InvalidDataException("HashSalts__PasswordSalt is not configured.")
         );
 
     public string HashPassword(string rawPassword)

@@ -40,7 +40,7 @@ public class User : AggregateEntityBase<User>
     }
 
     internal static User CreateNew(
-        OwnerOnlyPermission permission,
+        PassThroughPermission permission,
         IDateTimeProvider dateTimeProvider, IPasswordService passwordService,
         string userId, string userName, string rawPassword
     )
