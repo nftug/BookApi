@@ -86,17 +86,31 @@ cd ./Docker/bookapi-production
 docker-compose up -d
 ```
 
-### ブラウザで動作確認
+### Swagger UIで動作確認
 
 ブラウザで <http://localhost:5000/swagger> にアクセスすると、Swagger UIでAPIの操作ができます。
 
-### 直接操作して動作確認
+右端に鍵マークがついているエンドポイントについては、未ログイン状態だと使用できません。
 
-下記のエンドポイントにアクセスしてAPIを直接操作することもできます。
+### 初期ユーザー (admin) でログイン
 
-- <http://localhost:5000/api/books/{ISBNCode}>: 書籍のデータを操作
-- <http://localhost:5000/api/authors/{Id}>: 著者のデータを操作
-- <http://localhost:5000/api/publishers/{Id}>: 出版社のデータを操作
+初期ユーザーでログインできます。`/api/login` に下記の内容でPOSTリクエストを送信します。
+
+```json
+{
+  "userId": "admin",
+  "password": "password"
+}
+```
+
+ログインが成功すると、 `accessToken` にJWTトークンが返却されますのでコピーしてください。
+
+各エンドポイントの右端、もしくは画面最上部の鍵マークをクリックするとアクセストークンの入力画面が表示されます。  
+ここに先ほどコピーしたアクセストークンを貼り付けて、 Authorize をクリックします。
+
+![Swagger UI 認証画面](/images/SwaggerUI_Authorization.png)
+
+これでログイン状態でリクエストを送ることができるようになりました。アクセストークンはSwagger UIのタブを閉じるまで保持されます。
 
 ## APIドキュメント
 
