@@ -13,10 +13,8 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     [Key] public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public int CreatedById { get; set; }
-    public string CreatedByName { get; set; } = string.Empty;
-    public int? UpdatedById { get; set; }
-    public string? UpdatedByName { get; set; }
+    public string CreatedByUserId { get; set; } = string.Empty;
+    public string? UpdatedByUserId { get; set; }
 
     // レイヤー間の詰替え用
     public abstract TEntity ToEntity();
@@ -25,10 +23,8 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     {
         CreatedAt = entity.CreatedAt;
         UpdatedAt = entity.UpdatedAt;
-        CreatedById = entity.CreatedBy.UserId;
-        CreatedByName = entity.CreatedBy.UserName;
-        UpdatedById = entity.UpdatedBy?.UserId;
-        UpdatedByName = entity.UpdatedBy?.UserName;
+        CreatedByUserId = entity.CreatedBy.UserId;
+        UpdatedByUserId = entity.UpdatedBy?.UserId;
         OnTransferFromEntity(entity);
 
         return (TSelf)this;
@@ -52,10 +48,10 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     protected virtual void OnModelCreating(ModelBuilder modelBuilder) { }
 
     // クエリ発行時の条件
-    public static Expression<Func<TSelf, bool>> QueryPredicate(IActor actor)
+    public static Expression<Func<TSelf, bool>> QueryPredicate(IActor? actor)
         => new TSelf().QueryPredicateCore(actor);
 
-    protected virtual Expression<Func<TSelf, bool>> QueryPredicateCore(IActor actor) => x => true;
+    protected virtual Expression<Func<TSelf, bool>> QueryPredicateCore(IActor? actor) => x => true;
 }
 
 public interface IDataModel<TEntity, TSelf> : IDataModel
@@ -72,8 +68,6 @@ public interface IDataModel
     int Id { get; set; }
     DateTime CreatedAt { get; set; }
     DateTime? UpdatedAt { get; set; }
-    int CreatedById { get; set; }
-    string CreatedByName { get; set; }
-    int? UpdatedById { get; set; }
-    string? UpdatedByName { get; set; }
+    string CreatedByUserId { get; set; }
+    string? UpdatedByUserId { get; set; }
 }

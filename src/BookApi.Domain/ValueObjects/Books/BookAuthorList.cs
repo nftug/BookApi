@@ -6,9 +6,9 @@ namespace BookApi.Domain.ValueObjects.Books;
 
 public class BookAuthorList : IEnumerable<ItemId>
 {
-    protected List<ItemId> Items { get; }
+    private readonly List<ItemId> _items;
 
-    private BookAuthorList(IEnumerable<ItemId> items) => Items = [.. items];
+    private BookAuthorList(IEnumerable<ItemId> items) => _items = [.. items];
 
     public static BookAuthorList CreateWithValidation(int[] authorIds)
     {
@@ -21,7 +21,7 @@ public class BookAuthorList : IEnumerable<ItemId>
     public static BookAuthorList Reconstruct(int[] authorIds)
         => new(authorIds.Select(ItemId.Reconstruct));
 
-    public IEnumerator<ItemId> GetEnumerator() => Items.GetEnumerator();
+    public IEnumerator<ItemId> GetEnumerator() => _items.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 }

@@ -1,27 +1,39 @@
 using BookApi.Domain.Exceptions;
 using BookApi.Domain.ValueObjects.Shared;
+using BookApi.Presentation.Services;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookApi.Presentation.Abstractions.Controllers;
 
-[ApiController, Route("/api/[controller]")]
-public abstract class ApiControllerBase(ISender sender) : ControllerBase
+[ApiController, Route("/api/[controller]"), Authorize]
+public abstract class ApiControllerBase(ISender sender, ActorFactoryService actorFactory) : ControllerBase
 {
     private readonly ISender Mediator = sender;
 
-    protected async Task<IActionResult> HandleRequest<T>(Func<ActorForPermission, T> requestFunc)
+    protected async Task<IActionResult> HandleRequest<T>(Func<Actor, T> requestFunc)
         where T : IBaseRequest
-    {
-        var dummyActor = new ActorForPermission(0, "Admin", true);
-        return await HandleActionAsync(() => Mediator.Send(requestFunc(dummyActor)));
-    }
+        => await HandleActionAsync(async () =>
+        {
+            var actor =
+                await actorFactory.TryGetActorAsync() ?? throw new UnauthorizedException();
+            return await Mediator.Send(requestFunc(actor));
+        });
+
+    protected async Task<IActionResult> HandleRequestForView<T>(Func<Actor?, T> requestFunc)
+        where T : IBaseRequest
+        => await HandleActionAsync(async () =>
+        {
+            var actor = await actorFactory.TryGetActorAsync();
+            return await Mediator.Send(requestFunc(actor));
+        });
 
     protected async Task<IActionResult> HandleRequestForAnonymous<T>(T request)
         where T : IBaseRequest
-        => await HandleActionAsync(() => Mediator.Send(request));
+        => await HandleActionAsync(async () => await Mediator.Send(request));
 
-    private async Task<IActionResult> HandleActionAsync<T>(Func<Task<T>> action)
+    protected async Task<IActionResult> HandleActionAsync<T>(Func<Task<T>> action)
     {
         try
         {
@@ -45,6 +57,10 @@ public abstract class ApiControllerBase(ISender sender) : ControllerBase
         catch (ForbiddenException)
         {
             return Forbid();
+        }
+        catch (UnauthorizedException)
+        {
+            return Unauthorized();
         }
         catch (ConcurrencyException)
         {

@@ -7,18 +7,13 @@ public record ActorRecord
     public required IActor CreatedBy { get; init; }
     public IActor? UpdatedBy { get; init; }
 
-    public static ActorRecord Reconstruct(
-        int createdById, string createdByName,
-        int? updatedById, string? updatedByName
-    )
+    public static ActorRecord Reconstruct(string createdByUserId, string? updatedByUserId)
     {
         return new()
         {
-            CreatedBy = new ActorForRecord(createdById, createdByName),
+            CreatedBy = new ActorForRecord(createdByUserId),
             UpdatedBy =
-                updatedById is { } _updatedById && updatedByName is { }
-                ? new ActorForRecord(_updatedById, updatedByName)
-                : null
+                updatedByUserId is { } ? new ActorForRecord(updatedByUserId) : null
         };
     }
 }

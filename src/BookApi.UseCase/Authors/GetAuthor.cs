@@ -8,7 +8,7 @@ namespace BookApi.UseCase.Authors;
 
 public class GetAuthor
 {
-    public record Query(ActorForPermission Actor, int AuthorId) : IRequest<AuthorResponseDTO>;
+    public record Query(Actor? Actor, int AuthorId) : IRequest<AuthorResponseDTO>;
 
     public class Handler(IAuthorQueryService authorQueryService) : IRequestHandler<Query, AuthorResponseDTO>
     {

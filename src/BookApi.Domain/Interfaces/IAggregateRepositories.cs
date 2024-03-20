@@ -2,6 +2,7 @@ using BookApi.Domain.Abstractions.Interfaces;
 using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.Entities;
 using BookApi.Domain.ValueObjects.Books;
+using BookApi.Domain.ValueObjects.Users;
 
 namespace BookApi.Domain.Interfaces;
 
@@ -20,4 +21,10 @@ public interface IAuthorRepository : IRepositoryBase<Author>
 public interface IPublisherRepository : IRepositoryBase<Publisher>
 {
     Task<bool> AnyByNameAsync(string name, int? itemIdExcluded = null);
+}
+
+public interface IUserRepository : IRepositoryBase<User>
+{
+    Task<User?> FindByUserIdAsync(UserId userId);
+    Task<bool> AnyByUserIdAsync(UserId userId);
 }

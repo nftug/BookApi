@@ -36,10 +36,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CreatedByName")
+                    b.Property<string>("CreatedByUserId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -51,10 +48,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UpdatedByName")
+                    b.Property<string>("UpdatedByUserId")
                         .HasColumnType("text");
 
                     b.Property<int>("VersionId")
@@ -80,10 +74,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CreatedByName")
+                    b.Property<string>("CreatedByUserId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -105,10 +96,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UpdatedByName")
+                    b.Property<string>("UpdatedByUserId")
                         .HasColumnType("text");
 
                     b.Property<int>("VersionId")
@@ -127,20 +115,38 @@ namespace BookApi.Infrastructure.Migrations
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.Intermediates.BookAuthorDataModel", b =>
                 {
-                    b.Property<int>("AuthorId")
+                    b.Property<int>("BookId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("BookId")
+                    b.Property<int>("AuthorId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.HasKey("AuthorId", "BookId");
+                    b.HasKey("BookId", "AuthorId");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("BookAuthor", (string)null);
+                });
+
+            modelBuilder.Entity("BookApi.Infrastructure.DataModels.Intermediates.BookLikeDataModel", b =>
+                {
+                    b.Property<int>("BookId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("LikedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("BookId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BookLike", (string)null);
                 });
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.PublisherDataModel", b =>
@@ -154,10 +160,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CreatedByName")
+                    b.Property<string>("CreatedByUserId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -169,10 +172,7 @@ namespace BookApi.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UpdatedByName")
+                    b.Property<string>("UpdatedByUserId")
                         .HasColumnType("text");
 
                     b.Property<int>("VersionId")
@@ -185,6 +185,56 @@ namespace BookApi.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Publisher", (string)null);
+                });
+
+            modelBuilder.Entity("BookApi.Infrastructure.DataModels.UserDataModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedByUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HashedPassword")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedByUserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<int>("VersionId")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.BookDataModel", b =>
@@ -217,6 +267,25 @@ namespace BookApi.Infrastructure.Migrations
                     b.Navigation("Book");
                 });
 
+            modelBuilder.Entity("BookApi.Infrastructure.DataModels.Intermediates.BookLikeDataModel", b =>
+                {
+                    b.HasOne("BookApi.Infrastructure.DataModels.BookDataModel", "Book")
+                        .WithMany("BookLikes")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookApi.Infrastructure.DataModels.UserDataModel", "User")
+                        .WithMany("BookLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.AuthorDataModel", b =>
                 {
                     b.Navigation("BookAuthors");
@@ -225,11 +294,18 @@ namespace BookApi.Infrastructure.Migrations
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.BookDataModel", b =>
                 {
                     b.Navigation("BookAuthors");
+
+                    b.Navigation("BookLikes");
                 });
 
             modelBuilder.Entity("BookApi.Infrastructure.DataModels.PublisherDataModel", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BookApi.Infrastructure.DataModels.UserDataModel", b =>
+                {
+                    b.Navigation("BookLikes");
                 });
 #pragma warning restore 612, 618
         }
