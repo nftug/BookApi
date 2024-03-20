@@ -1,3 +1,3 @@
 namespace BookApi.Domain.DTOs.Commands;
 
-public record BookLikeEditCommandDTO(bool IsLiked);
+public record BookLikeEditCommandDTO(string UserId, bool IsLiked);

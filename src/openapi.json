@@ -261,7 +261,7 @@
         }
       }
     },
-    "/api/Books/{isbn}/likes/users/{userId}": {
+    "/api/Books/{isbn}/likes/edit": {
       "post": {
         "tags": [
           "Books"
@@ -269,15 +269,6 @@
         "parameters": [
           {
             "name": "isbn",
-            "in": "path",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
             "in": "path",
             "required": true,
             "style": "simple",
@@ -635,6 +626,10 @@
       "BookLikeEditCommandDTO": {
         "type": "object",
         "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
           "isLiked": {
             "type": "boolean"
           }
