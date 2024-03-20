@@ -22,7 +22,7 @@ public class ChangeUserPassword
                 ?? throw new ItemNotFoundException();
             var permission = new OwnerOnlyPermission(request.Actor, user);
 
-            await userSaveService.ChangePasswordAsync(permission, user, request.CommandForm.Password);
+            await userSaveService.ChangePasswordAsync(permission, user, request.CommandForm);
         }
     }
 }
