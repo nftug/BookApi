@@ -59,10 +59,10 @@ public class User : AggregateEntityBase<User>
     internal void ChangePassword(
         OwnerOnlyPermission permission,
         IDateTimeProvider dateTimeProvider, IPasswordService passwordService,
-        string rawPassword
+        string oldPasswordRaw, string newPasswordRaw
     )
     {
-        HashedPassword = HashedPassword.CreateWithValidation(passwordService, rawPassword);
+        HashedPassword = HashedPassword.ChangePassword(passwordService, oldPasswordRaw, newPasswordRaw);
         Update(permission, dateTimeProvider);
     }
 

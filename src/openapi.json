@@ -1096,7 +1096,10 @@
       "UserPasswordCommandDTO": {
         "type": "object",
         "properties": {
-          "password": {
+          "oldPassword": {
+            "type": "string"
+          },
+          "newPassword": {
             "type": "string"
           }
         },
