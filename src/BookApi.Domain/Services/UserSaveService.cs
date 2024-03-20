@@ -1,3 +1,4 @@
+using BookApi.Domain.DTOs.Commands;
 using BookApi.Domain.Entities;
 using BookApi.Domain.Exceptions;
 using BookApi.Domain.Interfaces;
@@ -12,18 +13,19 @@ public class UserSaveService(
     IDateTimeProvider dateTimeProvider
 )
 {
-    public async Task<User> RegisterAsync(
-        OwnerOnlyPermission permission,
-        string rawUserId, string userName, string rawPassword
-    )
+    public async Task<User> RegisterAsync(SignUpCommandDTO command)
     {
-        var userId = UserId.CreateWithValidation(rawUserId);
+        var userId = UserId.CreateWithValidation(command.UserId);
         if (await userRepository.AnyByUserIdAsync(userId))
             throw new ValidationErrorException("既に同じユーザーIDが登録されています。");
 
+        // 一時的なPermissionを作成
+        var actor = new ActorForPermission(ItemId.Reconstruct(0), userId.Value, false);
+        var permission = new PassThroughPermission(actor);
+
         var newUser = User.CreateNew(
             permission, dateTimeProvider, passwordService,
-            rawUserId, userName, rawPassword
+            command.UserId, command.UserName, command.Password
         );
         await userRepository.SaveAsync(permission.Actor, newUser);
         return newUser;

@@ -9,3 +9,5 @@ public class ForbiddenException : Exception;
 public class ItemNotFoundException : Exception;
 
 public class ConcurrencyException : Exception;
+
+public class UnauthorizedException : Exception;

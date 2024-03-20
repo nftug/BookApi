@@ -23,10 +23,12 @@ public record UserId
                 "半角英数字、ハイフン、アンダースコア以外の文字は使用できません。"
             );
 
-        return new(value.ToLower());
+        return new(value);
     }
 
     public static UserId Reconstruct(string value) => new(value);
 
     public override string ToString() => Value;
+
+    public string ToLower() => Value.ToLower();
 }

@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,8 +29,7 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Debug'">
     <Exec Command="dotnet tool restore" />
-    <Exec Command="dotnet swagger tofile --output ../openapi.json $(OutputPath)$(AssemblyName).dll v1"
-          EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development;DOTNET_ROLL_FORWARD=LatestMajor" />
+    <Exec Command="dotnet swagger tofile --output ../openapi.json $(OutputPath)$(AssemblyName).dll v1" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development;DOTNET_ROLL_FORWARD=LatestMajor" />
   </Target>
 
 </Project>
