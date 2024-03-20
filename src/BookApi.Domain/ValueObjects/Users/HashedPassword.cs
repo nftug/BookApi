@@ -26,4 +26,14 @@ public record HashedPassword
 
     public bool VerifyPassword(IPasswordService passwordService, string rawPassword)
         => passwordService.VerifyPassword(Value, rawPassword);
+
+    public HashedPassword ChangePassword(
+        IPasswordService passwordService, string oldPasswordRaw, string newPasswordRaw
+    )
+    {
+        if (!VerifyPassword(passwordService, oldPasswordRaw))
+            throw new ValidationErrorException("現在のパスワードが違います。");
+
+        return CreateWithValidation(passwordService, newPasswordRaw);
+    }
 }

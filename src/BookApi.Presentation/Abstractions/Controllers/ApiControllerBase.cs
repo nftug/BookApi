@@ -41,6 +41,7 @@ public abstract class ApiControllerBase(ISender sender, ActorFactoryService acto
 
             return result switch
             {
+                Unit x => NoContent(),
                 T content => Ok(content),
                 _ => NoContent()
             };
