@@ -1,4 +1,5 @@
 using BookApi.Domain.DTOs.Commands;
+using BookApi.Domain.DTOs.Queries;
 using BookApi.Presentation.Abstractions.Controllers;
 using BookApi.Presentation.Services;
 using BookApi.UseCase.Publishers;
@@ -10,6 +11,10 @@ namespace BookApi.Presentation.Controllers;
 public class PublishersController(ISender sender, ActorFactoryService actorFactory)
     : ApiControllerBase(sender, actorFactory)
 {
+    [HttpGet]
+    public async Task<IActionResult> GetPublisherList([FromQuery] PublisherQueryDTO queryFields)
+        => await HandleRequest(actor => new GetPublisherList.Query(actor, queryFields));
+
     [HttpGet("{publisherId}")]
     public async Task<IActionResult> GetPublisher(int publisherId)
         => await HandleRequest(actor => new GetPublisher.Query(actor, publisherId));

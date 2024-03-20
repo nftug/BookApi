@@ -1,11 +1,13 @@
+using BookApi.Domain.Abstractions.DTOs;
+
 namespace BookApi.Domain.DTOs.Responses;
 
 public record BookResponseDTO(
     string ISBN,
     string Title,
     DateTime PublishedAt,
-    IEnumerable<ItemSummaryResponseDTO> Authors,
-    ItemSummaryResponseDTO Publisher,
+    IEnumerable<AuthorSummaryResponseDTO> Authors,
+    PublisherSummaryResponseDTO Publisher,
     int NumberOfLikes,
     bool IsLikedByMe
 );
@@ -14,8 +16,8 @@ public record BookListItemResponseDTO(
     string ISBN,
     string Title,
     DateTime PublishedAt,
-    IEnumerable<ItemSummaryResponseDTO> Authors,
-    ItemSummaryResponseDTO Publisher,
+    IEnumerable<AuthorSummaryResponseDTO> Authors,
+    PublisherSummaryResponseDTO Publisher,
     int NumberOfLikes,
     bool IsLikedByMe
 );
