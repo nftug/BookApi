@@ -12,7 +12,7 @@ namespace BookApi.UseCase.Books;
 
 public class EditBookLike
 {
-    public record Command(Actor Actor, string ISBN, BookLikeEditCommandDTO FormCommand)
+    public record Command(Actor Actor, string UserId, string ISBN, BookLikeEditCommandDTO FormCommand)
         : IRequest<BookLikeResponseDTO>;
 
     public class Handler(
@@ -28,7 +28,7 @@ public class EditBookLike
                 await bookRepository.FindByISBNAsync(request.Actor, isbn)
                 ?? throw new ItemNotFoundException();
 
-            var userId = UserId.Reconstruct(request.FormCommand.UserId);
+            var userId = UserId.Reconstruct(request.UserId);
             var user = await userRepository.FindByUserIdAsync(userId)
                 ?? throw new ValidationErrorException($"ユーザーが見つかりません。");
 
