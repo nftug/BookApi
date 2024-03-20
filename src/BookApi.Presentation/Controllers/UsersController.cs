@@ -12,27 +12,25 @@ namespace BookApi.Presentation.Controllers;
 public class UsersController(ISender sender, ActorFactoryService actorFactory)
     : ApiControllerBase(sender, actorFactory)
 {
-    [AllowAnonymous]
-    [HttpPost("login")]
+    [HttpPost("login"), AllowAnonymous]
     public async Task<IActionResult> LoginAsync(LoginCommandDTO command)
         => await HandleRequestForAnonymous(new Login.Command(command));
 
-    [AllowAnonymous]
-    [HttpPost("signup")]
+    [HttpPost("signup"), AllowAnonymous]
     public async Task<IActionResult> SignUp(SignUpCommandDTO command)
         => await HandleRequestForAnonymous(new SignUp.Command(command));
 
-    [HttpGet]
+    [HttpGet, AllowAnonymous]
     public async Task<IActionResult> GetUserList([FromQuery] UserQueryDTO queryFields)
-        => await HandleRequest(actor => new GetUserList.Query(actor, queryFields));
+        => await HandleRequestForView(actor => new GetUserList.Query(actor, queryFields));
 
     [HttpGet("me")]
     public async Task<IActionResult> GetMyUserInfo()
         => await HandleRequest(actor => new GetUser.Query(actor, actor.UserId));
 
-    [HttpGet("{userId}")]
+    [HttpGet("{userId}"), AllowAnonymous]
     public async Task<IActionResult> GetUserInfo(string userId)
-        => await HandleRequest(actor => new GetUser.Query(actor, userId));
+        => await HandleRequestForView(actor => new GetUser.Query(actor, userId));
 
     [HttpPut("me/username")]
     public async Task<IActionResult> ChangeMyUserName(UserNameCommandDTO command)

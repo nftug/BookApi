@@ -12,10 +12,11 @@ public class ActorFactoryService(
 {
     private readonly HttpContext _httpContext = httpContextAccessor.HttpContext!;
 
-    public async Task<Actor> GetActorAsync()
+    public async Task<Actor?> TryGetActorAsync()
     {
-        string userId =
-            _httpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+        string? userId =
+            _httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (userId is null) return null;
 
         var user =
             await userRepository.FindByUserIdAsync(UserId.Reconstruct(userId))

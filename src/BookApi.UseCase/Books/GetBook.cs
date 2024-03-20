@@ -9,7 +9,7 @@ namespace BookApi.UseCase.Books;
 
 public class GetBook
 {
-    public record Query(Actor Actor, string ISBN) : IRequest<BookResponseDTO>;
+    public record Query(Actor? Actor, string ISBN) : IRequest<BookResponseDTO>;
 
     public class Handler(IBookQueryService bookQueryService) : IRequestHandler<Query, BookResponseDTO>
     {

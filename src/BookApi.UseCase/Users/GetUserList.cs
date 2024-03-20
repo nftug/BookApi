@@ -9,7 +9,7 @@ namespace BookApi.UseCase.Users;
 
 public class GetUserList
 {
-    public record Query(Actor Actor, UserQueryDTO QueryFields)
+    public record Query(Actor? Actor, UserQueryDTO QueryFields)
         : IRequest<PaginationResponseDTO<UserSummaryResponseDTO>>;
 
     public class Handler(IUserQueryService userQueryService)

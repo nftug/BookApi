@@ -1,9 +1,9 @@
 using BookApi.Domain.Abstractions.DTOs;
-using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.DTOs.Queries;
 using BookApi.Domain.DTOs.Responses;
 using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Pagination;
+using BookApi.Domain.ValueObjects.Shared;
 using BookApi.Infrastructure.DataModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +11,7 @@ namespace BookApi.Infrastructure.Services.QueryServices;
 
 public class AuthorQueryService(BookDbContext dbContext) : IAuthorQueryService
 {
-    public async Task<AuthorResponseDTO?> FindAsync(IActor actor, int itemId)
+    public async Task<AuthorResponseDTO?> FindAsync(Actor? actor, int itemId)
     {
         var response = await dbContext.Authors
             .Where(AuthorDataModel.QueryPredicate(actor))
@@ -46,7 +46,7 @@ public class AuthorQueryService(BookDbContext dbContext) : IAuthorQueryService
     }
 
     public async Task<PaginationResponseDTO<AuthorSummaryResponseDTO>> GetPaginatedResults(
-        IActor actor, AuthorQueryDTO queryFields
+        Actor? actor, AuthorQueryDTO queryFields
     )
     {
         var paginationQuery = new PaginationQuery(queryFields);
