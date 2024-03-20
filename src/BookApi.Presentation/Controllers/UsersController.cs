@@ -49,4 +49,8 @@ public class UsersController(ISender sender, ActorFactoryService actorFactory)
     [HttpGet("{userId}/likes/books"), AllowAnonymous]
     public async Task<IActionResult> GetUsersLikedBooks(string userId, [FromQuery] BookQueryDTO queryFields)
         => await HandleRequestForView(actor => new GetLikedBookList.Query(actor, userId, queryFields));
+
+    [HttpPost("{userId}/likes/books/{isbn}")]
+    public async Task<IActionResult> EditUsersBookLike(string userId, string isbn, BookLikeEditCommandDTO command)
+        => await HandleRequest(actor => new EditBookLike.Command(actor, userId, isbn, command));
 }
