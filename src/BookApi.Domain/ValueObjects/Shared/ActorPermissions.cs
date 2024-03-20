@@ -3,7 +3,7 @@ using BookApi.Domain.Abstractions.ValueObjects;
 
 namespace BookApi.Domain.ValueObjects.Shared;
 
-public class PassThroughPermission(ActorForPermission actor) : IActorPermission
+public class PassThroughPermission(Actor actor) : IActorPermission
 {
     public bool CanCreate => true;
 
@@ -11,10 +11,10 @@ public class PassThroughPermission(ActorForPermission actor) : IActorPermission
 
     public bool CanDelete => true;
 
-    public ActorForPermission Actor { get; } = actor;
+    public Actor Actor { get; } = actor;
 }
 
-public class AdminOnlyPermission(ActorForPermission actor) : IActorPermission
+public class AdminOnlyPermission(Actor actor) : IActorPermission
 {
     public bool CanCreate => Actor.IsAdmin;
 
@@ -22,10 +22,10 @@ public class AdminOnlyPermission(ActorForPermission actor) : IActorPermission
 
     public bool CanDelete => Actor.IsAdmin;
 
-    public ActorForPermission Actor { get; } = actor;
+    public Actor Actor { get; } = actor;
 }
 
-public class OwnerOnlyPermission(ActorForPermission actor, IEntity entity) : IActorPermission
+public class OwnerOnlyPermission(Actor actor, IEntity entity) : IActorPermission
 {
     private readonly ActorRecord _actorRecord =
         ActorRecord.Reconstruct(entity.CreatedBy.UserId, entity.UpdatedBy?.UserId);
@@ -36,5 +36,5 @@ public class OwnerOnlyPermission(ActorForPermission actor, IEntity entity) : IAc
 
     public bool CanDelete => Actor.IsAdmin || Actor.UserId == _actorRecord.CreatedBy.UserId;
 
-    public ActorForPermission Actor { get; } = actor;
+    public Actor Actor { get; } = actor;
 }

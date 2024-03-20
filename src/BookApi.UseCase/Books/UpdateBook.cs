@@ -10,7 +10,7 @@ namespace BookApi.UseCase.Books;
 
 public class UpdateBook
 {
-    public record Command(ActorForPermission Actor, string ISBN, BookCommandDTO CommandForm) : IRequest;
+    public record Command(Actor Actor, string ISBN, BookCommandDTO CommandForm) : IRequest;
 
     public class Handler(BookSaveService bookSaveService, IBookRepository bookRepository) : IRequestHandler<Command>
     {

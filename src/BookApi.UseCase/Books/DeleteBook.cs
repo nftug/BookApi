@@ -8,7 +8,7 @@ namespace BookApi.UseCase.Books;
 
 public class DeleteBook
 {
-    public record Command(ActorForPermission Actor, string ISBN) : IRequest;
+    public record Command(Actor Actor, string ISBN) : IRequest;
 
     public class Handler(IBookRepository bookRepository) : IRequestHandler<Command>
     {

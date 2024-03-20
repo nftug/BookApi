@@ -12,7 +12,7 @@ public abstract class ApiControllerBase(ISender sender, ActorFactoryService acto
 {
     private readonly ISender Mediator = sender;
 
-    protected async Task<IActionResult> HandleRequest<T>(Func<ActorForPermission, T> requestFunc)
+    protected async Task<IActionResult> HandleRequest<T>(Func<Actor, T> requestFunc)
         where T : IBaseRequest
         => await HandleActionAsync(async () =>
         {

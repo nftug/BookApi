@@ -12,7 +12,7 @@ public class ActorFactoryService(
 {
     private readonly HttpContext _httpContext = httpContextAccessor.HttpContext!;
 
-    public async Task<ActorForPermission> GetActorAsync()
+    public async Task<Actor> GetActorAsync()
     {
         string userId =
             _httpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;

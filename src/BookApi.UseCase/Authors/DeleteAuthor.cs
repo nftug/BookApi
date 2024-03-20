@@ -7,7 +7,7 @@ namespace BookApi.UseCase.Authors;
 
 public class DeleteAuthor
 {
-    public record Command(ActorForPermission Actor, int AuthorId) : IRequest;
+    public record Command(Actor Actor, int AuthorId) : IRequest;
 
     public class Handler(IAuthorRepository authorRepository) : IRequestHandler<Command>
     {

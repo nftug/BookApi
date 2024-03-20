@@ -9,7 +9,7 @@ namespace BookApi.UseCase.Users;
 
 public class GetUser
 {
-    public record Query(ActorForPermission Actor, string UserId) : IRequest<UserResponseDTO>;
+    public record Query(Actor Actor, string UserId) : IRequest<UserResponseDTO>;
 
     public class Handler(IUserQueryService userQueryService) : IRequestHandler<Query, UserResponseDTO>
     {
