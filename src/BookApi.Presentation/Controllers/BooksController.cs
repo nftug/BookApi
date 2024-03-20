@@ -30,7 +30,7 @@ public class BooksController(ISender sender, ActorFactoryService actorFactory)
     public async Task<IActionResult> ToggleLike(string isbn)
         => await HandleRequest(actor => new ToggleBookLike.Command(actor, isbn));
 
-    [HttpPost("{isbn}/likes/users/{userId}")]
-    public async Task<IActionResult> EditLike(string isbn, string userId, BookLikeEditCommandDTO command)
-        => await HandleRequest(actor => new EditBookLike.Command(actor, isbn, userId, command));
+    [HttpPost("{isbn}/likes/edit")]
+    public async Task<IActionResult> EditLike(string isbn, BookLikeEditCommandDTO command)
+        => await HandleRequest(actor => new EditBookLike.Command(actor, isbn, command));
 }
