@@ -22,13 +22,12 @@ public record BookLikeList : IEnumerable<BookLike>
 
     public static BookLikeList Empty() => new(Enumerable.Empty<BookLike>());
 
+    internal bool IsLikedBy(ItemId userItemId) => _items.Any(x => x.LikedByItemId == userItemId);
+
     internal BookLikeList RecreateWithToggle(PassThroughPermission permission, IDateTimeProvider dateTimeProvider)
-    {
-        bool haveLikedByActor = _items.Any(x => x.LikedByItemId == permission.Actor.Id);
-        return haveLikedByActor
+        => IsLikedBy(permission.Actor.Id)
             ? ItemsWithoutUser(permission.Actor.Id)
             : ItemsWithUser(permission.Actor.Id, dateTimeProvider);
-    }
 
     internal BookLikeList RecreateWithEdit(
         AdminOnlyPermission permission,
@@ -38,8 +37,8 @@ public record BookLikeList : IEnumerable<BookLike>
     {
         if (!permission.CanUpdate) throw new ForbiddenException();
         return doLikeBook
-            ? ItemsWithoutUser(userItemId)
-            : ItemsWithUser(userItemId, dateTimeProvider);
+            ? ItemsWithUser(userItemId, dateTimeProvider)
+            : ItemsWithoutUser(userItemId);
     }
 
     private BookLikeList ItemsWithoutUser(ItemId userItemId)
