@@ -8,7 +8,7 @@ namespace BookApi.UseCase.Books;
 
 public class CreateBook
 {
-    public record Command(ActorForPermission Actor, BookCommandDTO CommandForm)
+    public record Command(Actor Actor, BookCommandDTO CommandForm)
         : IRequest<BookCreationResponseDTO>;
 
     public class Handler(BookSaveService bookSaveService) : IRequestHandler<Command, BookCreationResponseDTO>

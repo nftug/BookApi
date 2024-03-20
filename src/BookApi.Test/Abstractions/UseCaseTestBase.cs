@@ -5,6 +5,7 @@ using BookApi.UseCase.Books;
 using MediatR;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BookApi.Test.Abstractions;
@@ -14,6 +15,7 @@ public abstract class UseCaseTestBase : IDisposable
     private readonly SqliteConnection _connection;
     protected readonly IServiceProvider ServiceProvider;
     protected readonly DbContextOptions<BookDbContext> DbContextOptions;
+    protected readonly IConfiguration Configuration;
 
     protected BookDbContext DbContext => ServiceProvider.GetRequiredService<BookDbContext>();
     protected ISender Mediator => ServiceProvider.GetRequiredService<ISender>();
@@ -29,9 +31,13 @@ public abstract class UseCaseTestBase : IDisposable
 
         // DbContextのオプションを構築
         DbContextOptions = new DbContextOptionsBuilder<BookDbContext>()
-            .UseSqlite(_connection)
+            .UseSqlite(_connection, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
             .UseLazyLoadingProxies()
             .Options;
+
+        Configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
 
         // DIコンテナの設定
         ServiceProvider =
@@ -49,7 +55,7 @@ public abstract class UseCaseTestBase : IDisposable
     protected IServiceCollection BuildServiceCollectionBase()
         => new ServiceCollection()
                 .AddDomainServices()
-                .AddInfrastructureServices()
+                .AddInfrastructureServices(Configuration)
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetBook).Assembly))
                 .AddSingleton(_ => DateTimeProvider.Object);
 

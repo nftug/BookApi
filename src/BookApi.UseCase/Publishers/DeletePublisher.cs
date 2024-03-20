@@ -7,7 +7,7 @@ namespace BookApi.UseCase.Publishers;
 
 public class DeletePublisher
 {
-    public record Command(ActorForPermission Actor, int PublisherId) : IRequest;
+    public record Command(Actor Actor, int PublisherId) : IRequest;
 
     public class Handler(IPublisherRepository publisherRepository) : IRequestHandler<Command>
     {

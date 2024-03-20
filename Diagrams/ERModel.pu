@@ -6,37 +6,53 @@ skinparam DefaultFontName Helvetica
 skinparam linetype ortho
 left to right direction
 
-package "Book Domain" {
-    entity Author {
-        * Id : int <<generated>>
-        --
-        * Name : string
-    }
-
-    entity Publisher {
-        * Id : int <<generated>>
-        --
-        * Name : string
-    }
-
-    entity Book {
-        * Id : int <<generated>>
-        --
-        * ISBN : string
-        * Title : string
-        * PublishedAt : DateTime
-        * FKPublisher : int <<FK>>
-    }
-
-    entity BookAuthor {
-        * BookId : int <<FK>>
-        * AuthorId : int <<FK>>
-        --
-        * Order : int
-    }
-
-    Book ||..o{ Publisher
-    Book }|..|| BookAuthor
-    BookAuthor ||..o{ Author
+entity User {
+    * Id : int <<generated>>
+    --
+    * UserId : string
+    * UserName : string
+    * Role : int (Enum)
 }
+
+entity Author {
+    * Id : int <<generated>>
+    --
+    * Name : string
+}
+
+entity Publisher {
+    * Id : int <<generated>>
+    --
+    * Name : string
+}
+
+entity Book {
+    * Id : int <<generated>>
+    --
+    * ISBN : string
+    * Title : string
+    * PublishedAt : DateTime
+    * PublisherId : int <<FK>>
+}
+
+entity BookAuthor {
+    * BookId : int <<FK>>
+    * AuthorId : int <<FK>>
+    --
+    * Order : int
+}
+
+entity BookLike {
+    * BookId : int <<FK>>
+    * UserId : int <<FK>>
+    --
+    * LikedAt : DateTime
+}
+
+Book ||.up.o{ Publisher
+Book }|..|| BookAuthor
+BookAuthor ||..o{ Author
+
+Book }o..|| BookLike
+BookLike ||..o{ User
 @enduml

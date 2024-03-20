@@ -9,7 +9,7 @@ namespace BookApi.UseCase.Publishers;
 
 public class UpdatePublisher
 {
-    public record Command(ActorForPermission Actor, int PublisherId, PublisherCommandDTO CommandForm) : IRequest;
+    public record Command(Actor Actor, int PublisherId, PublisherCommandDTO CommandForm) : IRequest;
 
     public class Handler(PublisherSaveService publisherSaveService, IPublisherRepository PublisherRepository) : IRequestHandler<Command>
     {

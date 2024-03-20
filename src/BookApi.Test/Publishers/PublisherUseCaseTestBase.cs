@@ -22,8 +22,7 @@ public abstract class PublisherUseCaseTestBase : UseCaseTestBase
             Id = itemId,
             Name = command.Name,
             CreatedAt = createdAt,
-            CreatedById = createdBy.UserId,
-            CreatedByName = createdBy.UserName
+            CreatedByUserId = createdBy.UserId
         };
 
     protected static PublisherDataModel GetExpectedDataAfterUpdate(
@@ -37,11 +36,9 @@ public abstract class PublisherUseCaseTestBase : UseCaseTestBase
             Id = originData.Id,
             Name = command.Name,
             CreatedAt = originData.CreatedAt,
-            CreatedById = originData.CreatedById,
-            CreatedByName = originData.CreatedByName,
+            CreatedByUserId = originData.CreatedByUserId,
             UpdatedAt = updatedAt,
-            UpdatedById = updatedBy.UserId,
-            UpdatedByName = updatedBy.UserName,
+            UpdatedByUserId = updatedBy.UserId,
             VersionId = originData.VersionId + 1
         };
 

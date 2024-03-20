@@ -11,5 +11,7 @@ public static class DomainServiceExtensions
             .AddSingleton<IDateTimeProvider, DateTimeProvider>()
             .AddTransient<BookSaveService>()
             .AddTransient<AuthorSaveService>()
-            .AddTransient<PublisherSaveService>();
+            .AddTransient<PublisherSaveService>()
+            .AddTransient<BookLikeService>()
+            .AddTransient<UserSaveService>();
 }

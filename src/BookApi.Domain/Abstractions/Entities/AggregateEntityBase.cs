@@ -9,10 +9,9 @@ public abstract class AggregateEntityBase<T> : EntityBase<T>, IAggregateEntity<T
     protected AggregateEntityBase(
         int id,
         DateTime createdAt, DateTime? updatedAt,
-        int createdById, string createdByName,
-        int? updatedById, string? updatedByName,
+        string createdByUserId, string? updatedByUserId,
         int versionId
-    ) : base(id, createdAt, updatedAt, createdById, createdByName, updatedById, updatedByName)
+    ) : base(id, createdAt, updatedAt, createdByUserId, updatedByUserId)
     {
         VersionId = versionId;
     }
