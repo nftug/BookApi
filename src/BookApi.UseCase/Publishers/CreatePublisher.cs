@@ -8,7 +8,7 @@ namespace BookApi.UseCase.Publishers;
 
 public class CreatePublisher
 {
-    public record Command(ActorForPermission Actor, PublisherCommandDTO CommandForm)
+    public record Command(Actor Actor, PublisherCommandDTO CommandForm)
         : IRequest<ItemCreationResponseDTO>;
 
     public class Handler(PublisherSaveService publisherSaveService) : IRequestHandler<Command, ItemCreationResponseDTO>

@@ -9,7 +9,7 @@ namespace BookApi.Infrastructure.Services.QueryServices;
 
 public class BookQueryService(BookDbContext dbContext) : IBookQueryService
 {
-    public async Task<BookResponseDTO?> FindByISBNAsync(ActorForPermission actor, ISBNCode isbn)
+    public async Task<BookResponseDTO?> FindByISBNAsync(Actor actor, ISBNCode isbn)
         => await dbContext.Books
             .Where(BookDataModel.QueryPredicate(actor))
             .Where(x => x.ISBN == isbn.Value)

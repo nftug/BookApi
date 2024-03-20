@@ -10,7 +10,7 @@ namespace BookApi.UseCase.Users;
 
 public class ChangeUserPassword
 {
-    public record Command(ActorForPermission Actor, UserPasswordCommandDTO CommandForm) : IRequest;
+    public record Command(Actor Actor, UserPasswordCommandDTO CommandForm) : IRequest;
 
     public class Handler(UserSaveService userSaveService, IUserRepository userRepository)
         : IRequestHandler<Command>

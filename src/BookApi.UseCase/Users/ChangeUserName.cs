@@ -10,7 +10,7 @@ namespace BookApi.UseCase.Users;
 
 public class ChangeUserName
 {
-    public record Command(ActorForPermission Actor, UserNameCommandDTO CommandForm) : IRequest;
+    public record Command(Actor Actor, UserNameCommandDTO CommandForm) : IRequest;
 
     public class Handler(UserSaveService userSaveService, IUserRepository userRepository)
         : IRequestHandler<Command>

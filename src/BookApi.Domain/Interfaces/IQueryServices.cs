@@ -8,7 +8,7 @@ namespace BookApi.Domain.Interfaces;
 
 public interface IBookQueryService
 {
-    Task<BookResponseDTO?> FindByISBNAsync(ActorForPermission actor, ISBNCode isbn);
+    Task<BookResponseDTO?> FindByISBNAsync(Actor actor, ISBNCode isbn);
 }
 
 public interface IAuthorQueryService

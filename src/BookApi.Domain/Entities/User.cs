@@ -69,5 +69,5 @@ public class User : AggregateEntityBase<User>
     public bool VerifyPassword(IPasswordService passwordService, string rawPassword)
         => HashedPassword.VerifyPassword(passwordService, rawPassword);
 
-    public ActorForPermission ToActor() => new(ItemId, UserId.Value, IsAdmin);
+    public Actor ToActor() => new(ItemId, UserId.Value, IsAdmin);
 }
