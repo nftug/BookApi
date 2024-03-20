@@ -45,7 +45,7 @@ public class AuthorQueryService(BookDbContext dbContext) : IAuthorQueryService
             : null;
     }
 
-    public async Task<PaginationResponseDTO<AuthorSummaryResponseDTO>> GetPaginatedResults(
+    public async Task<PaginationResponseDTO<AuthorSummaryResponseDTO>> GetPaginatedResultsAsync(
         Actor? actor, AuthorQueryDTO queryFields
     )
     {
@@ -61,6 +61,6 @@ public class AuthorQueryService(BookDbContext dbContext) : IAuthorQueryService
                 .Select(x => new AuthorSummaryResponseDTO(x.Id, x.Name))
                 .ToListAsync();
 
-        return new(results, totalItems, queryFields);
+        return new(results, totalItems, paginationQuery);
     }
 }

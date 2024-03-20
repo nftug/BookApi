@@ -18,6 +18,6 @@ public class GetAuthorList
         public async Task<PaginationResponseDTO<AuthorSummaryResponseDTO>> Handle(
             Query request, CancellationToken cancellationToken
         )
-            => await authorQueryService.GetPaginatedResults(request.Actor, request.QueryFields);
+            => await authorQueryService.GetPaginatedResultsAsync(request.Actor, request.QueryFields);
     }
 }

@@ -33,6 +33,9 @@ public class BooksController(ISender sender, ActorFactoryService actorFactory)
         => await HandleRequest(actor => new DeleteBook.Command(actor, isbn));
 
     // BookLike
+    [HttpGet("{isbn}/likes"), AllowAnonymous]
+    public async Task<IActionResult> GetLikes(string isbn, [FromQuery] BookLikeQueryDTO queryFields)
+        => await HandleRequestForView(actor => new GetBookLikeList.Query(actor, isbn, queryFields));
 
     [HttpPost("{isbn}/likes")]
     public async Task<IActionResult> ToggleLike(string isbn)

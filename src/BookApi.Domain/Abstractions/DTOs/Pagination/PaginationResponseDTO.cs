@@ -1,4 +1,5 @@
 using BookApi.Domain.Abstractions.DTOs.Pagination;
+using BookApi.Domain.ValueObjects.Pagination;
 
 namespace BookApi.Domain.Abstractions.DTOs;
 
@@ -11,13 +12,13 @@ public class PaginationResponseDTO<T>
     public int TotalPages { get; init; }
     public IEnumerable<T> Results { get; init; }
 
-    public PaginationResponseDTO(IEnumerable<T> list, int totalItems, IPaginationQueryDTO queryFields)
+    public PaginationResponseDTO(IEnumerable<T> list, int totalItems, PaginationQuery paginationQuery)
     {
         TotalItems = totalItems;
-        TotalPages = queryFields.Limit is > 0
-            ? (int)Math.Ceiling((double)totalItems / queryFields.Limit)
+        TotalPages = paginationQuery.Limit is > 0
+            ? (int)Math.Ceiling((double)totalItems / paginationQuery.Limit)
             : 0;
-        CurrentPage = queryFields.Page;
+        CurrentPage = paginationQuery.Page;
         NextPage = CurrentPage < TotalPages ? CurrentPage + 1 : null;
         PreviousPage = CurrentPage > 1 ? CurrentPage - 1 : null;
         Results = list;

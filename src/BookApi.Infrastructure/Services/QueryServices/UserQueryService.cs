@@ -24,7 +24,7 @@ public class UserQueryService(BookDbContext dbContext) : IUserQueryService
             ))
             .SingleOrDefaultAsync();
 
-    public async Task<PaginationResponseDTO<UserSummaryResponseDTO>> GetPaginatedResults(
+    public async Task<PaginationResponseDTO<UserSummaryResponseDTO>> GetPaginatedResultsAsync(
         Actor? actor, UserQueryDTO queryFields
     )
     {
@@ -43,6 +43,6 @@ public class UserQueryService(BookDbContext dbContext) : IUserQueryService
                 .Select(x => new UserSummaryResponseDTO(x.UserId, x.UserName))
                 .ToListAsync();
 
-        return new(results, totalItems, queryFields);
+        return new(results, totalItems, paginationQuery);
     }
 }

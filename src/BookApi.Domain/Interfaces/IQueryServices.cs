@@ -11,8 +11,16 @@ public interface IBookQueryService
 {
     Task<BookResponseDTO?> FindByISBNAsync(Actor? actor, ISBNCode isbn);
 
-    Task<PaginationResponseDTO<BookListItemResponseDTO>> GetPaginatedResults(
+    Task<PaginationResponseDTO<BookListItemResponseDTO>> GetPaginatedResultsAsync(
         Actor? actor, BookQueryDTO queryFields
+    );
+
+    Task<PaginationResponseDTO<BookLikeListItemResponseDTO>> GetLikesAsync(
+        ISBNCode isbn, BookLikeQueryDTO queryFields
+    );
+
+    Task<PaginationResponseDTO<BookListItemResponseDTO>> GetLikedBooksAsync(
+        Actor? actor, UserId userId, BookQueryDTO queryFields
     );
 }
 
@@ -20,7 +28,7 @@ public interface IAuthorQueryService
 {
     Task<AuthorResponseDTO?> FindAsync(Actor? actor, int itemId);
 
-    Task<PaginationResponseDTO<AuthorSummaryResponseDTO>> GetPaginatedResults(
+    Task<PaginationResponseDTO<AuthorSummaryResponseDTO>> GetPaginatedResultsAsync(
         Actor? actor, AuthorQueryDTO queryFields
     );
 }
@@ -29,7 +37,7 @@ public interface IPublisherQueryService
 {
     Task<PublisherResponseDTO?> FindAsync(Actor? actor, int itemId);
 
-    Task<PaginationResponseDTO<PublisherSummaryResponseDTO>> GetPaginatedResults(
+    Task<PaginationResponseDTO<PublisherSummaryResponseDTO>> GetPaginatedResultsAsync(
         Actor? actor, PublisherQueryDTO queryFields
     );
 }
@@ -38,7 +46,7 @@ public interface IUserQueryService
 {
     Task<UserResponseDTO?> FindByUserIdAsync(Actor? actor, UserId userId);
 
-    Task<PaginationResponseDTO<UserSummaryResponseDTO>> GetPaginatedResults(
+    Task<PaginationResponseDTO<UserSummaryResponseDTO>> GetPaginatedResultsAsync(
         Actor? actor, UserQueryDTO queryFields
     );
 }

@@ -2,6 +2,7 @@ using BookApi.Domain.DTOs.Commands;
 using BookApi.Domain.DTOs.Queries;
 using BookApi.Presentation.Abstractions.Controllers;
 using BookApi.Presentation.Services;
+using BookApi.UseCase.Books;
 using BookApi.UseCase.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -39,4 +40,13 @@ public class UsersController(ISender sender, ActorFactoryService actorFactory)
     [HttpPut("me/password")]
     public async Task<IActionResult> ChangeMyPassword(UserPasswordCommandDTO command)
         => await HandleRequest(actor => new ChangeUserPassword.Command(actor, command));
+
+    // Liked books
+    [HttpGet("me/likes/books")]
+    public async Task<IActionResult> GetMyLikedBooks([FromQuery] BookQueryDTO queryFields)
+        => await HandleRequest(actor => new GetLikedBookList.Query(actor, actor.UserId, queryFields));
+
+    [HttpGet("{userId}/likes/books"), AllowAnonymous]
+    public async Task<IActionResult> GetUsersLikedBooks(string userId, [FromQuery] BookQueryDTO queryFields)
+        => await HandleRequestForView(actor => new GetLikedBookList.Query(actor, userId, queryFields));
 }
