@@ -6,3 +6,5 @@ public record UserResponseDTO(
     DateTime RegisteredAt,
     int NumberOfBookLikes
 );
+
+public record UserSummaryResponseDTO(string UserId, string UserName);

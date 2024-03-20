@@ -1,4 +1,5 @@
 using BookApi.Domain.DTOs.Commands;
+using BookApi.Domain.DTOs.Queries;
 using BookApi.Presentation.Abstractions.Controllers;
 using BookApi.Presentation.Services;
 using BookApi.UseCase.Books;
@@ -10,6 +11,10 @@ namespace BookApi.Presentation.Controllers;
 public class BooksController(ISender sender, ActorFactoryService actorFactory)
     : ApiControllerBase(sender, actorFactory)
 {
+    [HttpGet]
+    public async Task<IActionResult> GetBookList([FromQuery] BookQueryDTO queryFields)
+        => await HandleRequest(actor => new GetBookList.Query(actor, queryFields));
+
     [HttpGet("{isbn}")]
     public async Task<IActionResult> GetBook(string isbn)
         => await HandleRequest(actor => new GetBook.Query(actor, isbn));
@@ -25,6 +30,8 @@ public class BooksController(ISender sender, ActorFactoryService actorFactory)
     [HttpDelete("{isbn}")]
     public async Task<IActionResult> DeleteBook(string isbn)
         => await HandleRequest(actor => new DeleteBook.Command(actor, isbn));
+
+    // BookLike
 
     [HttpPost("{isbn}/likes")]
     public async Task<IActionResult> ToggleLike(string isbn)

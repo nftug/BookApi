@@ -1,4 +1,5 @@
 using BookApi.Domain.DTOs.Commands;
+using BookApi.Domain.DTOs.Queries;
 using BookApi.Presentation.Abstractions.Controllers;
 using BookApi.Presentation.Services;
 using BookApi.UseCase.Users;
@@ -20,6 +21,10 @@ public class UsersController(ISender sender, ActorFactoryService actorFactory)
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp(SignUpCommandDTO command)
         => await HandleRequestForAnonymous(new SignUp.Command(command));
+
+    [HttpGet]
+    public async Task<IActionResult> GetUserList([FromQuery] UserQueryDTO queryFields)
+        => await HandleRequest(actor => new GetUserList.Query(actor, queryFields));
 
     [HttpGet("me")]
     public async Task<IActionResult> GetMyUserInfo()
