@@ -1,5 +1,4 @@
 using BookApi.Domain.DTOs.Commands;
-using BookApi.Domain.DTOs.Responses;
 using BookApi.Domain.Exceptions;
 using BookApi.Domain.Interfaces;
 using BookApi.Domain.Services;
@@ -13,13 +12,13 @@ namespace BookApi.UseCase.Books;
 public class EditBookLike
 {
     public record Command(Actor Actor, string UserId, string ISBN, BookLikeEditCommandDTO FormCommand)
-        : IRequest<BookLikeResponseDTO>;
+        : IRequest;
 
     public class Handler(
         BookLikeService bookLikeService, IBookRepository bookRepository, IUserRepository userRepository
-    ) : IRequestHandler<Command, BookLikeResponseDTO>
+    ) : IRequestHandler<Command>
     {
-        public async Task<BookLikeResponseDTO> Handle(Command request, CancellationToken cancellationToken)
+        public async Task Handle(Command request, CancellationToken cancellationToken)
         {
             var permission = new AdminOnlyPermission(request.Actor);
 
@@ -33,8 +32,6 @@ public class EditBookLike
                 ?? throw new ValidationErrorException($"ユーザーが見つかりません。");
 
             await bookLikeService.EditLikeBookAsync(permission, book, user, request.FormCommand.IsLiked);
-
-            return new(book.IsLikedByMe(request.Actor));
         }
     }
 }
