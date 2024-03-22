@@ -8,7 +8,7 @@
 
     <AssemblyName>BookApi</AssemblyName>
     <AssemblyTitle>Galapagos Book API</AssemblyTitle>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

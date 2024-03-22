@@ -1,3 +1,4 @@
+using System.Text;
 using BookApi.Domain;
 using BookApi.Domain.Interfaces;
 using BookApi.Infrastructure;
@@ -35,8 +36,22 @@ public abstract class UseCaseTestBase : IDisposable
             .UseLazyLoadingProxies()
             .Options;
 
+        // Configurationを構築
+        string appSettingsJson =
+"""
+{
+  "HashSalts": {
+    "PasswordSalt": "6d713bded597f3de0954a88d1b45598459d2446ccdd56c2be8330de2ede8b256"
+  },
+  "InitialUserSettings": {
+    "UserId": "admin",
+    "UserName": "Admin",
+    "Password": "password"
+  }
+}
+""";
         Configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(appSettingsJson)))
             .Build();
 
         // DIコンテナの設定

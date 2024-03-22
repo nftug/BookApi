@@ -94,7 +94,7 @@ docker-compose up -d
 
 ### 初期ユーザー (admin) でログイン
 
-初期ユーザーでログインできます。`/api/login` に下記の内容でPOSTリクエストを送信します。
+初期ユーザーでログインできます。`/api/users/login` に下記の内容でPOSTリクエストを送信します。
 
 ```json
 {
