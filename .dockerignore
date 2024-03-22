@@ -17,3 +17,7 @@ docker-compose.*.yml
 # VSCode
 .vscode/
 .VSCodeCounter/
+
+# Test report
+coveragereport/
+TestResults/
