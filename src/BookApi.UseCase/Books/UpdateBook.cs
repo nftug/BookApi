@@ -24,11 +24,7 @@ public class UpdateBook
             var permission = new AdminOnlyPermission(request.Actor);
 
             var command = request.CommandForm;
-            await bookSaveService.UpdateAsync(
-                permission,
-                book,
-                command.Title, command.ISBN, command.AuthorIds, command.PublisherId, command.PublishedAt
-            );
+            await bookSaveService.UpdateAsync(permission, book, command);
         }
     }
 }

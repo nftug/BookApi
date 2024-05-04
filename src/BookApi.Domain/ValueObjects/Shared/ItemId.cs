@@ -18,5 +18,7 @@ public record ItemId
 
     public static ItemId Reconstruct(int value) => new(value);
 
+    public static ItemId NewId() => Reconstruct(0);
+
     public override string ToString() => Value.ToString();
 }

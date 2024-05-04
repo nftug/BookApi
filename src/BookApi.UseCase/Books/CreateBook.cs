@@ -18,10 +18,7 @@ public class CreateBook
             var permission = new AdminOnlyPermission(request.Actor);
 
             var command = request.CommandForm;
-            var newBook = await bookSaveService.CreateAsync(
-                permission,
-                command.Title, command.ISBN, command.AuthorIds, command.PublisherId, command.PublishedAt
-            );
+            var newBook = await bookSaveService.CreateAsync(permission, command);
 
             return new(newBook.ISBN.Value);
         }

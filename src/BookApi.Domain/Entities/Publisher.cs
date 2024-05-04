@@ -1,4 +1,5 @@
 using BookApi.Domain.Abstractions.Entities;
+using BookApi.Domain.DTOs.Commands;
 using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Books;
 using BookApi.Domain.ValueObjects.Shared;
@@ -23,21 +24,21 @@ public class Publisher : AggregateEntityBase<Publisher>
         Books = [.. bookIds.Select(ItemId.Reconstruct)];
     }
 
-    private Publisher(string name)
+    private Publisher(PublisherCommandDTO command)
     {
-        Name = PublisherName.CreateWithValidation(name);
+        Name = PublisherName.CreateWithValidation(command.Name);
     }
 
     internal static Publisher CreateNew(
-        AdminOnlyPermission permission, IDateTimeProvider dateTimeProvider, string name
+        AdminOnlyPermission permission, IDateTimeProvider dateTimeProvider, PublisherCommandDTO command
     )
-        => new Publisher(name).CreateNew(permission, dateTimeProvider);
+        => new Publisher(command).CreateNew(permission, dateTimeProvider);
 
     internal void Update(
-        AdminOnlyPermission permission, IDateTimeProvider dateTimeProvider, string name
-        )
+        AdminOnlyPermission permission, IDateTimeProvider dateTimeProvider, PublisherCommandDTO command
+    )
     {
-        Name = PublisherName.CreateWithValidation(name);
+        Name = PublisherName.CreateWithValidation(command.Name);
         Update(permission, dateTimeProvider);
     }
 }

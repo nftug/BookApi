@@ -1,3 +1,4 @@
+using BookApi.Domain.DTOs.Commands;
 using BookApi.Domain.Entities;
 using BookApi.Domain.Exceptions;
 using BookApi.Domain.Interfaces;
@@ -7,20 +8,20 @@ namespace BookApi.Domain.Services;
 
 public class AuthorSaveService(IAuthorRepository authorRepository, IDateTimeProvider dateTimeProvider)
 {
-    public async Task<Author> CreateAsync(AdminOnlyPermission permission, string name)
+    public async Task<Author> CreateAsync(AdminOnlyPermission permission, AuthorCommandDTO command)
     {
-        await VerifySameNameItemNotExistAsync(name);
+        await VerifySameNameItemNotExistAsync(command.Name);
 
-        var newAuthor = Author.CreateNew(permission, dateTimeProvider, name);
+        var newAuthor = Author.CreateNew(permission, dateTimeProvider, command);
         await authorRepository.SaveAsync(permission.Actor, newAuthor);
         return newAuthor;
     }
 
-    public async Task UpdateAsync(AdminOnlyPermission permission, Author author, string name)
+    public async Task UpdateAsync(AdminOnlyPermission permission, Author author, AuthorCommandDTO command)
     {
-        await VerifySameNameItemNotExistAsync(name, excludedItemId: author.Id);
+        await VerifySameNameItemNotExistAsync(command.Name, excludedItemId: author.Id);
 
-        author.Update(permission, dateTimeProvider, name);
+        author.Update(permission, dateTimeProvider, command);
         await authorRepository.SaveAsync(permission.Actor, author);
     }
 

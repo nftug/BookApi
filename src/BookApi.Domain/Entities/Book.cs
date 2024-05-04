@@ -1,4 +1,5 @@
 using BookApi.Domain.Abstractions.Entities;
+using BookApi.Domain.DTOs.Commands;
 using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Books;
 using BookApi.Domain.ValueObjects.Shared;
@@ -37,35 +38,30 @@ public class Book : AggregateEntityBase<Book>
         Likes = BookLikeList.Reconstruct(bookLikes);
     }
 
-    private Book(string title, string isbn, int[] authorIds, int publisherId, DateTime publishedAt)
+    private Book(BookCommandDTO command)
     {
-        Title = BookTitle.CreateWithValidation(title);
-        ISBN = ISBNCode.CreateWithValidation(isbn);
-        Authors = BookAuthorList.CreateWithValidation(authorIds);
-        Publisher = ItemId.CreateWithValidation(publisherId);
-        PublishedAt = BookPublicationDate.CreateWithValidation(publishedAt);
+        Title = BookTitle.CreateWithValidation(command.Title);
+        ISBN = ISBNCode.CreateWithValidation(command.ISBN);
+        Authors = BookAuthorList.CreateWithValidation(command.AuthorIds);
+        Publisher = ItemId.CreateWithValidation(command.PublisherId);
+        PublishedAt = BookPublicationDate.CreateWithValidation(command.PublishedAt);
         Likes = BookLikeList.Empty();
     }
 
     internal static Book CreateNew(
-        AdminOnlyPermission permission,
-        IDateTimeProvider dateTimeProvider,
-        string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
+        AdminOnlyPermission permission, IDateTimeProvider dateTimeProvider, BookCommandDTO command
     )
-        => new Book(name, isbn, authorIds, publisherId, publishedAt)
-            .CreateNew(permission, dateTimeProvider);
+        => new Book(command).CreateNew(permission, dateTimeProvider);
 
     internal void Update(
-        AdminOnlyPermission permission,
-        IDateTimeProvider dateTimeProvider,
-        string title, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
+        AdminOnlyPermission permission, IDateTimeProvider dateTimeProvider, BookCommandDTO command
     )
     {
-        Title = BookTitle.CreateWithValidation(title);
-        ISBN = ISBNCode.CreateWithValidation(isbn);
-        Authors = BookAuthorList.CreateWithValidation(authorIds);
-        Publisher = ItemId.CreateWithValidation(publisherId);
-        PublishedAt = BookPublicationDate.CreateWithValidation(publishedAt);
+        Title = BookTitle.CreateWithValidation(command.Title);
+        ISBN = ISBNCode.CreateWithValidation(command.ISBN);
+        Authors = BookAuthorList.CreateWithValidation(command.AuthorIds);
+        Publisher = ItemId.CreateWithValidation(command.PublisherId);
+        PublishedAt = BookPublicationDate.CreateWithValidation(command.PublishedAt);
         Update(permission, dateTimeProvider);
     }
 

@@ -20,7 +20,7 @@ public class UpdateAuthor
                 ?? throw new ItemNotFoundException();
 
             var permission = new AdminOnlyPermission(request.Actor);
-            await authorSaveService.UpdateAsync(permission, author, request.CommandForm.Name);
+            await authorSaveService.UpdateAsync(permission, author, request.CommandForm);
         }
     }
 }

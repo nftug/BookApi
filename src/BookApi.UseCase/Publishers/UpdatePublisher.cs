@@ -20,7 +20,7 @@ public class UpdatePublisher
                 ?? throw new ItemNotFoundException();
 
             var permission = new AdminOnlyPermission(request.Actor);
-            await publisherSaveService.UpdateAsync(permission, publisher, request.CommandForm.Name);
+            await publisherSaveService.UpdateAsync(permission, publisher, request.CommandForm);
         }
     }
 }

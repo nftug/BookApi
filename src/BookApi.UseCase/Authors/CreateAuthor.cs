@@ -16,7 +16,7 @@ public class CreateAuthor
         public async Task<ItemCreationResponseDTO> Handle(Command request, CancellationToken cancellationToken)
         {
             var permission = new AdminOnlyPermission(request.Actor);
-            var newAuthor = await authorSaveService.CreateAsync(permission, request.CommandForm.Name);
+            var newAuthor = await authorSaveService.CreateAsync(permission, request.CommandForm);
             return new(newAuthor.Id);
         }
     }

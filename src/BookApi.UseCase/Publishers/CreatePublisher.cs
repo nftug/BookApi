@@ -16,7 +16,7 @@ public class CreatePublisher
         public async Task<ItemCreationResponseDTO> Handle(Command request, CancellationToken cancellationToken)
         {
             var permission = new AdminOnlyPermission(request.Actor);
-            var newPublisher = await publisherSaveService.CreateAsync(permission, request.CommandForm.Name);
+            var newPublisher = await publisherSaveService.CreateAsync(permission, request.CommandForm);
             return new(newPublisher.Id);
         }
     }

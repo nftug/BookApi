@@ -1,4 +1,5 @@
 using BookApi.Domain.Abstractions.ValueObjects;
+using BookApi.Domain.DTOs.Commands;
 using BookApi.Domain.Entities;
 using BookApi.Domain.Exceptions;
 using BookApi.Domain.Interfaces;
@@ -14,37 +15,24 @@ public class BookSaveService(
     IDateTimeProvider dateTimeProvider
 )
 {
-    public async Task<Book> CreateAsync(
-        AdminOnlyPermission permission,
-        string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
-    )
+    public async Task<Book> CreateAsync(AdminOnlyPermission permission, BookCommandDTO command)
     {
-        await VerifySameISBNNotExistAsync(isbn);
-        await VerifyAllAuthorsExistedAsync(permission.Actor, authorIds);
-        await VerifyPublisherExistedAsync(permission.Actor, publisherId);
+        await VerifySameISBNNotExistAsync(command.ISBN);
+        await VerifyAllAuthorsExistedAsync(permission.Actor, command.AuthorIds);
+        await VerifyPublisherExistedAsync(permission.Actor, command.PublisherId);
 
-        var newBook = Book.CreateNew(
-            permission, dateTimeProvider, name, isbn, authorIds, publisherId, publishedAt
-        );
-
+        var newBook = Book.CreateNew(permission, dateTimeProvider, command);
         await bookRepository.SaveAsync(permission.Actor, newBook);
         return newBook;
     }
 
-    public async Task UpdateAsync(
-        AdminOnlyPermission permission,
-        Book book,
-        string name, string isbn, int[] authorIds, int publisherId, DateTime publishedAt
-    )
+    public async Task UpdateAsync(AdminOnlyPermission permission, Book book, BookCommandDTO command)
     {
-        await VerifySameISBNNotExistAsync(isbn, origin: book);
-        await VerifyAllAuthorsExistedAsync(permission.Actor, authorIds);
-        await VerifyPublisherExistedAsync(permission.Actor, publisherId);
+        await VerifySameISBNNotExistAsync(command.ISBN, origin: book);
+        await VerifyAllAuthorsExistedAsync(permission.Actor, command.AuthorIds);
+        await VerifyPublisherExistedAsync(permission.Actor, command.PublisherId);
 
-        book.Update(
-            permission, dateTimeProvider, name, isbn, authorIds, publisherId, publishedAt
-        );
-
+        book.Update(permission, dateTimeProvider, command);
         await bookRepository.SaveAsync(permission.Actor, book);
     }
 

@@ -33,11 +33,11 @@ public class User : AggregateEntityBase<User>
         Role = role;
     }
 
-    private User(IPasswordService passwordService, string userId, string userName, string rawPassword)
+    private User(IPasswordService passwordService, SignUpCommandDTO command)
     {
-        UserId = UserId.CreateWithValidation(userId);
-        UserName = UserName.CreateWithValidation(userName);
-        HashedPassword = HashedPassword.CreateWithValidation(passwordService, rawPassword);
+        UserId = UserId.CreateWithValidation(command.UserId);
+        UserName = UserName.CreateWithValidation(command.UserName);
+        HashedPassword = HashedPassword.CreateWithValidation(passwordService, command.Password);
     }
 
     internal static User CreateNew(
@@ -45,8 +45,7 @@ public class User : AggregateEntityBase<User>
         IDateTimeProvider dateTimeProvider, IPasswordService passwordService,
         SignUpCommandDTO command
     )
-        => new User(passwordService, command.UserId, command.UserName, command.Password)
-            .CreateNew(permission, dateTimeProvider);
+        => new User(passwordService, command).CreateNew(permission, dateTimeProvider);
 
     internal void ChangeUserName(
         OwnerOnlyPermission permission, IDateTimeProvider dateTimeProvider, UserNameCommandDTO command
