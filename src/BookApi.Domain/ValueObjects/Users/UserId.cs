@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using BookApi.Domain.Exceptions;
 
@@ -26,7 +27,7 @@ public record UserId
         return new(value);
     }
 
-    public static UserId Reconstruct(string value) => new(value);
+    public static UserId Reconstruct(string? value) => value is { } ? new(value) : null!;
 
     public override string ToString() => Value;
 

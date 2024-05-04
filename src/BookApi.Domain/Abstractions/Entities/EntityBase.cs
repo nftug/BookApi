@@ -2,6 +2,7 @@ using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.Exceptions;
 using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Shared;
+using BookApi.Domain.ValueObjects.Users;
 
 namespace BookApi.Domain.Abstractions.Entities;
 
@@ -27,7 +28,9 @@ public abstract class EntityBase<T> : IEntity<T>
     {
         ItemId = ItemId.Reconstruct(id);
         DateTimeRecord = new() { CreatedAt = createdAt, UpdatedAt = updatedAt };
-        ActorRecord = ActorRecord.Reconstruct(createdByUserId, updatedByUserId);
+        ActorRecord = ActorRecord.Reconstruct(
+            UserId.Reconstruct(createdByUserId), UserId.Reconstruct(updatedByUserId)
+        );
     }
 
     // エンティティの新規作成用

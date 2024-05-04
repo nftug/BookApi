@@ -33,7 +33,7 @@ public class UsersController(ISender sender, ActorFactoryService actorFactory)
     [HttpGet("me")]
     [ProducesResponseType(typeof(UserResponseDTO), 200)]
     public async Task<IActionResult> GetMyUserInfo()
-        => await HandleRequest(actor => new GetUser.Query(actor, actor.UserId));
+        => await HandleRequest(actor => new GetUser.Query(actor, actor.UserId.Value));
 
     [HttpGet("{userId}"), AllowAnonymous]
     [ProducesResponseType(typeof(UserResponseDTO), 200)]
@@ -53,7 +53,7 @@ public class UsersController(ISender sender, ActorFactoryService actorFactory)
     [HttpDelete("me")]
     [ProducesResponseType(204)]
     public async Task<IActionResult> DeleteMyAccount()
-        => await HandleRequest(actor => new DeleteUser.Command(actor, actor.UserId));
+        => await HandleRequest(actor => new DeleteUser.Command(actor, actor.UserId.Value));
 
     [HttpDelete("{userId}")]
     [ProducesResponseType(204)]
@@ -64,7 +64,7 @@ public class UsersController(ISender sender, ActorFactoryService actorFactory)
     [HttpGet("me/likes/books")]
     [ProducesResponseType(typeof(PaginationResponseDTO<BookListItemResponseDTO>), 200)]
     public async Task<IActionResult> GetMyLikedBooks([FromQuery] BookQueryDTO queryFields)
-        => await HandleRequest(actor => new GetLikedBookList.Query(actor, actor.UserId, queryFields));
+        => await HandleRequest(actor => new GetLikedBookList.Query(actor, actor.UserId.Value, queryFields));
 
     [HttpGet("{userId}/likes/books"), AllowAnonymous]
     [ProducesResponseType(typeof(PaginationResponseDTO<BookListItemResponseDTO>), 200)]

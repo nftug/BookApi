@@ -23,8 +23,8 @@ public abstract class DataModelBase<TEntity, TSelf> : IDataModel<TEntity, TSelf>
     {
         CreatedAt = entity.CreatedAt;
         UpdatedAt = entity.UpdatedAt;
-        CreatedByUserId = entity.CreatedBy.UserId;
-        UpdatedByUserId = entity.UpdatedBy?.UserId;
+        CreatedByUserId = entity.CreatedBy.UserId.Value;
+        UpdatedByUserId = entity.UpdatedBy?.UserId.Value;
         OnTransferFromEntity(entity);
 
         return (TSelf)this;

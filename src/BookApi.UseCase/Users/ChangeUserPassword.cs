@@ -18,7 +18,7 @@ public class ChangeUserPassword
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
             var user =
-                await userRepository.FindByUserIdAsync(UserId.Reconstruct(request.Actor.UserId))
+                await userRepository.FindByUserIdAsync(request.Actor.UserId)
                 ?? throw new ItemNotFoundException();
             var permission = new OwnerOnlyPermission(request.Actor, user);
 

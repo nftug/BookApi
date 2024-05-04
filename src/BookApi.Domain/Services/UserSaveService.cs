@@ -20,7 +20,7 @@ public class UserSaveService(
             throw new ValidationErrorException("既に同じユーザーIDが登録されています。");
 
         // 一時的なPermissionを作成
-        var actor = Actor.CreateNewActor(userId.Value);
+        var actor = Actor.CreateNewActor(userId);
         var permission = new PassThroughPermission(actor);
 
         var newUser = User.CreateNew(permission, dateTimeProvider, passwordService, command);
