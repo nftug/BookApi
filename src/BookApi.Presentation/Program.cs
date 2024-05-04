@@ -30,17 +30,17 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services
-    .AddDbContext<BookDbContext>(
-        opt => opt
-            .UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection"),
-                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
-            )
-            .UseLazyLoadingProxies()
+var dbContextOptions = new DbContextOptionsBuilder<BookDbContext>()
+    .UseNpgsql(
+        configuration.GetConnectionString("DefaultConnection"),
+        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
     )
+    .UseLazyLoadingProxies()
+    .Options;
+
+builder.Services
     .AddDomainServices()
-    .AddInfrastructureServices(configuration)
+    .AddInfrastructureServices(configuration, dbContextOptions)
     .AddPresentationServices(configuration)
     .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetBook).Assembly));
 

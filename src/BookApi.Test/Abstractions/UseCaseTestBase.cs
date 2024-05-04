@@ -31,6 +31,8 @@ public abstract class UseCaseTestBase : IDisposable
         _connection.Open();
 
         // DbContextのオプションを構築
+        var dbContextOptionBuilder =
+
         DbContextOptions = new DbContextOptionsBuilder<BookDbContext>()
             .UseSqlite(_connection, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
             .UseLazyLoadingProxies()
@@ -70,7 +72,7 @@ public abstract class UseCaseTestBase : IDisposable
     protected IServiceCollection BuildServiceCollectionBase()
         => new ServiceCollection()
                 .AddDomainServices()
-                .AddInfrastructureServices(Configuration)
+                .AddInfrastructureServices(Configuration, DbContextOptions)
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetBook).Assembly))
                 .AddSingleton(_ => DateTimeProvider.Object);
 
