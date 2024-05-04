@@ -1,4 +1,5 @@
 using BookApi.Domain.Abstractions.Entities;
+using BookApi.Domain.DTOs.Commands;
 using BookApi.Domain.Enums;
 using BookApi.Domain.Interfaces;
 using BookApi.Domain.ValueObjects.Shared;
@@ -42,27 +43,26 @@ public class User : AggregateEntityBase<User>
     internal static User CreateNew(
         PassThroughPermission permission,
         IDateTimeProvider dateTimeProvider, IPasswordService passwordService,
-        string userId, string userName, string rawPassword
+        SignUpCommandDTO command
     )
-        => new User(passwordService, userId, userName, rawPassword)
+        => new User(passwordService, command.UserId, command.UserName, command.Password)
             .CreateNew(permission, dateTimeProvider);
 
     internal void ChangeUserName(
-        OwnerOnlyPermission permission,
-        IDateTimeProvider dateTimeProvider, string name
+        OwnerOnlyPermission permission, IDateTimeProvider dateTimeProvider, UserNameCommandDTO command
     )
     {
-        UserName = UserName.CreateWithValidation(name);
+        UserName = UserName.CreateWithValidation(command.UserName);
         Update(permission, dateTimeProvider);
     }
 
     internal void ChangePassword(
         OwnerOnlyPermission permission,
         IDateTimeProvider dateTimeProvider, IPasswordService passwordService,
-        string oldPasswordRaw, string newPasswordRaw
+        UserPasswordCommandDTO command
     )
     {
-        HashedPassword = HashedPassword.ChangePassword(passwordService, oldPasswordRaw, newPasswordRaw);
+        HashedPassword = HashedPassword.ChangePassword(passwordService, command.OldPassword, command.NewPassword);
         Update(permission, dateTimeProvider);
     }
 

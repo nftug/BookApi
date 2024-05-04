@@ -22,7 +22,7 @@ public class ChangeUserName
                 ?? throw new ItemNotFoundException();
             var permission = new OwnerOnlyPermission(request.Actor, user);
 
-            await userSaveService.ChangeUserNameAsync(permission, user, request.CommandForm.UserName);
+            await userSaveService.ChangeUserNameAsync(permission, user, request.CommandForm);
         }
     }
 }

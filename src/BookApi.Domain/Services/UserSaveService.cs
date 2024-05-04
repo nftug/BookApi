@@ -23,17 +23,14 @@ public class UserSaveService(
         var actor = new Actor(ItemId.Reconstruct(0), userId.Value, false);
         var permission = new PassThroughPermission(actor);
 
-        var newUser = User.CreateNew(
-            permission, dateTimeProvider, passwordService,
-            command.UserId, command.UserName, command.Password
-        );
+        var newUser = User.CreateNew(permission, dateTimeProvider, passwordService, command);
         await userRepository.SaveAsync(permission.Actor, newUser);
         return newUser;
     }
 
-    public async Task ChangeUserNameAsync(OwnerOnlyPermission permission, User user, string userName)
+    public async Task ChangeUserNameAsync(OwnerOnlyPermission permission, User user, UserNameCommandDTO command)
     {
-        user.ChangeUserName(permission, dateTimeProvider, userName);
+        user.ChangeUserName(permission, dateTimeProvider, command);
         await userRepository.SaveAsync(permission.Actor, user);
     }
 
@@ -43,9 +40,7 @@ public class UserSaveService(
         UserPasswordCommandDTO command
     )
     {
-        user.ChangePassword(
-            permission, dateTimeProvider, passwordService, command.OldPassword, command.NewPassword
-        );
+        user.ChangePassword(permission, dateTimeProvider, passwordService, command);
         await userRepository.SaveAsync(permission.Actor, user);
     }
 }
