@@ -19,15 +19,15 @@ public class PublisherSaveService(IPublisherRepository publisherRepository, IDat
 
     public async Task UpdateAsync(AdminOnlyPermission permission, Publisher publisher, PublisherCommandDTO command)
     {
-        await VerifySameNameItemNotExistAsync(command.Name, excludedItemId: publisher.Id);
+        await VerifySameNameItemNotExistAsync(command.Name, exitedEntity: publisher);
 
         publisher.Update(permission, dateTimeProvider, command);
         await publisherRepository.SaveAsync(permission.Actor, publisher);
     }
 
-    private async Task VerifySameNameItemNotExistAsync(string name, int? excludedItemId = null)
+    private async Task VerifySameNameItemNotExistAsync(string name, Publisher? exitedEntity = null)
     {
-        if (await publisherRepository.AnyByNameAsync(name, excludedItemId))
+        if (await publisherRepository.AnyByNameAsync(name, exitedEntity?.ItemId))
             throw new ValidationErrorException("既に同じ名前の出版社が存在します。");
     }
 }

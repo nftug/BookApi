@@ -16,7 +16,7 @@ public class DeleteAuthor
             var permission = new AdminOnlyPermission(request.Actor);
 
             var author =
-                await authorRepository.FindAsync(permission.Actor, request.AuthorId)
+                await authorRepository.FindAsync(permission.Actor, ItemId.CreateWithValidation(request.AuthorId))
                 ?? throw new ItemNotFoundException();
 
             await authorRepository.DeleteAsync(permission, author);

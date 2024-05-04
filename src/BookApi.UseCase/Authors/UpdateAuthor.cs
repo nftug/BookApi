@@ -16,7 +16,7 @@ public class UpdateAuthor
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
             var author =
-                await authorRepository.FindAsync(request.Actor, request.AuthorId)
+                await authorRepository.FindAsync(request.Actor, ItemId.CreateWithValidation(request.AuthorId))
                 ?? throw new ItemNotFoundException();
 
             var permission = new AdminOnlyPermission(request.Actor);

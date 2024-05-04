@@ -34,11 +34,7 @@ public class UserSaveService(
         await userRepository.SaveAsync(permission.Actor, user);
     }
 
-    public async Task ChangePasswordAsync(
-        OwnerOnlyPermission permission,
-        User user,
-        UserPasswordCommandDTO command
-    )
+    public async Task ChangePasswordAsync(OwnerOnlyPermission permission, User user, UserPasswordCommandDTO command)
     {
         user.ChangePassword(permission, dateTimeProvider, passwordService, command);
         await userRepository.SaveAsync(permission.Actor, user);

@@ -2,6 +2,7 @@ using BookApi.Domain.Abstractions.Entities;
 using BookApi.Domain.Abstractions.Interfaces;
 using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.ValueObjects.Books;
+using BookApi.Domain.ValueObjects.Shared;
 using BookApi.Infrastructure;
 using BookApi.Infrastructure.Abstractions.DataModels;
 using BookApi.Infrastructure.DataModels;
@@ -25,17 +26,17 @@ public static class RepositoryMockExtensions
         repositoryMock.CallBase.Should().BeTrue();
 
         repositoryMock
-            .Setup(m => m.FindAsync(It.IsAny<IActor>(), It.IsAny<int>()))
-            .Returns(async (IActor actor, int id) =>
+            .Setup(m => m.FindAsync(It.IsAny<IActor>(), It.IsAny<ItemId>()))
+            .Returns(async (IActor actor, ItemId itemId) =>
             {
                 // 先にデータを取得
                 var repository = repositoryBuilder();
-                var entityBeforeUpdated = await repository.FindAsync(actor, id);
+                var entityBeforeUpdated = await repository.FindAsync(actor, itemId);
 
                 // 取得後にエンティティを返却するまでの間にデータが更新されたものとする
                 // ⇒リポジトリが返却するバージョンと、実データのバージョンの間にズレがある状況を作る
                 using var anotherDbContext = dbContextBuilder();
-                var data = anotherDbContext.Set<TDataModel>().AsTracking().Single(x => x.Id == id);
+                var data = anotherDbContext.Set<TDataModel>().AsTracking().Single(x => x.Id == itemId.Value);
                 data.VersionId++;
                 anotherDbContext.SaveChanges();  // バージョンを更新して保存
 

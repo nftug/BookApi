@@ -16,7 +16,7 @@ public class DeletePublisher
             var permission = new AdminOnlyPermission(request.Actor);
 
             var publisher =
-                await publisherRepository.FindAsync(permission.Actor, request.PublisherId)
+                await publisherRepository.FindAsync(permission.Actor, ItemId.CreateWithValidation(request.PublisherId))
                 ?? throw new ItemNotFoundException();
 
             await publisherRepository.DeleteAsync(permission, publisher);

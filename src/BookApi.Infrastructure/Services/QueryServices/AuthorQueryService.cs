@@ -11,11 +11,11 @@ namespace BookApi.Infrastructure.Services.QueryServices;
 
 public class AuthorQueryService(BookDbContext dbContext) : IAuthorQueryService
 {
-    public async Task<AuthorResponseDTO?> FindAsync(Actor? actor, int itemId)
+    public async Task<AuthorResponseDTO?> FindAsync(Actor? actor, ItemId itemId)
     {
         var response = await dbContext.Authors
             .Where(AuthorDataModel.QueryPredicate(actor))
-            .Where(x => x.Id == itemId)
+            .Where(x => x.Id == itemId.Value)
             .Select(x => new AuthorResponseDTO(
                 x.Id,
                 x.Name,
@@ -34,7 +34,7 @@ public class AuthorQueryService(BookDbContext dbContext) : IAuthorQueryService
             {
                 RelatedPublishers =
                     (await dbContext.Books
-                        .Where(b => b.Authors.Any(a => a.Id == itemId))
+                        .Where(b => b.Authors.Any(a => a.Id == itemId.Value))
                         .GroupBy(
                             b => b.PublisherId,
                             (k, g) => new PublisherSummaryResponseDTO(k, g.First().Publisher.Name)

@@ -3,6 +3,7 @@ using BookApi.Domain.Abstractions.Entities;
 using BookApi.Domain.Abstractions.Interfaces;
 using BookApi.Domain.Abstractions.ValueObjects;
 using BookApi.Domain.Exceptions;
+using BookApi.Domain.ValueObjects.Shared;
 using BookApi.Infrastructure.Abstractions.DataModels;
 using BookApi.Infrastructure.Attributes;
 using Microsoft.EntityFrameworkCore;
@@ -17,12 +18,12 @@ public abstract class RepositoryBase<TAggregate, TDataModel>(BookDbContext dbCon
 
     protected abstract IQueryable<TDataModel> QueryForRead(IActor actor);
 
-    public virtual async Task<TAggregate?> FindAsync(IActor actor, int itemId)
-        => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.Id == itemId))
+    public virtual async Task<TAggregate?> FindAsync(IActor actor, ItemId itemId)
+        => (await QueryForRead(actor).SingleOrDefaultAsync(x => x.Id == itemId.Value))
             ?.ToEntity();
 
-    public virtual async Task<bool> AnyAsync(IActor actor, int itemId)
-        => await QueryForRead(actor).AnyAsync(x => x.Id == itemId);
+    public virtual async Task<bool> AnyAsync(IActor actor, ItemId itemId)
+        => await QueryForRead(actor).AnyAsync(x => x.Id == itemId.Value);
 
     public virtual async Task SaveAsync(IActor actor, TAggregate entity)
     {

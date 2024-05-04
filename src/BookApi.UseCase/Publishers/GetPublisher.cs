@@ -13,7 +13,7 @@ public class GetPublisher
     public class Handler(IPublisherQueryService publisherQueryService) : IRequestHandler<Query, PublisherResponseDTO>
     {
         public async Task<PublisherResponseDTO> Handle(Query request, CancellationToken cancellationToken)
-            => await publisherQueryService.FindAsync(request.Actor, request.PublisherId)
+            => await publisherQueryService.FindAsync(request.Actor, ItemId.CreateWithValidation(request.PublisherId))
                 ?? throw new ItemNotFoundException();
     }
 }

@@ -19,15 +19,15 @@ public class AuthorSaveService(IAuthorRepository authorRepository, IDateTimeProv
 
     public async Task UpdateAsync(AdminOnlyPermission permission, Author author, AuthorCommandDTO command)
     {
-        await VerifySameNameItemNotExistAsync(command.Name, excludedItemId: author.Id);
+        await VerifySameNameItemNotExistAsync(command.Name, existedEntity: author);
 
         author.Update(permission, dateTimeProvider, command);
         await authorRepository.SaveAsync(permission.Actor, author);
     }
 
-    private async Task VerifySameNameItemNotExistAsync(string name, int? excludedItemId = null)
+    private async Task VerifySameNameItemNotExistAsync(string name, Author? existedEntity = null)
     {
-        if (await authorRepository.AnyByNameAsync(name, excludedItemId))
+        if (await authorRepository.AnyByNameAsync(name, existedEntity?.ItemId))
             throw new ValidationErrorException("既に同じ名前の著者が存在します。");
     }
 }

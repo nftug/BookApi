@@ -13,7 +13,7 @@ public class GetAuthor
     public class Handler(IAuthorQueryService authorQueryService) : IRequestHandler<Query, AuthorResponseDTO>
     {
         public async Task<AuthorResponseDTO> Handle(Query request, CancellationToken cancellationToken)
-            => await authorQueryService.FindAsync(request.Actor, request.AuthorId)
+            => await authorQueryService.FindAsync(request.Actor, ItemId.CreateWithValidation(request.AuthorId))
                 ?? throw new ItemNotFoundException();
     }
 }
